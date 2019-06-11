@@ -2,7 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-
+from summarize.plotting import *
 
 def update_summary_plots(recording_folder_path, override=False):
     '''
@@ -52,24 +52,24 @@ def plot_stops_on_track(trial_results, session_path):
     beaconed, non_beaconed, probe = split_stop_data_by_trial_type(trial_results)
 
     for index, _ in beaconed.iterrows():
-        b_stops = (np.array(beaconed["stop_locations"][index])*-1)+beaconed["Track Start"][index]
+        b_stops = (np.array(beaconed["stop_locations"][index])*-1)+beaconed["Cue Boundary Min"][index]
         b_trials = np.array(beaconed["trial_num"][index])*np.ones(len(b_stops))
 
-        ax.plot((np.linspace(beaconed["Track Start"][index], beaconed["Track End"][index], len(b_stops))*-1)+beaconed["Track Start"][index], b_trials, color="y") # marks out track area
+        ax.plot((np.linspace(beaconed["Track Start"][index], beaconed["Track End"][index], len(b_stops))*-1)+beaconed["Cue Boundary Min"][index], b_trials, color="y") # marks out track area
         ax.plot(b_stops, b_trials, 'o', color='0.5', markersize=2)
 
     for index, _ in non_beaconed.iterrows():
-        nb_stops = (np.array(non_beaconed["stop_locations"][index])*-1)+non_beaconed["Track Start"][index]
+        nb_stops = (np.array(non_beaconed["stop_locations"][index])*-1)+non_beaconed["Cue Boundary Min"][index]
         nb_trials = np.array(non_beaconed["trial_num"][index]) * np.ones(len(nb_stops))
 
-        ax.plot((np.linspace(non_beaconed["Track Start"][index], non_beaconed["Track End"][index], len(nb_stops))*-1)+non_beaconed["Track Start"][index], nb_trials, color="y")  # marks out track area
+        ax.plot((np.linspace(non_beaconed["Track Start"][index], non_beaconed["Track End"][index], len(nb_stops))*-1)+non_beaconed["Cue Boundary Min"][index], nb_trials, color="y")  # marks out track area
         ax.plot(nb_stops, nb_trials, 'o', color='red', markersize=2)
 
     for index, _ in probe.iterrows():
-        p_stops = (np.array(probe["stop_locations"][index])*-1)+probe["Track Start"][index]
+        p_stops = (np.array(probe["stop_locations"][index])*-1)+probe["Cue Boundary Min"][index]
         p_trials = np.array(probe["trial_num"][index]) * np.ones(len(p_stops))
 
-        ax.plot((np.linspace(probe["Track Start"][index], probe["Track End"][index], len(p_stops))*-1)+probe["Track Start"][index], p_trials, color="y")  # marks out track area
+        ax.plot((np.linspace(probe["Track Start"][index], probe["Track End"][index], len(p_stops))*-1)+probe["Cue Boundary Min"][index], p_trials, color="y")  # marks out track area
         ax.plot(p_stops, p_trials, 'o', color='blue', markersize=2)
 
     plt.ylabel('Stops on trials', fontsize=12, labelpad=10)
@@ -78,35 +78,16 @@ def plot_stops_on_track(trial_results, session_path):
     #plt.xlim(0, 200)
     ax.yaxis.set_ticks_position('left')
     ax.xaxis.set_ticks_position('bottom')
-    #Python_PostSorting.plot_utility.style_track_plot(ax, 200)
-    # x_max = max(raw_position_data.trial_number)+0.5
-    #Python_PostSorting.plot_utility.style_vr_plot(ax, 200)
+
+    style_track_plot(ax, beaconed)
+    style_vr_plot(ax)  # can be any trialtype example
+
     plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.2, left=0.12, right=0.87, top=0.92)
-    #plt.savefig(session_path + '/summary_plot.png', dpi=200)
-    plt.savefig('/home/harry/aa/plot_summary.png', dpi=200)
+    plt.savefig(session_path + '/summary_plot.png', dpi=200)
+    #plt.savefig('/home/harry/aa/plot_summary.png', dpi=200)   # TODO change this to ardbeg when I have permission to write with Linux
     plt.show()
     plt.close()
 
-
-'''
-ax.plot(beaconed[:, 0], beaconed[:, 1], 'o', color='0.5', markersize=2)
-    ax.plot(non_beaconed[:, 0], non_beaconed[:, 1], 'o', color='red', markersize=2)
-    ax.plot(probe[:, 0], probe[:, 1], 'o', color='blue', markersize=2)
-    ax.plot(processed_position_data.rewarded_stop_locations, processed_position_data.rewarded_trials, '>',
-            color='Red', markersize=3)
-    plt.ylabel('Stops on trials', fontsize=12, labelpad=10)
-    plt.xlabel('Location (cm)', fontsize=12, labelpad=10)
-    # plt.xlim(min(spatial_data.position_bins),max(spatial_data.position_bins))
-    plt.xlim(0, 200)
-    ax.yaxis.set_ticks_position('left')
-    ax.xaxis.set_ticks_position('bottom')
-    Python_PostSorting.plot_utility.style_track_plot(ax, 200)
-    # x_max = max(raw_position_data.trial_number)+0.5
-    Python_PostSorting.plot_utility.style_vr_plot(ax, 200)
-    plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.2, left=0.12, right=0.87, top=0.92)
-    plt.savefig(recording_folder + '/Figures/behaviour/stop_raster' + '.png', dpi=200)
-    plt.close()
-'''
 def append_calculated_speed():
     pass
 
@@ -151,7 +132,7 @@ def plot_summary(session_path):
     trial_results = extract_stops(trial_results, session_path) # add stop times and locations to dataframe
 
     plot_stops_on_track(trial_results, session_path)
-    plot_stops_in_time(trial_results,session_path)
+    #plot_stops_in_time(trial_results,session_path)
 
 
 
@@ -187,9 +168,10 @@ def main():
     print('-------------------------------------------------------------')
 
 
-    recording_folder_path = '/home/harry/local_ard/Harry/Oculus VR/test_recordings'
+    #recording_folder_path = '/home/harry/local_ard/Harry/Oculus VR/test_recordings' # for ardbeg
+    recording_folder_path = '/home/harry/Harry_ard/test_recordings'
 
-    update_summary_plots(recording_folder_path)
+    update_summary_plots(recording_folder_path, override=True)
 
 
 if __name__ == '__main__':
