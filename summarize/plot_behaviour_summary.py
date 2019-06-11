@@ -51,28 +51,30 @@ def plot_stops_on_track(trial_results, session_path):
 
     beaconed, non_beaconed, probe = split_stop_data_by_trial_type(trial_results)
 
+    #cue_length =
+
     for index, _ in beaconed.iterrows():
-        b_stops = (np.array(beaconed["stop_locations"][index])*-1)+beaconed["Cue Boundary Min"][index]
+        b_stops = (np.array(beaconed["stop_locations"][index])*-1)+beaconed["Cue Boundary Max"][index]
         b_trial_num = np.array(beaconed["trial_num"][index])
         b_trials = b_trial_num*np.ones(len(b_stops))
 
-        ax.plot((np.linspace(beaconed["Track Start"][index], beaconed["Track End"][index], 2)*-1)+beaconed["Cue Boundary Min"][index], np.array([b_trial_num, b_trial_num]), color="y") # marks out track area
+        ax.plot((np.linspace(beaconed["Track Start"][index], beaconed["Track End"][index], 2)*-1)+beaconed["Cue Boundary Max"][index], np.array([b_trial_num, b_trial_num]), color="y") # marks out track area
         ax.plot(b_stops, b_trials, 'o', color='0.5', markersize=2)
 
     for index, _ in non_beaconed.iterrows():
-        nb_stops = (np.array(non_beaconed["stop_locations"][index])*-1)+non_beaconed["Cue Boundary Min"][index]
+        nb_stops = (np.array(non_beaconed["stop_locations"][index])*-1)+non_beaconed["Cue Boundary Max"][index]
         nb_trial_num = np.array(non_beaconed["trial_num"][index])
         nb_trials = nb_trial_num * np.ones(len(nb_stops))
 
-        ax.plot((np.linspace(non_beaconed["Track Start"][index], non_beaconed["Track End"][index], 2)*-1)+non_beaconed["Cue Boundary Min"][index], np.array([nb_trial_num,nb_trial_num]), color="y")  # marks out track area
+        ax.plot((np.linspace(non_beaconed["Track Start"][index], non_beaconed["Track End"][index], 2)*-1)+non_beaconed["Cue Boundary Max"][index], np.array([nb_trial_num,nb_trial_num]), color="y")  # marks out track area
         ax.plot(nb_stops, nb_trials, 'o', color='red', markersize=2)
 
     for index, _ in probe.iterrows():
-        p_stops = (np.array(probe["stop_locations"][index])*-1)+probe["Cue Boundary Min"][index]
+        p_stops = (np.array(probe["stop_locations"][index])*-1)+probe["Cue Boundary Max"][index]
         p_trial_num = np.array(probe["trial_num"][index])
         p_trials = p_trial_num * np.ones(len(p_stops))
 
-        ax.plot((np.linspace(probe["Track Start"][index], probe["Track End"][index], 2)*-1)+probe["Cue Boundary Min"][index], np.array([p_trial_num, p_trial_num]), color="y")  # marks out track area
+        ax.plot((np.linspace(probe["Track Start"][index], probe["Track End"][index], 2)*-1)+probe["Cue Boundary Max"][index], np.array([p_trial_num, p_trial_num]), color="y")  # marks out track area
         ax.plot(p_stops, p_trials, 'o', color='blue', markersize=2)
 
     plt.ylabel('Stops on trials', fontsize=12, labelpad=10)

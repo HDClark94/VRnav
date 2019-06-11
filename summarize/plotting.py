@@ -31,12 +31,12 @@ def style_track_plot(ax, dataframe):
     '''
 
     if dataframe["Cue Boundary Min"].iloc[0] is not 0:
-        cue_min = dataframe["Cue Boundary Min"].iloc[0]*-1+dataframe["Cue Boundary Min"].iloc[0]
-        cue_max = dataframe["Cue Boundary Max"].iloc[0]*-1+dataframe["Cue Boundary Min"].iloc[0]
+        cue_min = dataframe["Cue Boundary Min"].iloc[0]*-1+dataframe["Cue Boundary Max"].iloc[0]
+        cue_max = dataframe["Cue Boundary Max"].iloc[0]*-1+dataframe["Cue Boundary Max"].iloc[0]
         ax.axvspan(cue_min, cue_max, facecolor='plum', alpha=.25, linewidth=0)
 
-    reward_zone_min = dataframe["Reward Boundary Min"].iloc[0]*-1+dataframe["Cue Boundary Min"].iloc[0]
-    reward_zone_max = dataframe["Reward Boundary Max"].iloc[0]*-1+dataframe["Cue Boundary Min"].iloc[0]
+    reward_zone_min = dataframe["Reward Boundary Min"].iloc[0]*-1+dataframe["Cue Boundary Max"].iloc[0]
+    reward_zone_max = dataframe["Reward Boundary Max"].iloc[0]*-1+dataframe["Cue Boundary Max"].iloc[0]
     ax.axvspan(reward_zone_min, reward_zone_max, facecolor='DarkGreen', alpha=.25, linewidth=0)
 
     #ax.axvspan(x1, x2, facecolor='DarkGreen', alpha=.25, linewidth =0)
