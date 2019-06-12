@@ -39,16 +39,20 @@ def split_stop_data_by_trial_type(session_dataframe):
     probe = session_dataframe[session_dataframe['Trial type'] == "probe"]
     return beaconed, non_beaconed, probe
 
+def split_stop_data_by_block(session_dataframe, block):
+    return session_dataframe[session_dataframe["block_num"] == block]
+
 def plot_stops_in_time(trial_results, session_path):
     stops_in_time = plt.figure(figsize=(6, 6))
     ax = stops_in_time.add_subplot(1, 1, 1)  # specify (nrows, ncols, axnum)
     beaconed, non_beaconed, probe = split_stop_data_by_trial_type(trial_results)
 
 
-def plot_stops_on_track(trial_results, session_path):
+def plot_stops_on_track(trial_results, session_path, block=2):
     stops_on_track = plt.figure(figsize=(6, 6))
     ax = stops_on_track.add_subplot(1, 1, 1)  # specify (nrows, ncols, axnum)
 
+    trial_results = split_stop_data_by_block(trial_results, block) # only use block 2, this ejects habituation block 1
     beaconed, non_beaconed, probe = split_stop_data_by_trial_type(trial_results)
 
     #cue_length =
