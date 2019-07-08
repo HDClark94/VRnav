@@ -22,10 +22,13 @@ def update_summary_plots(recording_folder_path, override=False):
             session_dir = [f.path for f in os.scandir(participant) if f.is_dir()]
             #loop over sessions
             for session in session_dir:
-                #trial_results = pd.read_csv(session+"/trial_results.csv")
 
                 if 'summary_plot.png' not in os.listdir(session) or override==True:
-                    plot_summary(session)
+                    try:
+                        plot_summary(session)
+                        
+                    except IndexError:
+                        print('Error')
 
 
 def split_stop_data_by_trial_type(session_dataframe):
@@ -42,68 +45,55 @@ def split_stop_data_by_trial_type(session_dataframe):
 def split_stop_data_by_block(session_dataframe, block):
     return session_dataframe[session_dataframe["block_num"] == block]
 
-def plot_stops_in_time(trial_results, session_path):
-    stops_in_time = plt.figure(figsize=(6, 6))
-    ax = stops_in_time.add_subplot(1, 1, 1)  # specify (nrows, ncols, axnum)
-    beaconed, non_beaconed, probe = split_stop_data_by_trial_type(trial_results)
-
-
-def plot_stops_on_track(trial_results, session_path, block=2):
-    stops_on_track = plt.figure(figsize=(6, 6))
-    ax = stops_on_track.add_subplot(1, 1, 1)  # specify (nrows, ncols, axnum)
-
-    trial_results = split_stop_data_by_block(trial_results, block) # only use block 2, this ejects habituation block 1
-    beaconed, non_beaconed, probe = split_stop_data_by_trial_type(trial_results)
-
-    #cue_length =
-
-    for index, _ in beaconed.iterrows():
-        b_stops = (np.array(beaconed["stop_locations"][index])*-1)+beaconed["Cue Boundary Max"][index]
-        b_trial_num = np.array(beaconed["trial_num"][index])
-        b_trials = b_trial_num*np.ones(len(b_stops))
-
-        ax.plot((np.linspace(beaconed["Track Start"][index], beaconed["Track End"][index], 2)*-1)+beaconed["Cue Boundary Max"][index], np.array([b_trial_num, b_trial_num]), color="y") # marks out track area
-        ax.plot(b_stops, b_trials, 'o', color='0.5', markersize=2)
-
-    for index, _ in non_beaconed.iterrows():
-        nb_stops = (np.array(non_beaconed["stop_locations"][index])*-1)+non_beaconed["Cue Boundary Max"][index]
-        nb_trial_num = np.array(non_beaconed["trial_num"][index])
-        nb_trials = nb_trial_num * np.ones(len(nb_stops))
-
-        ax.plot((np.linspace(non_beaconed["Track Start"][index], non_beaconed["Track End"][index], 2)*-1)+non_beaconed["Cue Boundary Max"][index], np.array([nb_trial_num,nb_trial_num]), color="y")  # marks out track area
-        ax.plot(nb_stops, nb_trials, 'o', color='red', markersize=2)
-
-    for index, _ in probe.iterrows():
-        p_stops = (np.array(probe["stop_locations"][index])*-1)+probe["Cue Boundary Max"][index]
-        p_trial_num = np.array(probe["trial_num"][index])
-        p_trials = p_trial_num * np.ones(len(p_stops))
-
-        ax.plot((np.linspace(probe["Track Start"][index], probe["Track End"][index], 2)*-1)+probe["Cue Boundary Max"][index], np.array([p_trial_num, p_trial_num]), color="y")  # marks out track area
-        ax.plot(p_stops, p_trials, 'o', color='blue', markersize=2)
-
-    plt.ylabel('Stops on trials', fontsize=12, labelpad=10)
-    plt.xlabel('Location (vu)', fontsize=12, labelpad=10)
-    # plt.xlim(min(spatial_data.position_bins),max(spatial_data.position_bins))
-    #plt.xlim(0, 200)
-    ax.yaxis.set_ticks_position('left')
-    ax.xaxis.set_ticks_position('bottom')
-
-    style_track_plot(ax, beaconed)
-    style_vr_plot(ax)  # can be any trialtype example
-
-    plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.2, left=0.12, right=0.87, top=0.92)
-    plt.savefig(session_path + '/summary_plot.png', dpi=200)
-    #plt.savefig('/home/harry/aa/plot_summary.png', dpi=200)   # TODO change this to ardbeg when I have permission to write with Linux
-    plt.show()
-    plt.close()
-
-def append_calculated_speed():
-    pass
 
 def correct_time(trial_dataframe):
     # time always starts at zero each trial
     trial_dataframe["time"] = trial_dataframe["time"]-trial_dataframe["time"][0]
     return trial_dataframe
+
+def extract_speeds_same_length(trial_results, session_path):
+    speeds = []
+
+    for index, _ in trial_results.iterrows():
+        player_movement = pd.read_csv(session_path + "/" + str(trial_results["player_movement_filename"][index]))
+
+        location_diff = np.diff(np.array(player_movement["pos_x"]))
+        time_diff = np.diff(np.array(player_movement["time"]))
+
+        speed = location_diff / time_diff  # this is speed in vu per second
+        speed = np.concatenate([[speed[0]], speed])
+        speeds.append(speed)
+
+    trial_results["speeds"] = speeds
+
+    # returns speeds with same length as movement steps
+    return trial_results
+
+
+def extract_speeds(trial_results, session_path):
+    speeds = []
+
+    for index, _ in trial_results.iterrows():
+        player_movement = pd.read_csv(session_path + "/" + str(trial_results["player_movement_filename"][index]))
+
+        location_diff = np.diff(np.array(player_movement["pos_x"]))*-1
+        time_diff = np.diff(np.array(player_movement["time"]))
+
+        speed = location_diff/time_diff # this is speed in vu per second
+        speeds.append(speed)
+
+    trial_results["speeds"] = speeds
+
+    return trial_results
+
+def extract_speed_by_spatial_bins(trial_results, session_path):
+   # TODO
+   return trial_results
+
+
+def extract_speed_by_time_bins(trial_results, session_path):
+    #TODO
+    return trial_results
 
 def extract_stops(trial_results, session_path):
 
@@ -137,38 +127,13 @@ def plot_summary(session_path):
     '''
 
     trial_results = pd.read_csv(session_path+"/trial_results.csv")
-    append_calculated_speed()
+    trial_results = split_stop_data_by_block(trial_results, block=2)  # only use block 2, this ejects habituation block 1
     trial_results = extract_stops(trial_results, session_path) # add stop times and locations to dataframe
+    trial_results = extract_speeds(trial_results, session_path) # adds speeds to dataframe
 
     plot_stops_on_track(trial_results, session_path)
+
     #plot_stops_in_time(trial_results,session_path)
-
-
-
-
-    '''
-    
-    f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
-    raster(behaviour, trialtype_log, ax1)
-    # accum_reward(behaviour, ax2)
-    speed_of_last(behaviour, trialtype_log, ax3)
-    average_ep_reward(behaviour, ax2)
-    # actions_of_last(behaviour, actions, ax5)
-    value_fn_of_last(behaviour, values, ax4)
-    f.tight_layout()
-    # plt.show()
-
-    f.savefig(save_path + title)
-
-    f.clf()
-    '''
-
-
-
-
-
-
-
 
 
 #  this is here for testing
@@ -178,8 +143,10 @@ def main():
 
 
     #recording_folder_path = '/home/harry/local_ard/Harry/Oculus VR/test_recordings' # for ardbeg
-    recording_folder_path = '/home/harry/Harry_ard/test_recordings'
+    recording_folder_path = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/Oculus VR/test_vr_recordings'
+    #recording_folder_path = '/home/harry/Documents/test_vr_recordings'
 
+    #recording_folder_path = '/home/harry/Harry_ard/test_recordings'
     update_summary_plots(recording_folder_path, override=True)
 
 
