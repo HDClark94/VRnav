@@ -1,0 +1,1 @@
+Statistical analysis for Tennant et al. Cell Reports (2018). An overview of the analysis can be viewed in AnalysisDetails.docx or AnalysisDetails.nb.html. R code can be run directly from Tennantetal.Rproj. This require R and R Studio to be installed. Data is in the .csv files.

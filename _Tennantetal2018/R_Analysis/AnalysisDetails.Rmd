@@ -1,0 +1,638 @@
+---
+title: "Statistical analysis for Tennant et al. (2018)"
+output:
+  html_notebook: default
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(gridExtra)
+library(lme4)
+#library(WRS2)
+
+```
+
+This Notebook contains statistical analysis for the experiments described in Tennant et al. (2018). The analysis is organised according to the figures in the paper. Where the legend of a figure refers to a summary plot or statistical analysis the plot and tests results are shown here with their corresponding code. Each plot or analysis uses processed data read in from a .csv file. Generation of the processed data from the raw data uses Python code that we have documented separately. The figures in the paper were also generated using Python code.
+
+## Figure 1. Mice learn to estimate location using a path integration strategy.
+
+
+In this figure we describe behavior of mice in a task we designed to test location estimation using path integration and beaconing strategies.
+
+## (E)
+To test whether performance changes with training we focussed initially on the location of the first stop on each trial. We first load the data and plot it. 
+
+```{r, warning = FALSE}
+#import data
+first <- read.csv("Figure1_E_0100.csv", header=TRUE)
+colnames(first) <- c("mouse","day","trialtype","location")
+first$trialtype <- factor(first$trialtype)
+
+# first stop data for trial types
+first_b <- filter(first, trialtype == 1)
+first_nb <- filter(first, trialtype == 2)
+first_p <- filter(first, trialtype == 3)
+
+# Plot all data
+g1 <- ggplot(data=first,aes(x = day,y = location)) +
+  aes(colour = factor(trialtype)) +
+  stat_summary(fun.data = "mean_se")
+
+# Plot each trial type
+g2 <- ggplot(data=first_b,aes(x = day,y = location)) +
+  geom_point() +
+  stat_summary(fun.data = "mean_se", colour="red")
+g3 <- ggplot(data=first_nb,aes(x = day,y = location)) +
+  geom_point() +
+  stat_summary(fun.data = "mean_se", colour="blue")
+g4 <- ggplot(data=first_p,aes(x = day,y = location)) +
+  geom_point() +
+  stat_summary(fun.data = "mean_se", colour="green")
+
+grid.arrange(g1, g2, g3, g4, ncol=2, nrow=2)
+
+```
+We now compare models in which the first stop location varies with day to a null model in which it does not. We do this for beaconed and non-beaconed trials. We use a mixed effect model soo that we can account for repeated observations from the same mouse across days.
+
+```{r, message = FALSE}
+am_b_model <- lmer(location ~ day + (1|mouse), data=first_b)
+am_b_model_null <- lmer(location ~ 1 + (1|mouse), data=first_b)
+anova(am_b_model,am_b_model_null)
+
+am_nb_model <- lmer(location ~ day + (1|mouse), data=first_nb)
+am_nb_model_null <- lmer(location ~ 1 + (1|mouse), data=first_nb)
+anova(am_nb_model,am_nb_model_null)
+```
+
+The analysis indicates that there is a significant effect of experimental day, which supports the idea that the mice are learning to estimate location in the task.
+
+We also wanted to know if after training we can find any difference in performance across trial types. To do this we consider only data from after day 18.
+
+```{r}
+first_groups <- subset(first, day > 17)
+am_fg_2 <- aov(location ~ trialtype + Error(mouse/(trialtype)), data=first_groups)
+summary(am_fg_2)
+```
+
+The analysis does not reveal a significant difference. 
+
+## (G)
+To further evaluate whether performance changes with training we focus on the difference between the Z-scored stopping probability at locations L1 and L2 on the track (StopsL1-L2). We first import the data and plot it.
+
+
+```{r, warning = FALSE}
+#import data
+z_scored <- read.csv("Figure1_G_0100.csv", sep=",", header=TRUE) 
+colnames(z_scored) <- c("mouse","day","trialtype","location")
+z_scored$trialtype <- factor(z_scored$trialtype)
+
+# z_scored stop data for trial types
+z_scored_b <- filter(z_scored, trialtype == 1)
+z_scored_nb <- filter(z_scored, trialtype == 2)
+z_scored_p <- filter(z_scored, trialtype == 3)
+
+# Plot all data
+g1 <- ggplot(data=z_scored,aes(x = day,y = location)) +
+  aes(colour = factor(trialtype)) +
+  stat_summary(fun.data = "mean_se")
+
+# Plot each trial type
+g2 <- ggplot(data=z_scored_b,aes(x = day,y = location)) +
+  geom_point() +
+  stat_summary(fun.data = "mean_se", colour="red")
+g3 <- ggplot(data=z_scored_nb,aes(x = day,y = location)) +
+  geom_point() +
+  stat_summary(fun.data = "mean_se", colour="blue")
+g4 <- ggplot(data=z_scored_p,aes(x = day,y = location)) +
+  geom_point() +
+  stat_summary(fun.data = "mean_se", colour="green")
+
+grid.arrange(g1, g2, g3, g4, ncol=2, nrow=2)
+```
+
+We compare StopsL1-L2 in the same way as we did for the first stop location.
+```{r, message = FALSE}
+z_b_model <- lmer(location ~ day + (1|mouse), data=z_scored_b)
+z_b_model_null <- lmer(location ~ 1 + (1|mouse), data=z_scored_b)
+anova(z_b_model,z_b_model_null)
+
+z_nb_model <- lmer(location ~ day + (1|mouse), data=z_scored_nb)
+z_nb_model_null <- lmer(location ~ 1 + (1|mouse), data=z_scored_nb)
+anova(z_nb_model,z_nb_model_null)
+```
+
+We again find evidence that stopping behavior is modified with training. This was probably already clear from looking at the raw data, but it is reassuring that it holds up to quantitive analysis.
+
+We also compare the probe and beaconed trial types. Because the probe trials are the most direct test of whether mice are path integrating, we want to know if their performance is similar to beaconed trials.
+```{r}
+z_scored_groups <- subset(z_scored, day > 17 & day < 23)
+am_fg <- aov(location ~ trialtype + Error(mouse/trialtype), data=subset(z_scored_groups, trialtype != 1))
+summary(am_fg)
+```
+We don't find evidence for a difference between probe and beaconed trials.
+
+## Figure 2. Path integration uses motor-related movement signals 
+
+In this experiment we ask how behaviour is affected by changing the gain between the rotation of the treadmill and the update of the visual representation of the track. In this way we aim to distinguish contributions to the behavior of representations in visual and motor coordinates.
+
+## (D)
+To quantify the effects of the gain change we compared the ratio of stops in the location of the reward zone in the visual reference frame to the sum of the number of stops in the reward zone in the visual and motor reference frames. We do this first for the x0.5 gain manipulation. 
+```{r}
+# import data
+# ratios_halfgain <- read.csv("Figure2_D_Ratiox0.5_0100.csv", header=TRUE, sep=",")
+ratios_halfgain <- read.csv("Figure2_D_0100.csv", header=TRUE, sep=",")
+colnames(ratios_halfgain) <- c("Ratio","Trial","Mouse")
+
+gain_half_con <- subset(ratios_halfgain, Trial == 3)$Ratio
+gain_half_test <- subset(ratios_halfgain, Trial == 4)$Ratio
+
+# Compare using paired t-test
+t.test(gain_half_con,gain_half_test, paired = TRUE)
+```
+
+
+## (H)
+We make a similar comparison fort the x2 gain manipulation.
+```{r}
+# import data
+# ratios_doublegain <- read.csv("Figure2_H_Ratiox2_0100.csv", header=TRUE, sep=",")
+ratios_doublegain <- read.csv("Figure2_H_0100.csv", header=TRUE, sep=",")
+colnames(ratios_doublegain) <- c("Ratio","Trial","Mouse")
+
+gain__double_con <- subset(ratios_doublegain, Trial == 3)$Ratio
+gain_double_test <- subset(ratios_doublegain, Trial == 4)$Ratio
+
+# Compare using paired t-test
+t.test(gain__double_con,gain_double_test, paired = TRUE)
+
+```
+
+
+Because the ratio is modified by reducing (D) or increasing gain (H), and as on trials with reduced or increased gain (F-H) stops occur in anticipation of the reward zone location in the motor reference frame, the data suggest that the mice are using a motor reference frame to estimate location by path integration.
+
+
+## Figure 3. Path integration becomes less accurate with increasing distance
+To evaluate the dependence of location estimation on distance, we trained mice on tracks of varying length.
+
+##(C) 
+
+We first plot the mean success rate at obtaining rewards as a function of distance from the start of the track to the reward zone and separated according to trial type.
+```{r, warning = FALSE}
+# import data
+trials_vs_loc <- read.csv("Figure3_C_0100.csv", header=TRUE, sep=",")
+colnames(trials_vs_loc) <- c("Mouse","Zone","Beaconed","Probe")
+
+# Tidy data
+trials_vs_loc_t <- gather(trials_vs_loc,"TrialType","CorrectStops",3:4)
+trials_vs_loc_t$TrialType <- as.factor(trials_vs_loc_t$TrialType)
+
+
+# look at data
+g <- ggplot(data = trials_vs_loc_t, aes(Zone,CorrectStops))
+g + aes(colour = factor(TrialType)) + stat_summary(fun.data = "mean_se")
+
+```
+
+We ask if there is a difference between the trial types.
+
+```{r, warning = FALSE}
+correctstops_aov <- aov(CorrectStops ~ Zone * TrialType + (Mouse/(Zone*TrialType)), data = trials_vs_loc_t)
+summary(correctstops_aov)
+```
+We find that the success rate depended on distance to the reward zone and on trial type.
+
+To ask specifically whether the proprtion of correct stops depends on track length for probe trials we compare mixed effect models that include the location of the reward zone, with null models that do not.
+```{r, warning = FALSE}
+p_correctstops_lm <- lmer(CorrectStops ~ Zone + (1|Mouse), data = subset(trials_vs_loc_t, TrialType == "Probe"), REML=FALSE)
+p_correctstops_null_lm <- lmer(CorrectStops ~ (1|Mouse), data = subset(trials_vs_loc_t, TrialType == "Probe"), REML=FALSE)
+anova(p_correctstops_lm,p_correctstops_null_lm)
+```
+
+We ask the same question for beaconed trials.
+```{r}
+b_correctstops_lm <- lmer(CorrectStops ~ Zone + (1|Mouse), data = subset(trials_vs_loc_t, TrialType == "Beaconed"), REML=FALSE)
+b_correctstops_null_lm <- lmer(CorrectStops ~ (1|Mouse), data = subset(trials_vs_loc_t, TrialType == "Beaconed"), REML=FALSE)
+anova(b_correctstops_lm,b_correctstops_null_lm)
+```
+
+ 
+## (D) 
+We wanted to know if the average stopping location dependend on the distance to the reward zone. We first load and plot the data.
+
+```{r, warning = FALSE}
+# import data
+stoplocs_vs_loc <- read.csv("Figure3_D_0100.csv", header=TRUE, sep=",")
+colnames(stoplocs_vs_loc) <- c("Mouse","Zone","Beaconed","Probe")
+
+# Tidy data
+stoplocs_vs_loc_t <- gather(stoplocs_vs_loc,"TrialType","StopLocs",3:4)
+
+# look at data
+g <- ggplot(data = stoplocs_vs_loc_t, aes(Zone,StopLocs))
+g + aes(colour = factor(TrialType)) + stat_summary(fun.data = "mean_se")
+```
+
+Next we examine whether the stop location depends on the trial type.
+```{r}
+stoplocs_vs_loc_t_aov <- aov(StopLocs ~ Zone * TrialType + (Mouse/(Zone*TrialType)), data = stoplocs_vs_loc_t)
+summary(stoplocs_vs_loc_t_aov)
+```
+
+While the most frequent stop location depended on distance to the reward zone, it appears largely independent of trial type, with modest evidence for an interaction between trial type and stopping location.
+
+
+## Figure 4. Targeted expression of TeLC to L2SCs abolishes their synaptic output
+In this experiment we evaluate the effectiveness of TeLC in blocking synaptic output from L2SCs.
+
+##(C)
+We measured the amplitude of responses of granule cells in the dentate gyrus to activation of their inputs from L2SCs. We compare response of neurons from control animals (n = 10 neurons, N = 5 mice) with neurons from animals expressing TeLC-eGFP in L2SCs (n = 8 neurons, N = 4 mice). We use a bootstratp test from the robust statistics package WRS2.
+
+```{r}
+# import data
+EPSP_data <- read.csv("Figure4_c.csv", header=TRUE, sep=",")
+colnames(EPSP_data) <- c("mouse","manipulation","EPSP")
+
+# Compare groups
+WRS2::pb2gen(EPSP ~ manipulation, nboot = 100000, data = EPSP_data)
+```
+
+The test indicates a difference between the groups, which is consistent with visual inspection of the data.
+
+
+## Figure 5. Inactivation of L2SCs impairs estimation of location
+
+In this experiment we examine the effect of inactivating L2SCs on behavioral estimation of location. Group comparisons use robust tests from the packages WRS and WRS2.
+
+##(A) 
+
+We first load and plot data for the number of days to reach the criterion for introduction of probe trials as a function of virus expression.
+```{r}
+# import data
+graduation <- read.csv("Figure5_A_left_0100.csv", header=TRUE, sep=",")
+colnames(graduation) <- c("virus","grad","dorsal_fluorescence", "ventral_fluorescence")
+
+grad_TeLC <- subset(graduation,virus=="TeLC")
+grad_GFP <- subset(graduation,virus=="GFP")
+
+
+# look at data
+g <- ggplot(data=graduation,aes(dorsal_fluorescence,grad)) 
+g + geom_point() + aes(colour = factor(virus))
+```
+
+
+We examine the correlation between flourescence intensity and graduation day.
+
+We first evaluate the relationship for mice expressing TeLC.
+```{r}
+WRS::olshc4(grad_TeLC$dorsal_fluorescence,grad_TeLC$grad)
+
+```
+
+We next evaluate the relationship for the control group.
+```{r}
+WRS::olshc4(grad_GFP$dorsal_fluorescence, grad_GFP$grad)
+```
+
+We find that graduation day depends on viral expression got the TeLC group, but not the control group. We next compare the slopes for the two groups and find that they differ significantly.
+```{r}
+WRS::ols2ci(grad_TeLC$dorsal_fluorescence,grad_TeLC$grad,grad_GFP$dorsal_fluorescence, grad_GFP$grad)
+```
+
+##(E)
+To evaluate whether location estimation changes with training we frst focus on StopsL2-L1. We load the data and plot it.
+```{r, warning = FALSE}
+# import data
+zscore_L2L1_Days <- read.csv("Figure5_zscoredays_L2-L1_0100.csv", header=TRUE, sep=",")
+colnames(zscore_L2L1_Days) <- c("virus","mouse","day","beaconed","probe")
+
+plot_vsDays <- function(theData) {
+  
+  # separate data for each trial type
+  theData_G <- subset(theData, select = c(virus, mouse, day, beaconed), virus == "GFP")
+  theData_l <- subset(theData, select = c(virus, mouse, day, beaconed), virus == "lTeLC")
+  theData_h <- subset(theData, select = c(virus, mouse, day, beaconed), virus == "hTeLC")
+
+  # Plot all data
+  g1 <- ggplot(data=theData,aes(x = day,y = beaconed)) + geom_point() # include data points
+  g1 <- ggplot(data=theData,aes(x = day,y = beaconed)) # or without data points
+  g1 <- g1 + aes(colour = factor(virus)) + stat_summary(fun.data = "mean_se")
+
+
+  # Plot each virus group
+  g2 <- ggplot(data=theData_G,aes(x = day,y = beaconed)) + geom_point() # include data points
+  g2 <- g2 + stat_summary(fun.data = "mean_se", colour="red")
+  g3 <- ggplot(data=theData_l,aes(x = day,y = beaconed)) + geom_point() # include data points
+  g3 <- g3 + stat_summary(fun.data = "mean_se", colour="red")
+  g4 <- ggplot(data=theData_h,aes(x = day,y = beaconed)) + geom_point() # include data points
+  g4 <- g4 + stat_summary(fun.data = "mean_se", colour="red")
+
+  g <- grid.arrange(g1, g2, g3, g4, ncol=2, nrow=2)
+  
+  invisible(g)
+}
+
+plot_vsDays(zscore_L2L1_Days)
+
+```
+
+For each experimental group we test whether performance changes with training by comparing models that include the training day with null models in which training day is not included.
+```{r}
+lm_test_day <- function(theData, manipulation) {
+  theData_select <- subset(theData, select = c(virus, mouse, day, beaconed), virus == manipulation)
+  am_model <- lmer(beaconed ~ day + (1|mouse), data=theData_select)
+  am_model_null <- lmer(beaconed ~ 1 + (1|mouse), data=theData_select)
+  anova(am_model,am_model_null)
+}
+
+lm_test_day(zscore_L2L1_Days,"GFP")
+lm_test_day(zscore_L2L1_Days,"lTeLC")
+lm_test_day(zscore_L2L1_Days,"hTeLC")
+```
+
+We find that StopsL2-L1 increased with training for GFP mice and lTeLC mice, but not for hTeLC mice. 
+
+##(F)
+
+To analyse the spatial strategy used after a training period sufficient for the control group to learn the task, we compared beaconed trials during days 15-19. We first load and plot the data.
+```{r, warning = FALSE}
+# import data
+fsloc_end <- read.csv("Figure5_F_left_0100.csv", header=TRUE, sep=",")
+colnames(fsloc_end) <- c("virus","dorsal_fluorescence", "beaconed", "probe")
+
+# look at data
+gb <- ggplot(data=fsloc_end,aes(virus,beaconed)) 
+gb <- gb + geom_point() + aes(colour = factor(virus))
+
+gp <- ggplot(data=fsloc_end,aes(virus,probe)) 
+gp <- gp + geom_point() + aes(colour = factor(virus))
+
+grid.arrange(gb, gp)
+```
+
+We first compare control mice with all mice that have been injected with AAV expressing TeLC.
+```{r}
+# Compare only GFP vs TeLC
+fsloc_end_c <- fsloc_end
+levels(fsloc_end_c$virus) <- c("GFP", "TeLC", "TeLC")
+
+# Robust test based on comparison of medians (percentile bootstrap)
+WRS2::medpb2(beaconed ~ virus, fsloc_end_c, nboot = 100000)
+```
+This analysis indicates that the mean location of the first stop differed between control and all TeLC mice.
+
+We next compare individual groups. We use bootstrap tests and then adjust for making multiple comparisons.
+```{r}
+# Compare groups using robust test based on comparison of medians (percentile bootstrap)
+fsloc_end_beacon_GvslTeLC <- subset(fsloc_end,virus != "hTeLC")
+fsloc_end_beacon_GvslTeLC$virus <- factor(fsloc_end_beacon_GvslTeLC$virus)
+a <- WRS2::medpb2(beaconed ~ virus, fsloc_end_beacon_GvslTeLC, nboot = 100000)
+
+fsloc_end_beacon_GvshTeLC <- subset(fsloc_end,virus != "lTeLC")
+fsloc_end_beacon_GvshTeLC$virus <- factor(fsloc_end_beacon_GvshTeLC$virus)
+b <- WRS2::medpb2(beaconed ~ virus, fsloc_end_beacon_GvshTeLC, nboot = 100000)
+
+fsloc_end_beacon_lvshTeLC <- subset(fsloc_end,virus != "GFP")
+fsloc_end_beacon_lvshTeLC$virus <- factor(fsloc_end_beacon_lvshTeLC$virus)
+c <- WRS2::medpb2(beaconed ~ virus, fsloc_end_beacon_lvshTeLC, nboot = 100000)
+
+pvaluelist <- c(a[3],b[3],c[3])
+p.adjust(pvaluelist,"BH",3)
+```
+The analsysis suggests that TeLC mice differed from control mice (comparison b), but there was no significant difference between lTeLC and control mice (comparison a), or betweeen the two TeLC groups (comparison c).
+
+Next we make similar comparisons, but using StopsL1-L2 as an index of location estimation. We load and plot the data.
+```{r, warning = FALSE}
+# import data
+zsdiff <- read.csv("Figure5_F_right_0100.csv", header=TRUE, sep=",")
+colnames(zsdiff) <- c("virus","dorsal_fluorescence", "beaconed", "probe")
+
+
+# look at data
+gb <- ggplot(data=zsdiff,aes(virus,beaconed)) 
+gb <- gb + geom_point() + aes(colour = factor(virus))
+
+gp <- ggplot(data=zsdiff,aes(virus,probe)) 
+gp <- gp + geom_point() + aes(colour = factor(virus))
+
+grid.arrange(gb, gp)
+```
+
+We compare control with all TeLC mice.
+```{r}
+# Compare only GFP vs TeLC
+zsdiff_c <- zsdiff
+levels(zsdiff_c$virus) <- c("GFP", "TeLC", "TeLC")
+
+# Robust test based on comparison of medians (percentile bootstrap)
+WRS2::medpb2(beaconed ~ virus, zsdiff_c, nboot = 100000)
+```
+It appears that stopsL2-L1 differed between control and all TeLC mice.
+
+Next we compare individual groups.
+```{r}
+# Compare groups using robust test based on comparison of medians (percentile bootstrap)
+zsdiff_beacon_GvslTeLC <- subset(zsdiff,virus != "hTeLC")
+zsdiff_beacon_GvslTeLC$virus <- factor(zsdiff_beacon_GvslTeLC$virus)
+a <- WRS2::medpb2(beaconed ~ virus, zsdiff_beacon_GvslTeLC, nboot = 100000)
+
+zsdiff_beacon_GvshTeLC <- subset(zsdiff,virus != "lTeLC")
+zsdiff_beacon_GvshTeLC$virus <- factor(zsdiff_beacon_GvshTeLC$virus)
+b <- WRS2::medpb2(beaconed ~ virus, zsdiff_beacon_GvshTeLC, nboot = 100000)
+
+zsdiff_beacon_lvshTeLC <- subset(zsdiff,virus != "GFP")
+zsdiff_beacon_lvshTeLC$virus <- factor(zsdiff_beacon_lvshTeLC$virus)
+c <- WRS2::medpb2(beaconed ~ virus, zsdiff_beacon_lvshTeLC, nboot = 100000)
+
+pvaluelist <- c(a[3],b[3],c[3])
+p.adjust(pvaluelist,"BH",3)
+```
+We find that hTeLC and lTeLC mice differed from control mice (comparisons b and a), but not from one another (comparison c).
+
+##(G) 
+
+To test if differences between groups extend to aspects of behavior in the task that are independent of location estimation we examined differences within the blackbox. We first load and plot the data.
+```{r, warning = FALSE}
+#Load data
+Speed_Days <- read.csv("Figure5_SpeedBB_Days_0100.csv", header=TRUE, sep=",")
+colnames(Speed_Days) <- c("virus","mouse","day","beaconed","probe")
+
+#To look at data call function defined in Figure 5E
+plot_vsDays(Speed_Days)
+```
+
+We ask if running speed varies with training.
+```{r}
+# Calls function defined in Figure 5E
+lm_test_day(Speed_Days,"GFP")
+lm_test_day(Speed_Days,"lTeLC")
+lm_test_day(Speed_Days,"hTeLC")
+```
+We find that running speed depends on day for all groups.
+
+We next focus on speed during the final week of the experiment.
+```{r, warning = FALSE}
+# import data
+speed_week4 <- read.csv("Figure5_SpeedBBAvg_0100.csv", header=TRUE, sep=",")
+colnames(speed_week4) <- c("virus","beaconed","probe")
+
+# look at data
+gb <- ggplot(data=speed_week4,aes(virus,beaconed))
+gb <- gb + geom_point() + aes(colour = factor(virus))
+
+gb
+
+```
+We compare the groups.
+```{r}
+# Do the groups differ from one another
+# Simplest approach is to compare each group and then apply correction for multiple comparisons
+# Compare groups using robust test based on comparison of medians (percentile bootstrap)
+speed_week4_GvslTeLC <- subset(speed_week4,virus != "hTeLC")
+speed_week4_GvslTeLC$virus <- factor(speed_week4_GvslTeLC$virus)
+a <- WRS2::medpb2(beaconed ~ virus, data = speed_week4_GvslTeLC, nboot = 100000)
+
+speed_week4_GvshTeLC <- subset(speed_week4,virus != "lTeLC")
+speed_week4_GvshTeLC$virus <- factor(speed_week4_GvshTeLC$virus)
+b <- WRS2::medpb2(beaconed ~ virus, speed_week4_GvshTeLC, nboot = 100000)
+
+speed_week4_hTeLCvslTeLC <- subset(speed_week4,virus != "GFP")
+speed_week4_hTeLCvslTeLC$virus <- factor(speed_week4_hTeLCvslTeLC$virus)
+c <- WRS2::medpb2(beaconed ~ virus, speed_week4_hTeLCvslTeLC, nboot = 100000)
+
+pvaluelist <- c(a[3],b[3],c[3])
+p.adjust(pvaluelist,"BH",3)
+```
+We find that during week 4 there was no difference between groups in their running speed within the black box (adjusted p = > 0.7 for all comparisons, percentile bootstrap test).
+
+##(H)
+
+We analyse the spatial strategy for probe trials during days 15-19.
+```{r}
+# Robust test based on comparison of medians (percentile bootstrap)
+fsloc_end_probe <- subset(fsloc_end,virus != "hTeLC")
+fsloc_end_probe$virus <- factor(fsloc_end_probe$virus)
+WRS2::medpb2(probe ~ virus, fsloc_end_probe, nboot = 100000)
+```
+We find that the first stop location differs between lTeLC and control groups.
+
+We compare StopsL2-L1 for probe trials during days 15-19.
+```{r}
+# Robust test based on comparison of medians (percentile bootstrap)
+zsdiff_probe <- subset(zsdiff,virus != "hTeLC")
+zsdiff_probe$virus <- factor(zsdiff_probe$virus)
+WRS2::medpb2(probe ~ virus, zsdiff_probe, nboot = 100000)
+```
+We find that stopsL2-L1 during probe trials did not differ significantly between lTeLC and control mice.
+
+
+## Figure 6. Layer 2 stellate cells are required for object-location recognition
+
+We evluate effects of expression of TeLC in stellate cells on novel object-location recognition and on novel object recognition.
+
+##B
+
+We first evalute discrimination indices.
+```{r}
+# import data
+objectlocation <- read.csv("Figure6_B.csv", header=TRUE, sep=",")
+colnames(objectlocation) <- c("Mouse","Virus","DiscriminationIndex")
+
+objectlocation_con <- subset(objectlocation, Virus == 'GFP')$DiscriminationIndex
+objectlocation_test <- subset(objectlocation, Virus == 'TeLC')$DiscriminationIndex
+
+# Compare using unpaired t-test
+t.test(objectlocation_con,objectlocation_test, paired = FALSE)
+
+
+objectlocation_con <- subset(objectlocation, Virus == 'GFP')
+objectlocation_test <- subset(objectlocation, Virus == 'TeLC')
+
+# one-sample t-test to see if significantly above 0
+t.test(objectlocation_con$DiscriminationIndex)
+t.test(objectlocation_test$DiscriminationIndex)
+
+```
+
+We find that the discrimination index for control mice  differed significantly from mice with output from L2SCs inactivated. While the discrimination index for control micediffers significantly from zero indicating that they recognise the novel combination of object and location, the index for TeLC mice does not differ from zero inidicating that they do not recognise the novel combination of object and location.
+
+##E
+We make similar comparisons to (B) but for the object recognition experiment.
+```{r}
+# import data
+objectrecognition <- read.csv("Figure6_E.csv", header=TRUE, sep=",")
+colnames(objectrecognition) <- c("Mouse","Virus","DiscriminationIndex")
+
+objectrecognition_con <- subset(objectrecognition, Virus == 'GFP')$DiscriminationIndex
+objectrecognition_test <- subset(objectrecognition, Virus == 'TeLC')$DiscriminationIndex
+
+# Compare using unpaired t-test
+t.test(objectrecognition_con,objectrecognition_test, paired = FALSE)
+
+
+objectrecognition_con <- subset(objectrecognition, Virus == 'GFP')
+objectrecognition_test <- subset(objectrecognition, Virus == 'TeLC')
+
+# one-sample t-test to see if significantly above 0
+t.test(objectrecognition_con$DiscriminationIndex)
+t.test(objectrecognition_test$DiscriminationIndex)
+```
+In this experiment both groups recognise the novel object and we don't find any difference between the groups.
+
+##(C) 
+We evaluate the total exploration time for each group of mice in the object-location recognition experiment.
+```{r}
+# import data
+objectlocation <- read.csv("Figure6_C.csv", header=TRUE, sep=",")
+colnames(objectlocation) <- c("Mouse","Virus","Phase", "Exploration")
+
+# subset data for sample and test phases
+sample <- subset(objectlocation, Phase == 'Sample')
+test <- subset(objectlocation, Phase == 'Test')
+
+# seperate for sample phase based on virus group
+objectlocation_con <- subset(sample, Virus == 'GFP')$Exploration
+objectlocation_test <- subset(sample, Virus == 'TeLC')$Exploration
+
+# Compare using unpaired t-test
+t.test(objectlocation_con,objectlocation_test, paired = FALSE)
+
+# seperate for test phase based on virus group
+objectlocation_con <- subset(test, Virus == 'GFP')$Exploration
+objectlocation_test <- subset(test, Virus == 'TeLC')$Exploration
+
+# Compare using unpaired t-test
+t.test(objectlocation_con,objectlocation_test, paired = FALSE)
+```
+Total exploration times in the sample and test phases did not differ between animals. 
+
+##F
+We evaluate the total exploration time for each group of mice in the object recognition experiment.
+```{r}
+# import data
+objectrecognition <- read.csv("Figure6_F.csv", header=TRUE, sep=",")
+colnames(objectrecognition) <- c("Mouse","Virus","Phase", "Exploration")
+
+# subset data for sample and test phases
+sample <- subset(objectrecognition, Phase == 'Sample')
+test <- subset(objectrecognition, Phase == 'Test')
+
+# seperate for sample phase based on virus group
+objectrecognition_con <- subset(sample, Virus == 'GFP')$Exploration
+objectrecognition_test <- subset(sample, Virus == 'TeLC')$Exploration
+
+# Compare using unpaired t-test
+t.test(objectrecognition_con,objectrecognition_test, paired = FALSE)
+
+# seperate for test phase based on virus group
+objectrecognition_con <- subset(test, Virus == 'GFP')$Exploration
+objectrecognition_test <- subset(test, Virus == 'TeLC')$Exploration
+
+# Compare using unpaired t-test
+t.test(objectrecognition_con,objectrecognition_test, paired = FALSE)
+
+```
+We do not find differences between the groups. 
