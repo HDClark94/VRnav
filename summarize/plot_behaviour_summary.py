@@ -127,7 +127,7 @@ def plot_summary(session_path):
     '''
 
     trial_results = pd.read_csv(session_path+"/trial_results.csv")
-    trial_results = split_stop_data_by_block(trial_results, block=2)  # only use block 2, this ejects habituation block 1
+    #trial_results = split_stop_data_by_block(trial_results, block=2)  # only use block 2, this ejects habituation block 1
     trial_results = extract_stops(trial_results, session_path) # add stop times and locations to dataframe
     trial_results = extract_speeds(trial_results, session_path) # adds speeds to dataframe
 

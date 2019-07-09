@@ -12,7 +12,7 @@ from Functions_Core_0100 import extractstops, extractstops_HUMAN, filterstops, c
     FirstStops, maketrialarray
 import matplotlib.pyplot as plt
 from summarize.plot_behaviour_summary import *
-from Tennantetal2018.map2legacy import *
+from summarize.map2legacy import *
 import numpy as np
 from scipy import stats
 import math
