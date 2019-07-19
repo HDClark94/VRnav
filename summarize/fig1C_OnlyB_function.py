@@ -421,7 +421,7 @@ def main():
     print('-------------------------------------------------------------')
 
     #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190717101640/S001'
-    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190717101640/S001'
+    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190717113448/S001'
     #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190717101640/S001'
     #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190717153659/S001'
     plot_fig1C(session_path)

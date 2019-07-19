@@ -84,10 +84,16 @@ def plot_fig1C(session_path):
         ax.axvspan(track_end, 20, facecolor='k', linewidth=0, alpha=0.15)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-        ax.plot(stopsdata_b[:, 0], stopsdata_b[:, 2], 'o', color='Black', markersize=4.5,
-                label='Stop')  # plot becaoned trials
-        ax.plot(reward_beac[:, 0], reward_beac[:, 2], '>', color='Red', markersize=6,
-                label='Reward')  # plot becaoned trials
+        try:
+            ax.plot(stopsdata_b[:, 0], stopsdata_b[:, 2], 'o', color='Black',
+                    markersize=4.5)  # plot becaoned trials
+        except IndexError:
+            print("Error exception because theres no stops to plot")
+
+        try:
+            ax.plot(reward_beac[:, 0], reward_beac[:, 2], '>', color='Red', markersize=6)  # plot becaoned reward trials
+        except IndexError:
+            print("Error exception because theres no rewards to plot")
         ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
                        labelsize=18)
         ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
@@ -499,8 +505,8 @@ def main():
     print('-------------------------------------------------------------')
 
     #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190717101640/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190717101640/S001'
-    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190717101640/S001'
+    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190717113448/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190717113448/S001'
     #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190717153659/S001'
     plot_fig1C(session_path)
 
