@@ -59,8 +59,8 @@ def main():
 
     #recording_folder_path = '/home/harry/local_ard/Harry/Oculus VR/test_recordings' # for ardbeg
     #recording_folder_path = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/Oculus VR/test_vr_recordings'
-    recording_folder_path =  '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/Oculus VR/vr_recordings'
-    #recording_folder_path = '/home/harry/Documents/test_vr_recordings'
+    recording_folder_path =  '/Volumes/cmvm/ActiveProjects/Harry/OculusVR/test_vr_recordings'
+    #recording_folder_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings'
 
     #recording_folder_path = '/home/harry/Harry_ard/test_recordings'
     update_summary_plots(recording_folder_path, override=True)
