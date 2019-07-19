@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
-from summarize.plot_behaviour_summary import *
+#from summarize.plot_behaviour_summary import *
+from summarize.common import *
 # plotting functions, some taken from Sarah
 
 def plot_stops_in_time(trial_results, session_path):
@@ -52,7 +53,7 @@ def plot_stops_on_track(trial_results, session_path):
     plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.2, left=0.12, right=0.87, top=0.92)
     plt.savefig(session_path + '/summary_plot.png', dpi=200)
     #plt.savefig('/home/harry/aa/plot_summary.png', dpi=200)   # TODO change this to ardbeg when I have permission to write with Linux
-    plt.show()
+    #plt.show()
     plt.close()
 
 

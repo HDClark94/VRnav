@@ -1,6 +1,5 @@
 import numpy as np
 from summarize.plot_behaviour_summary import *
-from sklearn.preprocessing import MinMaxScaler
 
 def translate_to_legacy_format(session_path, scale=True):
     print(" I am making a legacy array for ", session_path)

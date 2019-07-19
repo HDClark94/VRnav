@@ -20,6 +20,8 @@ from scipy.stats import uniform
 
 # Load raw data: specify the HDF5 file to read data from
 session_path = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/Oculus VR/test_vr_recordings/basic_settings_medium/Harry3/S001'
+session_path = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/Oculus VR/test_vr_recordings/basic_settings_long/P_190717135911/S001'
+session_path = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/Oculus VR/test_vr_recordings/basic_settings_short/P_190717101640/S001'
 
 bins = np.arange(0.5, 20.5, 1)  # array of bins for location
 

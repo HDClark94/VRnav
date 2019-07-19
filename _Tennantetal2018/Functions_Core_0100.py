@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import h5py
 from matplotlib import rcParams
-from Functions_Params_0100 import STOP_THRESHOLD, DIST, HDF_LENGTH, BINNR, SHUFFLE_N
+from _Tennantetal2018.Functions_Params_0100 import STOP_THRESHOLD, DIST, HDF_LENGTH, BINNR, SHUFFLE_N
 from scipy.stats import uniform
 from scipy import stats
 import random
@@ -256,7 +256,7 @@ def shuffle_analysis_pertrial3(stopsdata, trialids):
     srbin_std = stats.sem(srbin, axis=0)                                 # Array(BINNR)
     # Shuffling random 100 trials 1000 times
     shuffled_srbin_mean = np.zeros((SHUFFLE_N, BINNR))
-    print(stopsdata.shape,stopsdata.size )
+    #print(stopsdata.shape,stopsdata.size )
     for i in range(SHUFFLE_N): # for i in 1000
         shuffledtrials = np.zeros((SHUFFLE1, 5))
         shuffleddata =np.zeros((SHUFFLE1, BINNR))
@@ -432,7 +432,7 @@ def lowhighstops(stopsdata_p, stops_f_p):
         #trials = maketrialarray(stopsdata_p)
         #stopsdata_p[:,2] = trials
         high_p,low_p, upper_p,lower_p = SplitTrials(stops_f_p)
-        print('size',low_p.size, lower_p.size, high_p.size, upper_p.size)
+        #print('size',low_p.size, lower_p.size, high_p.size, upper_p.size)
         #average time and location for quartiles
         time_high =np.nanmean(high_p[:,0]);time_low =np.nanmean(low_p[:,0])
         time_upper =np.nanmean(upper_p[:,0]);time_lower =np.nanmean(lower_p[:,0])
@@ -444,10 +444,10 @@ def lowhighstops(stopsdata_p, stops_f_p):
         l_trials_p = np.unique(low_p[:,1])
         h2_trials_p = np.unique(upper_p[:,1])
         l2_trials_p = np.unique(lower_p[:,1])
-        print('trials',l_trials_p.size, l2_trials_p.size, h_trials_p.size, h2_trials_p.size)
+        #print('trials',l_trials_p.size, l2_trials_p.size, h_trials_p.size, h2_trials_p.size)
         # split all stop data according to trial
         high_p, low_p, upper_p, lower_p = SplitTrials2(stopsdata_p, h_trials_p, l_trials_p, h2_trials_p, l2_trials_p)
-        print('size2',low_p.size, lower_p.size, high_p.size, upper_p.size)
+        #print('size2',low_p.size, lower_p.size, high_p.size, upper_p.size)
         high_p = filterstops(high_p)
         low_p = filterstops(low_p)
         upper_p = filterstops(upper_p)

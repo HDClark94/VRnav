@@ -114,12 +114,12 @@ def plot_fig1C(session_path):
             ax.plot(stopsdata_nb[:, 0], stopsdata_nb[:, 2], 'o', color='Black',
                     markersize=4.5)  # plot becaoned trials
         except IndexError:
-            print("Error because theres no stops")
+            print("Error exception because theres no stops to plot")
 
         try:
             ax.plot(reward_nbeac[:, 0], reward_nbeac[:, 2], '>', color='Red', markersize=6)  # plot becaoned trials
         except IndexError:
-            print("Error because theres no rewards")
+            print("Error exception because theres no rewards to plot")
 
         ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
                        labelsize=18)
@@ -363,13 +363,13 @@ def plot_fig1C(session_path):
             ax.plot(stopsdata_nb[:, 0], stopsdata_nb[:, 2], 'o', color='Black',
                     markersize=4.5)  # plot becaoned trials
         except IndexError:
-            print("Error because there's no stops to plot")
+            print("Error exception because there's no stops to plot")
 
         try:
             ax.plot(reward_nbeac[:, 0], reward_nbeac[:, 2], '>', color='Red', markersize=6,
                     label='Reward')  # plot becaoned trials
         except IndexError:
-            print("Error because theres no rewards to plot")
+            print("Error exception because theres no rewards to plot")
 
         ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
                        labelsize=18)

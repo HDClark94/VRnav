@@ -14,82 +14,69 @@ import matplotlib.pyplot as plt
 import math
 from scipy import stats
 import math
+from summarize.map2legacy import *
+
 from scipy.stats import uniform
+session_path = session_path = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/Oculus VR/test_vr_recordings/basic_settings_short/P_190717101640/S001'
+saraharray, track_start, track_end = translate_to_legacy_format(session_path)
 
-# Load raw data: specify the HDF5 file to read data from
-filename = '/home/Data_Input/Behaviour_DataFiles/Task13_0300.h5' # raw data files
-filename = '/home/harry/Downloads/Task13_0300.h5'
+rz_start = saraharray[0, 11]
+rz_end = saraharray[0, 12]
 
-# specify mouse/mice and day/s to analyse
-days = ['Day' + str(int(x)) for x in np.arange(1,22.1)]
-mice = ['M' + str(int(x)) for x in np.arange(1,9.1)]
+trialno = np.max(saraharray[:, 9])  # total number of trials for that day and mouse (used later for defining y axis max)
 
 # Arrays for storing data (output)
-firststopstorebeac = np.zeros((len(days), len(mice), 20,2));firststopstorenbeac = np.zeros((len(days), len(mice), 20,2));firststopstoreprobe = np.zeros((len(days), len(mice), 20,2))
+firststopstorebeac = np.zeros((1,1, 20,2));firststopstorenbeac = np.zeros((len(1), 1, 20,2));firststopstoreprobe = np.zeros((1, 1, 20,2))
 firststopstorebeac[:,:,:,:] = np.nan;firststopstorenbeac[:,:,:,:] = np.nan; firststopstoreprobe[:,:,:,:] = np.nan
 
-# For each day and mouse, pull raw data, calculate first stops and store data
-for dcount,day in enumerate(days):
-    for mcount,mouse in enumerate(mice):
-        try:
-            saraharray = readhdfdata(filename,day,mouse,'raw_data')
-        except KeyError:
-            print ('Error, no file')
-            continue
-        print('##...', mcount,day, '...##')
-        
-        # make array of trial number for each row in dataset
-        trialarray = maketrialarray(saraharray) # write array of trial per row in datafile
-        saraharray[:,9] = trialarray[:,0] # replace trial column in dataset *see README for why this is done*
-        
-        # split data by trial type
-        dailymouse_b = np.delete(saraharray, np.where(saraharray[:, 8] > 0), 0)
-        dailymouse_nb = np.delete(saraharray, np.where(saraharray[:, 8] != 10), 0)
-        dailymouse_p = np.delete(saraharray, np.where(saraharray[:, 8] != 20), 0)
-        
-        # get stops
-        stops_b = extractstops(dailymouse_b)
-        stops_nb = extractstops(dailymouse_nb)
-        stops_p= extractstops(dailymouse_p)
-        
-        #filterstops
-        stops_b = filterstops(stops_b)
-        stops_nb = filterstops(stops_nb)
-        stops_p= filterstops(stops_p)
-        
-        # get first stop for each trial
-        trarray = np.arange(np.min(saraharray[:,9]),np.max(saraharray[:,9]+0.1),1)# array of trial numbers
-        beac=[];nbeac=[];probe=[] # make empty arrays to store data
-        trialids_b = np.unique(stops_b[:, 2]) # find unique trial numbers
-        stops_f_b = FirstStops( trarray,stops_b ) # get locations of first stop for each trial
-        stops_f_b = create_srdata( stops_f_b, trialids_b ) # bin first stop data
-        beac = np.nanmean(stops_f_b, axis = 0) # average times mouse stops first in each bin
-        if stops_nb.size >0 :
-            trialids_nb = np.unique(stops_nb[:, 2])
-            stops_f_nb = FirstStops( trarray,stops_nb )# get locations of first stop for each trial
-            stops_f_nb = create_srdata( stops_f_nb, trialids_nb )# bin first stop data
-            nbeac = np.nanmean(stops_f_nb, axis = 0)# average times mouse stops first in each bin
-        if stops_p.size >0 :
-            trialids_p = np.unique(stops_p[:, 2])
-            stops_f_p = FirstStops( trarray,stops_p )# get locations of first stop for each trial
-            stops_f_p = create_srdata( stops_f_p, trialids_p )# bin first stop data
-            probe = np.nanmean(stops_f_p, axis = 0)# average times mouse stops first in each bin
+# make array of trial number for each row in dataset
+trialarray = maketrialarray(saraharray) # write array of trial per row in datafile
 
-        # store data
-        if mcount == 3 or mcount == 5 or mcount == 6 or mcount == 7 or mcount == 8:
-            firststopstorebeac[dcount,mcount,:,0] = beac # store first stop data
-            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3( stops_b, trialids_b ) # get average stops per location bin
-            firststopstorebeac[dcount,mcount,:,1] = srbin_mean # store stops data
-            if stops_nb.size >0 :     
-                firststopstorenbeac[dcount, mcount,:,0] = nbeac# store first stop data
-                srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3( stops_nb, trialids_nb )# get average stops per location bin
-                firststopstorenbeac[dcount,mcount,:,1] = srbin_mean# store stops data
-            if stops_p.size >0:
-                firststopstoreprobe[dcount, mcount,:,0] = probe# store first stop data
-                srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3( stops_p, trialids_p )# get average stops per location bin
-                firststopstoreprobe[dcount,mcount,:,1] = srbin_mean# store stops data
-        mcount +=1        
+# split data by trial type
+dailymouse_b = np.delete(saraharray, np.where(saraharray[:, 8] > 0), 0)
+dailymouse_nb = np.delete(saraharray, np.where(saraharray[:, 8] != 10), 0)
+dailymouse_p = np.delete(saraharray, np.where(saraharray[:, 8] != 20), 0)
 
+# get stops
+stops_b = extractstops(dailymouse_b)
+stops_nb = extractstops(dailymouse_nb)
+stops_p= extractstops(dailymouse_p)
+
+#filterstops
+stops_b = filterstops(stops_b)
+stops_nb = filterstops(stops_nb)
+stops_p= filterstops(stops_p)
+
+# get first stop for each trial
+trarray = np.arange(np.min(saraharray[:,9]),np.max(saraharray[:,9]+0.1),1)# array of trial numbers
+beac=[];nbeac=[];probe=[] # make empty arrays to store data
+trialids_b = np.unique(stops_b[:, 2]) # find unique trial numbers
+stops_f_b = FirstStops( trarray,stops_b ) # get locations of first stop for each trial
+stops_f_b = create_srdata( stops_f_b, trialids_b ) # bin first stop data
+beac = np.nanmean(stops_f_b, axis = 0) # average times mouse stops first in each bin
+if stops_nb.size >0 :
+    trialids_nb = np.unique(stops_nb[:, 2])
+    stops_f_nb = FirstStops( trarray,stops_nb )# get locations of first stop for each trial
+    stops_f_nb = create_srdata( stops_f_nb, trialids_nb )# bin first stop data
+    nbeac = np.nanmean(stops_f_nb, axis = 0)# average times mouse stops first in each bin
+if stops_p.size >0 :
+    trialids_p = np.unique(stops_p[:, 2])
+    stops_f_p = FirstStops( trarray,stops_p )# get locations of first stop for each trial
+    stops_f_p = create_srdata( stops_f_p, trialids_p )# bin first stop data
+    probe = np.nanmean(stops_f_p, axis = 0)# average times mouse stops first in each bin
+
+# store data
+firststopstorebeac[0,0,:,0] = beac # store first stop data
+srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3( stops_b, trialids_b ) # get average stops per location bin
+firststopstorebeac[0,0,:,1] = srbin_mean # store stops data
+if stops_nb.size >0 :
+    firststopstorenbeac[0, 0,:,0] = nbeac# store first stop data
+    srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3( stops_nb, trialids_nb )# get average stops per location bin
+    firststopstorenbeac[0, 0,:,1] = srbin_mean# store stops data
+if stops_p.size >0:
+    firststopstoreprobe[0, 0,:,0] = probe# store first stop data
+    srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3( stops_p, trialids_p )# get average stops per location bin
+    firststopstoreprobe[0, 0,:,1] = srbin_mean# store stops data
 
 
 # Load raw data: specify the HDF5 file to read data from
@@ -272,41 +259,5 @@ plt.subplots_adjust(hspace = .35, wspace = .35,  bottom = 0.15, left = 0.07, rig
 
 fig.savefig('/home/harry/PycharmProjects/VRnav/Tennantetal2018/Plots/Figure1/ExampleData/Task13_FirstStop_Histogram' + '_0100.png',  dpi = 200)
 plt.close()
-
-
-
-
-
-# SAVE DATA
-
-
-# first stops
-x = np.vstack((np.nanmean(firststopstorebeac[18:22,3,:,0],axis=0),np.nanmean(firststopstorebeac[18:22,5,:,0],axis=0),np.nanmean(firststopstorebeac[18:22,6,:,0],axis=0),np.nanmean(firststopstorebeac[18:22,7,:,0],axis=0),np.nanmean(firststopstorebeac[18:22,8,:,0],axis=0),np.nanmean(firststopstorebeac2[18:22,5,:,0],axis=0),np.nanmean(firststopstorebeac2[18:22,6,:,0],axis=0),np.nanmean(firststopstorebeac2[18:22,7,:,0],axis=0)))
-x1 = np.vstack((np.nanmean(firststopstorenbeac[18:22,3,:,0],axis=0),np.nanmean(firststopstorenbeac[18:22,5,:,0],axis=0),np.nanmean(firststopstorenbeac[18:22,6,:,0],axis=0),np.nanmean(firststopstorenbeac[18:22,7,:,0],axis=0),np.nanmean(firststopstorenbeac[18:22,8,:,0],axis=0),np.nanmean(firststopstorenbeac2[18:22,5,:,0],axis=0),np.nanmean(firststopstorenbeac2[18:22,6,:,0],axis=0),np.nanmean(firststopstorenbeac2[18:22,7,:,0],axis=0)))
-x2 = np.vstack((np.nanmean(firststopstoreprobe[18:22,3,:,0],axis=0),np.nanmean(firststopstoreprobe[18:22,5,:,0],axis=0),np.nanmean(firststopstoreprobe[18:22,6,:,0],axis=0),np.nanmean(firststopstoreprobe[18:22,7,:,0],axis=0),np.nanmean(firststopstoreprobe[18:22,8,:,0],axis=0),np.nanmean(firststopstoreprobe2[18:22,5,:,0],axis=0),np.nanmean(firststopstoreprobe2[18:22,6,:,0],axis=0),np.nanmean(firststopstoreprobe2[18:22,7,:,0],axis=0)))
-
-mice = np.array([1,2,3,4,5,6,7,8]); mouse = np.hstack((mice, mice, mice))
-trialb = np.array([1,1,1,1,1,1,1,1]); trialnb = np.array([2,2,2,2,2,2,2,2]); trialp = np.array([3,3,3,3,3,3,3,3]); trials = np.hstack((trialb, trialnb, trialp))
-x = np.vstack((x,x1,x2))
-data = np.vstack((mouse, trials)); data=np.transpose(data)
-data = np.hstack((data,x))
-
-np.savetxt('Data_Output/Figure1/Figure1_D_Week5_0100.csv', data,fmt = '%i,%i,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f', delimiter = '\t', header = 'Mouse, Trial, 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')
-
-
-x = np.vstack((np.nanmean(firststopstorebeac[0:5,3,:,0],axis=0),np.nanmean(firststopstorebeac[0:5,5,:,0],axis=0),np.nanmean(firststopstorebeac[0:5,6,:,0],axis=0),np.nanmean(firststopstorebeac[0:5,7,:,0],axis=0),np.nanmean(firststopstorebeac[0:5,8,:,0],axis=0),np.nanmean(firststopstorebeac2[0:5,5,:,0],axis=0),np.nanmean(firststopstorebeac2[0:5,6,:,0],axis=0),np.nanmean(firststopstorebeac2[0:5,7,:,0],axis=0)))
-x1 = np.vstack((np.nanmean(firststopstorenbeac[0:5,3,:,0],axis=0),np.nanmean(firststopstorenbeac[0:5,5,:,0],axis=0),np.nanmean(firststopstorenbeac[0:5,6,:,0],axis=0),np.nanmean(firststopstorenbeac[0:5,7,:,0],axis=0),np.nanmean(firststopstorenbeac[0:5,8,:,0],axis=0),np.nanmean(firststopstorenbeac2[0:5,5,:,0],axis=0),np.nanmean(firststopstorenbeac2[0:5,6,:,0],axis=0),np.nanmean(firststopstorenbeac2[0:5,7,:,0],axis=0)))
-x2 = np.vstack((np.nanmean(firststopstoreprobe[0:5,3,:,0],axis=0),np.nanmean(firststopstoreprobe[0:5,5,:,0],axis=0),np.nanmean(firststopstoreprobe[0:5,6,:,0],axis=0),np.nanmean(firststopstoreprobe[0:5,7,:,0],axis=0),np.nanmean(firststopstoreprobe[0:5,8,:,0],axis=0),np.nanmean(firststopstoreprobe2[0:5,5,:,0],axis=0),np.nanmean(firststopstoreprobe2[0:5,6,:,0],axis=0),np.nanmean(firststopstoreprobe2[0:5,7,:,0],axis=0)))
-
-mice = np.array([1,2,3,4,5,6,7,8]); mouse = np.hstack((mice, mice, mice))
-trialb = np.array([1,1,1,1,1,1,1,1]); trialnb = np.array([2,2,2,2,2,2,2,2]); trialp = np.array([3,3,3,3,3,3,3,3]); trials = np.hstack((trialb, trialnb, trialp))
-x = np.vstack((x,x1,x2))
-data = np.vstack((mouse, trials)); data=np.transpose(data)
-data = np.hstack((data,x))
-
-np.savetxt('Data_Output/Figure1/Figure1_D_Week1_0100.csv', data,fmt = '%i,%i,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f', delimiter = '\t', header = 'Mouse, Trial, 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')
-
-
-
 
            

@@ -119,13 +119,16 @@ if stopsdata_p.size > 0:  # if there are probe trials, plot 3x3 subplots
     ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
     ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
     ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-    ax.plot(stopsdata_nb[:, 0], stopsdata_nb[:, 2], 'o', color='Black',
-            markersize=4.5)  # plot becaoned trials
+    try:
+        ax.plot(stopsdata_nb[:, 0], stopsdata_nb[:, 2], 'o', color='Black',
+                markersize=4.5)  # plot becaoned trials
+    except IndexError:
+        print("Error because theres no stops")
 
     try:
         ax.plot(reward_nbeac[:, 0], reward_nbeac[:, 2], '>', color='Red', markersize=6)  # plot becaoned trials
     except IndexError:
-        print("Error because theres no non beaconed rewards")
+        print("Error because theres no rewards")
 
     ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
                    labelsize=18)
@@ -148,8 +151,12 @@ if stopsdata_p.size > 0:  # if there are probe trials, plot 3x3 subplots
     ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
     ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
     ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-    ax.plot(stopsdata_p[:, 0], stopsdata_p[:, 2], 'o', color='Black', markersize=4.5,
-            label='Non - beaconed')  # plot becaoned trials
+    try:
+        ax.plot(stopsdata_p[:, 0], stopsdata_p[:, 2], 'o', color='Black', markersize=4.5,
+                label='Non - beaconed')  # plot becaoned trials
+    except IndexError:
+        print("error as theres no stops to plots!")
+
     ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
                    labelsize=18)
     ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
@@ -327,10 +334,18 @@ else:  # if there is not probe trials, plot 2x3 subplots -> stops per trial, ave
     ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
     ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
     ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-    ax.plot(stopsdata_b[:, 0], stopsdata_b[:, 2], 'o', color='Black', markersize=4.5,
-            label='Stop')  # plot becaoned trials
-    ax.plot(reward_beac[:, 0], reward_beac[:, 2], '>', color='Red', markersize=6,
-            label='Reward')  # plot becaoned trials
+    try:
+        ax.plot(stopsdata_b[:, 0], stopsdata_b[:, 2], 'o', color='Black', markersize=4.5,
+                label='Stop')  # plot becaoned trials
+    except IndexError:
+        print("no stops to be plotted")
+
+    try:
+        ax.plot(reward_beac[:, 0], reward_beac[:, 2], '>', color='Red', markersize=6,
+                label='Reward')  # plot becaoned trials
+    except IndexError:
+        print("no rewards to be plotted")
+
     ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
                    labelsize=18)
     ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
@@ -352,13 +367,18 @@ else:  # if there is not probe trials, plot 2x3 subplots -> stops per trial, ave
     ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
     ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
     ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-    ax.plot(stopsdata_nb[:, 0], stopsdata_nb[:, 2], 'o', color='Black',
-            markersize=4.5)  # plot becaoned trials
+
+    try:
+        ax.plot(stopsdata_nb[:, 0], stopsdata_nb[:, 2], 'o', color='Black',
+                markersize=4.5)  # plot becaoned trials
+    except IndexError:
+        print("Error because there's no stops to plot")
+
     try:
         ax.plot(reward_nbeac[:, 0], reward_nbeac[:, 2], '>', color='Red', markersize=6,
                 label='Reward')  # plot becaoned trials
     except IndexError:
-        print("Error for no non beaconed reward")
+        print("Error because theres no rewards to plot")
 
     ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
                    labelsize=18)
