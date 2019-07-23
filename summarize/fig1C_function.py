@@ -260,14 +260,15 @@ def plot_fig1C(session_path):
         ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
                        labelsize=18)
         ax.set_xlim(0, 101)
-        ax.set_ylim(0)
+        ax.set_ylim(0, 4.5)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_ylabel('Speed (VU/s)', fontsize=18, labelpad=20)
         #ax.set(ylabel='Speed (VU/s)')
 
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
-        ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
         ax.set_xticklabels(['0', '10', '20'])
+        ax.set_yticklabels(['0','2','4'])
 
         # avg stops histogram - non beaconed
         ax = fig.add_subplot(3, 3, 8)
@@ -287,9 +288,9 @@ def plot_fig1C(session_path):
                        labelsize=18)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_xlim(0, 101)
-        ax.set_ylim(0)
+        ax.set_ylim(0, 4.5)
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
-        ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
         ax.set_yticklabels(['', '', ''])
         ax.set_xticklabels(['0', '10', '20'])
         ax.set_xlabel('Location (VU)', fontsize=18, labelpad=20)
@@ -310,9 +311,9 @@ def plot_fig1C(session_path):
                        labelsize=18)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_xlim(0, 101)
-        ax.set_ylim(0)
+        ax.set_ylim(0, 4.5)
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
-        ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
         ax.set_yticklabels(['', '', ''])
         ax.set_xticklabels(['0', '10', '20'])
 
@@ -386,7 +387,6 @@ def plot_fig1C(session_path):
         ax.set_xlim(0, 20)
         ax.set_ylim(0, trialno + 0.5)
         adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-        makelegend3(fig, ax)  # makes legend
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
         ax.locator_params(axis='y', nbins=4)  # set xsnumber of ticks on y axis
         ax.set_xticklabels(['', '', ''])
@@ -461,14 +461,16 @@ def plot_fig1C(session_path):
         ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
                        labelsize=18)
         ax.set_xlim(0, 101)
-        ax.set_ylim(0)
+        ax.set_ylim(0, 4.5)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_ylabel('Speed (VU/s)', fontsize=18, labelpad=20)
         # ax.set(ylabel='Speed (VU/s)')
 
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
-        ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
         ax.set_xticklabels(['0', '10', '20'])
+        ax.set_yticklabels(['0', '2', '4'])
+        #ax.set_yticklabels(['0', '1', '2', '3'])
 
         # avg stops histogram - non beaconed
         ax = fig.add_subplot(3, 3, 8)
@@ -488,11 +490,12 @@ def plot_fig1C(session_path):
                        labelsize=18)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_xlim(0, 101)
-        ax.set_ylim(0, 3.3)
+        ax.set_ylim(0, 4.5)
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
-        ax.locator_params(axis='y', nbins=4)  # set xsnumber of ticks on y axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
+        ax.set_yticklabels(['', '', ''])
         ax.set_xticklabels(['0', '10', '20'])
-        ax.set_yticklabels(['','','',''])
+        ax.set_xlabel('Location (VU)', fontsize=18, labelpad=20)
 
         plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.15, left=0.15, right=0.82, top=0.92)
         fig.savefig(session_path+'/ExampleData.png',
@@ -504,10 +507,12 @@ def main():
     print('-------------------------------------------------------------')
     print('-------------------------------------------------------------')
 
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190717101640/S001'
-    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190717113448/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190717113448/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190717153659/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190722150558/S001'
+    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190717113448/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190717101640/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190717101640/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190717101640/S001'
+
     plot_fig1C(session_path)
 
 if __name__ == '__main__':
