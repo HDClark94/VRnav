@@ -39,6 +39,7 @@ def plot_fig1C(session_path):
     # get location and trial number of rewards
     reward_beac = extractrewards(dailymouse_b)
     reward_nbeac = extractrewards(dailymouse_nb)
+    reward_probe = extractrewards(dailymouse_p)
 
     # filter stops (removes stops 0.5 cm after a stop)
     stopsdata_b = filterstops(stopsdata_b)
@@ -85,15 +86,17 @@ def plot_fig1C(session_path):
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
         try:
-            ax.plot(stopsdata_b[:, 0], stopsdata_b[:, 2], 'o', color='Black',
-                    markersize=4.5)  # plot becaoned trials
+            ax.plot(stopsdata_b[:, 0], stopsdata_b[:, 2], 'o', color='Black', markersize=4.5,
+                    label='Stop')  # plot beaconed trials
         except IndexError:
-            print("Error exception because theres no stops to plot")
+            print("no stops to be plotted")
 
         try:
-            ax.plot(reward_beac[:, 0], reward_beac[:, 2], '>', color='Red', markersize=6)  # plot becaoned reward trials
+            ax.plot(reward_beac[:, 0], reward_beac[:, 2], '>', color='Red', markersize=6,
+                    label='Reward')  # plot beaconed trials
         except IndexError:
-            print("Error exception because theres no rewards to plot")
+            print("no rewards to be plotted")
+
         ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
                        labelsize=18)
         ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
@@ -507,11 +510,17 @@ def main():
     print('-------------------------------------------------------------')
     print('-------------------------------------------------------------')
 
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190722150558/S001'
-    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190717113448/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190717101640/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190717101640/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190717101640/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/Daniel/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/Daniel/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/Daniel/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/Klara/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/Klara/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190724151650/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190724151650/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190724151650/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190724151650/S001'
+
+
 
     plot_fig1C(session_path)
 

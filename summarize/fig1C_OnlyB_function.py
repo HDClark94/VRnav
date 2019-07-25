@@ -73,7 +73,7 @@ def plot_fig1C(session_path):
     sd_speed_beaconed = np.nanstd(speed_beaconed, axis=1)
     speed_beaconed = np.nanmean(speed_beaconed, axis=1)
     if stopsdata_nb.size > 0:
-        speed_nbeaconed = np.nanmean(speed_nbeaconed, axis1)
+        speed_nbeaconed = np.nanmean(speed_nbeaconed, axis=1)
     if stopsdata_p.size > 0:  # if there are probe trials
         speed_probe = np.nanmean(speed_probe, axis=1)
 
@@ -400,14 +400,17 @@ def plot_fig1C(session_path):
         ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
                        labelsize=18)
         ax.set_xlim(0, 101)
-        ax.set_ylim(0)
+        ax.set_ylim(0, 4.5)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_ylabel('Speed (VU/s)', fontsize=18, labelpad=20)
         # ax.set(ylabel='Speed (VU/s)')
 
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
-        ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
         ax.set_xticklabels(['0', '10', '20'])
+        ax.set_yticklabels(['0', '2', '4'])
+        ax.set_xlabel('Location (VU)', fontsize=18, labelpad=20)
+        # ax.set_yticklabels(['0', '1', '2', '3'])
 
 
         plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.15, left=0.15, right=0.82, top=0.92)
@@ -421,7 +424,7 @@ def main():
     print('-------------------------------------------------------------')
 
     #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190717101640/S001'
-    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190717113448/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190717101640/S001'
     #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190717101640/S001'
     #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190717153659/S001'
     plot_fig1C(session_path)
