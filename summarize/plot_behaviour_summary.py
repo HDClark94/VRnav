@@ -27,9 +27,12 @@ def update_summary_plots(recording_folder_path, override=False):
                 if 'summary_plot.png' not in os.listdir(session) or override==True:
                     try:
                         plot_summary(session)
-                        
                     except KeyError:
                         print('There was mostly a key error, nothing to worry about, not all files have the same collumn titles in trial results')
+                    try:
+                        plot_fig1C(session)
+                    except KeyError:
+                        print("Error, sorry I can't give you a better error message")
 
 
 def plot_summary(session_path):
