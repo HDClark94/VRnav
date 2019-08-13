@@ -18,9 +18,9 @@ import math
 from scipy.stats import uniform
 
 # Load raw data: specify the HDF5 file to read data from
-filename = 'Data_Input/Behaviour_DataFiles/Task18_0100.h5'
+filename = 'Data_Input/Behaviour_DataFiles/Task19_0100.h5'
 # Load raw data: txt file that specifies days to analyse with average first stop closest to reward zone in beaconed trials
-array = np.loadtxt('Data_Input/Behaviour_SummaryData/Task18_FirstDays.txt',delimiter = '\t')
+array = np.loadtxt('Data_Input/Behaviour_SummaryData/Task19_FirstDays.txt',delimiter = '\t')
 
 
 # specify mouse/mice and day/s to analyse
@@ -522,7 +522,7 @@ plt.locator_params(axis = 'x', nbins  = 6)
 ax.set_xlim(50,500)
 plt.subplots_adjust(hspace = 0.6, wspace = .5,  bottom = 0.3, left = 0.2, right = 0.8, top = .9)
 
-fig.savefig('Plots/Figure3/Task18_StopFrequency_Tracks_log_0100' +' .png', dpi = 200)
+fig.savefig('Plots/Figure3/Task19_StopFrequency_Tracks_log_0100' +' .png', dpi = 200)
 plt.close()
 
 

@@ -30,41 +30,120 @@ def main():
     print('-------------------------------------------------------------')
 
     print('-------------------------------------------------------------')
-    '''
-    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190729100324/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726112925/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726153910/S001']
-    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_S_Gain_AvgFirstStop.png')
-    '''
-    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190729100324/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726112925/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726153910/S001']
-    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_M_Gain_AvgFirstStop.png')
 
-    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190729100324/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726112925/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726153910/S001']
+    # SESSION PATHS FOR CONSTANT SPEED PARTICIPANTS
+    '''
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190722150558/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190723100511/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190723111425/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190731113135/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190731153240/S001']
+    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_S_AvgFirstStop.png')
+    '''
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190722150558/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190723100511/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190723111425/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190731113135/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190731153240/S001']
+    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_M_AvgFirstStop.png')
+    '''
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190722150558/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190723100511/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190723111425/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190731113135/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190731153240/S001']
+    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_L_AvgFirstStop.png')
+
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190722150558/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190723100511/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190723111425/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190731113135/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190731153240/S001']
+    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_CM_AvgFirstStop.png')
+
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190722150558/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190723100511/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190723111425/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190731113135/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190731153240/S001']
+    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_H_AvgFirstStop.png')
+
+
+    #SESSION PATHS FOR GAIN PARTICIPANTS
+
+    '''
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190724151650/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190725130212/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726112925/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726153910/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190729100324/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190801113837/S001']
+                     #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726140934/S001',
+                     #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726165828/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190802100142/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190805133756/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190807100354/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190807111732/S001']
+    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_S_Gain_AvgFirstStop.png')
+
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190724151650/S001',
+                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190725130212/S001',
+                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726112925/S001',
+                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726153910/S001',
+                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190729100324/S001',
+                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190801113837/S001']
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726140934/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726165828/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190802100142/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190805133756/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190807100354/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190807111732/S001']
+    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_M_Gain_AvgFirstStop.png')
+    
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190724151650/S001',
+                  '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190725130212/S001',
+                  '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726112925/S001',
+                 '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726153910/S001',
+                 '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190729100324/S001',
+                 '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190801113837/S001']
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726140934/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726165828/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190802100142/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190805133756/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190807100354/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190807111732/S001']
     plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_L_Gain_AvgFirstStop.png')
 
-    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190729100324/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726112925/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726153910/S001']
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190724151650/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190725130212/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726112925/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726153910/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190729100324/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190801113837/S001']
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726140934/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726165828/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190802100142/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190805133756/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190807100354/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190807111732/S001']
     plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_CM_Gain_AvgFirstStop.png')
+    '''
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726112925/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726153910/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726165828/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190729100324/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190801113837/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190802100142/S001']
+    plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_H_Gain_AvgFirstStop.png') 
 
-    #session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190729100324/S001',
-    #                 '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726112925/S001',
-    #                 '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726153910/S001']
-    #plot_fig1E(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1E_H_Gain_FirstStop.png')
-
-
-
+    '''
 def plot_fig1E(session_paths, save_path):
 
 
     days = [1]
     # specify mouse/mice and day/s to analyse
      # choose specific day/s
-    number_of_trials = 1000 # arbitrarily large amound of trials so we can catch all the trials
+    number_of_trials = 1000 # arbitrarily large amount of trials so we can catch all the trials
 
     # Arrays for storing data (output)
     firststopstorebeac = np.zeros(((number_of_trials), len(session_paths)))
@@ -107,11 +186,12 @@ def plot_fig1E(session_paths, save_path):
             #filterstops
             stops_b = filterstops(stops_b)
             stops_nb = filterstops(stops_nb)
-            stops_p= filterstops(stops_p)
+            stops_p = filterstops(stops_p)
 
             # get first stop for each trial
 
             trarray = np.unique(trialarray[:, 0])  # get unique trial numbers
+
             stops_f_b = FirstStops_humans(trarray, stops_b, track_start, track_end)  # get locations of first stop for each trial
             #beac = np.nanmean(stops_f_b, axis=0)  # find average first stop location
             #sdbeac = np.nanstd(stops_f_b, axis=0)  # get sd of first stop location
@@ -125,19 +205,18 @@ def plot_fig1E(session_paths, save_path):
                 #probe = np.nanmean(stops_f_p, axis=0)  # find average first stop location
                 #sdprobe = np.nanstd(stops_f_p, axis=0)  # get sd of first stop location
 
-            # store data
             for i in range(len(stops_f_b)):
-                firststopstorebeac[i, session_count] = stops_f_b[i][0]  # x 10 to convert virtual units to cm
+                firststopstorebeac[i, session_count] = stops_f_b[i][0]
                 #sd_con_FirstStopsstorebeac[dcount, session_count] = beac[0]
 
             if stops_nb.size > 0:
                 for i in range(len(stops_f_nb)):
-                    firststopstorenbeac[i, session_count] = stops_f_nb[i][0]  # x 10 to convert virtual units to cm
+                    firststopstorenbeac[i, session_count] = stops_f_nb[i][0]
                     #sd_con_FirstStopsstorenbeac[dcount, session_count] = nbeac[0]
 
             if stops_p.size > 0:
                 for i in range(len(stops_f_p)):
-                    firststopstoreprobe[i, session_count] = stops_f_p[i][0]  # x 10 to convert virtual units to cm
+                    firststopstoreprobe[i, session_count] = stops_f_p[i][0]
                     #sd_con_FirstStopsstoreprobe[dcount, session_count] = probe[0]
 
             session_count += 1
@@ -168,7 +247,7 @@ def plot_fig1E(session_paths, save_path):
     #x = con_beac[0]
 
     # plot average first stop over days for all mice
-    fig = plt.figure(figsize = (12,5))  # make figure, this shape (width, height)
+    fig = plt.figure(figsize = (12,4))  # make figure, this shape (width, height)
     ax = fig.add_subplot(1,3,1)
     ax.set_title('Beaconed', fontsize=20, verticalalignment='bottom', style='italic') #title
     ax.axhspan(rz_start, rz_end, facecolor='g', alpha=0.15, hatch='/',linewidth=0)  # green box of reward zone
@@ -225,7 +304,7 @@ def plot_fig1E(session_paths, save_path):
     plt.locator_params(nbins=7, axis ='y') # set tick number on y axis
     plt.locator_params(nbins=3, axis ='x') # set tick number on x axis
 
-    plt.subplots_adjust(hspace = .35, wspace = .35,  bottom = 0.25, left = 0.15, right = 0.82, top = 0.92)
+    plt.subplots_adjust(hspace = .35, wspace = .35,  bottom = 0.25, left = 0.15, right = 0.82, top = 0.85)
 
     fig.savefig(save_path, dpi=200)
     plt.close()

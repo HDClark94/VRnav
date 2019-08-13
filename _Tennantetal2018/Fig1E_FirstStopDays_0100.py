@@ -16,17 +16,25 @@ import math
 from scipy.stats import uniform
 
 # Load raw data: specify the HDF5 file to read data from
-filename = 'Data_Input/Behaviour_DataFiles/Task13_0300.h5' # Raw data
+filename = 'Data_Input/Behaviour_DataFiles/Task12_0600.h5' # Raw data
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(1,22.1)] # Days to analyse
 mice = ['M' + str(int(x)) for x in np.arange(1,9.1)] # Mice to analyse
 
 # Arrays for storing data (output)
-firststopstorebeac = np.zeros((len(days), len(mice)));firststopstorenbeac = np.zeros((len(days), len(mice)));firststopstoreprobe = np.zeros((len(days), len(mice)))
-firststopstorebeac[:,:] = np.nan;firststopstorenbeac[:,:] = np.nan; firststopstoreprobe[:,:] = np.nan
-sd_con_FirstStopsstorebeac = np.zeros((len(days), len(mice)));sd_con_FirstStopsstorenbeac = np.zeros((len(days), len(mice)));sd_con_FirstStopsstoreprobe = np.zeros((len(days), len(mice)))
-sd_con_FirstStopsstorebeac[:,:] = np.nan;sd_con_FirstStopsstorenbeac[:,:] = np.nan; sd_con_FirstStopsstoreprobe[:,:] = np.nan
+firststopstorebeac = np.zeros((len(days), len(mice)))
+firststopstorenbeac = np.zeros((len(days), len(mice)))
+firststopstoreprobe = np.zeros((len(days), len(mice)))
+firststopstorebeac[:,:] = np.nan
+firststopstorenbeac[:,:] = np.nan
+firststopstoreprobe[:,:] = np.nan
+sd_con_FirstStopsstorebeac = np.zeros((len(days), len(mice)))
+sd_con_FirstStopsstorenbeac = np.zeros((len(days), len(mice)))
+sd_con_FirstStopsstoreprobe = np.zeros((len(days), len(mice)))
+sd_con_FirstStopsstorebeac[:,:] = np.nan
+sd_con_FirstStopsstorenbeac[:,:] = np.nan
+sd_con_FirstStopsstoreprobe[:,:] = np.nan
 
 
 # For each day and mouse, pull raw data, calculate first stops and store data

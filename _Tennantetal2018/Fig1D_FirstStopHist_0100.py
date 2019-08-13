@@ -17,8 +17,8 @@ import math
 from scipy.stats import uniform
 
 # Load raw data: specify the HDF5 file to read data from
-filename = '/home/Data_Input/Behaviour_DataFiles/Task13_0300.h5' # raw data files
-filename = '/home/harry/Downloads/Task13_0300.h5'
+filename = '/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_DataFiles/Task13_0300.h5' # raw data files
+#filename = '/home/harry/Downloads/Task13_0300.h5'
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(1,22.1)]
@@ -93,7 +93,7 @@ for dcount,day in enumerate(days):
 
 
 # Load raw data: specify the HDF5 file to read data from
-filename = '/home/harry/Downloads/Task12_0600.h5'
+filename = '/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_DataFiles/Task12_0600.h5'
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(1,22.1)]

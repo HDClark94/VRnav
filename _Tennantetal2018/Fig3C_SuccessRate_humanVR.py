@@ -14,25 +14,50 @@ import numpy as np
 from scipy import stats
 import math
 from scipy.stats import uniform
+from summarize.map2legacy import *
 
-# Load raw data: specify the HDF5 file to read data from
-filename = 'Data_Input/Behaviour_DataFiles/Task19_0100.h5'
-# Load raw data: txt file that specifies days to analyse with average first stop closest to reward zone in beaconed trials
-array = np.loadtxt('Data_Input/Behaviour_SummaryData/Task19_FirstDays.txt',delimiter = '\t')
+def main():
 
-# specify mouse/mice and day/s to analyse
-days = ['Day' + str(int(x)) for x in np.arange(1,20.1)]
-mice = ['M' + str(int(x)) for x in [1,5]]
-tracks = [str(int(x)) for x in np.arange(1,7.1)] # number of tracks in total
+    print('-------------------------------------------------------------')
+
+    print('-------------------------------------------------------------')
+
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190729100324/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726112925/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726153910/S001']
+    plot_fig3C(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/S_Gain_SuccessR.png')
+
+    #session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190729100324/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726112925/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726153910/S001']
+    #plot_fig3C(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/M_Gain_SuccessR.png')
+
+    #session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190729100324/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726112925/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726153910/S001']
+    #plot_fig3C(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/L_Gain_SuccessR.png')
+
+    #session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190729100324/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726112925/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726153910/S001']
+    #plot_fig3C(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/CM_Gain_SuccessR.png')
+
+    #session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190729100324/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726112925/S001', '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726153910/S001']
+    #plot_fig3C(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/H_Gain_SuccessR.png')
+
+
+
+def plot_fig3D(session_paths, save_path):
+    days = [1]
+    n_bins = 20
+    # specify mouse/mice and day/s to analyse
+    days = ['Day' + str(int(x)) for x in np.arange(1,20.1)]
+    mice = ['M' + str(int(x)) for x in [1,5]]
+    tracks = [str(int(x)) for x in np.arange(1,7.1)] # number of tracks in total
 
 # empty arrays to store data
-firststop_b = np.zeros((len(mice), 6, 2));firststop_b[:,:,:] = np.nan
-firststop_nb = np.zeros((len(mice), 6, 2));firststop_nb[:,:,:] = np.nan
-firststop_p = np.zeros((len(mice), 6, 2));firststop_p[:,:,:] = np.nan
+    firststop_b = np.zeros((len(session_paths), 6, 2))
+    firststop_b[:,:,:] = np.nan
+    firststop_nb = np.zeros((len(session_paths), 6, 2))
+    firststop_nb[:,:,:] = np.nan
+    firststop_p = np.zeros((len(session_paths), 6, 2))
+    firststop_p[:,:,:] = np.nan
 
 # loop thorugh mice and days to get data
-for mcount,mouse in enumerate(mice):
-    daycount = 0
+for session_path,session_paths in enumerate(mice):
+    session_count = 0
     for dcount,day in enumerate(days): #load mouse and day
         print ('Processing...',day,mouse)
         #load HDF5 data set for that day and mouse

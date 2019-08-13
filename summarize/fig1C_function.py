@@ -8,7 +8,7 @@ For each mouse and day specified, the location of stops for each trial is calcul
 # Import functions and packages
 from _Tennantetal2018.Functions_Core_0100 import extractstops, extractstops_HUMAN, filterstops, create_srdata, makebinarray, speed_per_trial, makelegend, \
     makelegend2, makelegend3, makelegend4, shuffle_analysis_pertrial3, extractrewards, adjust_spines, readhdfdata, \
-    FirstStops, maketrialarray
+    FirstStops_humans, maketrialarray
 from summarize.map2legacy import *
 import numpy as np
 
@@ -25,10 +25,8 @@ def plot_fig1C(session_path):
 
 
     # Extract data for beaconed, non-beaconed, probe
-    dailymouse_b = np.delete(saraharray, np.where(saraharray[:, 8] > 0),
-                             0)  # delete all data not on beaconed tracks
-    dailymouse_nb = np.delete(saraharray, np.where(saraharray[:, 8] != 10),
-                              0)  # delete all data not on non beaconed tracks
+    dailymouse_b = np.delete(saraharray, np.where(saraharray[:, 8] > 0), 0)  # delete all data not on beaconed tracks
+    dailymouse_nb = np.delete(saraharray, np.where(saraharray[:, 8] != 10), 0)  # delete all data not on non beaconed tracks
     dailymouse_p = np.delete(saraharray, np.where(saraharray[:, 8] != 20), 0)  # delete all data not on probe tracks
 
     # extract stops
@@ -49,16 +47,15 @@ def plot_fig1C(session_path):
     # extract trial numbers from data (only unique ones)
     trialids_b = np.unique(stopsdata_b[:, 2])
     trialids_nb = np.unique(stopsdata_nb[:, 2])
+
     if stopsdata_p.size > 0:  # if there are probe trials
         trialids_p = np.unique(stopsdata_p[:, 2])
 
     # get mean stops per bin for real and shuffled data
     srbin_mean_b, srbin_std_b, shuffled_mean_b, shuffled_std_b = shuffle_analysis_pertrial3(stopsdata_b, trialids_b)
-    srbin_mean_nb, srbin_std_nb, shuffled_mean_nb, shuffled_std_nb = shuffle_analysis_pertrial3(stopsdata_nb,
-                                                                                                trialids_nb)
+    srbin_mean_nb, srbin_std_nb, shuffled_mean_nb, shuffled_std_nb = shuffle_analysis_pertrial3(stopsdata_nb, trialids_nb)
     if stopsdata_p.size > 0:
-        srbin_mean_p, srbin_std_p, shuffled_mean_p, shuffled_std_p = shuffle_analysis_pertrial3(stopsdata_p,
-                                                                                                trialids_p)
+        srbin_mean_p, srbin_std_p, shuffled_mean_p, shuffled_std_p = shuffle_analysis_pertrial3(stopsdata_p, trialids_p)
 
     # calculate average speed
     speed_beaconed = speed_per_trial(bins, saraharray, trialids_b)
@@ -66,12 +63,14 @@ def plot_fig1C(session_path):
     if stopsdata_p.size > 0:  # if there are probe trials
         speed_probe = speed_per_trial(bins, saraharray, trialids_p)
         sd_speed_probe = np.nanstd(speed_probe, axis=1)
+
     sd_speed_beaconed = np.nanstd(speed_beaconed, axis=1)
     sd_speed_nbeaconed = np.nanstd(speed_nbeaconed, axis=1)
     speed_beaconed = np.nanmean(speed_beaconed, axis=1)
     speed_nbeaconed = np.nanmean(speed_nbeaconed, axis=1)
     if stopsdata_p.size > 0:  # if there are probe trials
         speed_probe = np.nanmean(speed_probe, axis=1)
+
 
     # plot graphs:
     if stopsdata_p.size > 0:  # if there are probe trials, plot 3x3 subplots
@@ -510,15 +509,21 @@ def main():
     print('-------------------------------------------------------------')
     print('-------------------------------------------------------------')
 
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/Daniel/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/Daniel/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/Daniel/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/Klara/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/Klara/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190724151650/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190724151650/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190724151650/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190724151650/S001'
+#CONSTANT SPEED FILES
+
+    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190812150450/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190812150450/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190812150450/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190812150450/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190812150450/S001'
+
+#GAIN FILES
+
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190807111732/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190807111732/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190807111732/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190807111732/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190807111732/S001'
 
 
 

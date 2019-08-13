@@ -20,7 +20,7 @@ from scipy.stats import uniform
 from math import floor
 
 # Load raw data: specify the HDF5 file to read data from
-filename = 'Data_Input/Behaviour_DataFiles/Task13_0300.h5' # raw data files
+filename = 'Data_Input/Behaviour_DataFiles/Task12_0600.h5' # raw data files
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(1,22.1)]

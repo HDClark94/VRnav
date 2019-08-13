@@ -31,85 +31,110 @@ def main():
     print('-------------------------------------------------------------')
 
     #SESSION PATHS FOR CONSTANT SPEED PARTICIPANTS
-
+    '''
     session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190722150558/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190723100511/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190723111425/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190731113135/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190731153240/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/S_ZScore_Histogram.png')
-    '''
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F_S_ZScoreHist.png')
+    
     session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190722150558/S001',
                       '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190723100511/S001',
                       '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190723111425/S001',
                       '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190731113135/S001',
                       '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190731153240/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/M_ZScore_Histogram.png')
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F_M_ZScoreHist.png')
     
     session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190722150558/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190723100511/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190723111425/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190731113135/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190731153240/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/L_ZScore_Histogram.png')
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F_L_ZScoreHist.png')
     
     session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190722150558/S001',
                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190723100511/S001',
                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190723111425/S001',
                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190731113135/S001',
                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190731153240/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/CM_ZScore_Histogram.png')
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F_CM_ZScoreHist.png')
     
     session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190722150558/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190723100511/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190723111425/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190731113135/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190731153240/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/H_ZScore_Histogram.png')
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F_H_ZScoreHist.png')
     '''
 
     #SESSION PATHS FOR GAIN PARTICIPANTS
 
-    '''
-    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726112925/S001',
+
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190724151650/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190725130212/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726112925/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726153910/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726165828/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190729100324/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190801113837/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190802100142/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/S_Gain_Zscore_Histogram.png')
-
-    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726112925/S001',
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190801113837/S001']
+                     #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726140934/S001',
+                     #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190726165828/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190802100142/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190805133756/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190807100354/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190807111732/S001']
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1G_S_Gain_ZscoreHist.png')
+    
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190724151650/S001',
+                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190725130212/S001',
+                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726112925/S001',
                       '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726153910/S001',
-                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726165828/S001',
                       '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190729100324/S001',
-                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190801113837/S001',
-                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190802100142/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/M_Gain_Zscore_Histogram.png')
+                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190801113837/S001']
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726140934/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190726165828/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190802100142/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190805133756/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190807100354/S001',
+                      #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190807111732/S001']
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F_M_Gain_ZscoreHist.png')
+    
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190724151650/S001',
+                  '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190725130212/S001',
+                  '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726112925/S001',
+                 '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726153910/S001',
+                 '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190729100324/S001',
+                 '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190801113837/S001']
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726140934/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726165828/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190802100142/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190805133756/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190807100354/S001',
+                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190807111732/S001']
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F_L_Gain_ZscoreHist.png')
 
-    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726112925/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726153910/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190726165828/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190729100324/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190801113837/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190802100142/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/L_Gain_Zscore_Histogram.png')
-
-    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726112925/S001',
+    session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190724151650/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190725130212/S001',
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726112925/S001',
                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726153910/S001',
-                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726165828/S001',
                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190729100324/S001',
-                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190801113837/S001',
-                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190802100142/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/CM_Gain_Zscore_Histogram.png')
-
+                    '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190801113837/S001']
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726140934/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190726165828/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190802100142/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190805133756/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190807100354/S001',
+                    #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190807111732/S001']
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F_CM_Gain_ZscoreHist.png')
+    '''
     session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726112925/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726153910/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190726165828/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190729100324/S001',
                      '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190801113837/S001',
-                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190802100142/S001']
-    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/H_Gain_Zscore_Histogram.png')
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190802100142/S001', 
+                     '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190805133756/S001']
+    plot_fig1F(session_paths, save_path='/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F_H_Gain_ZscoreHist.png')
     '''
 
 
@@ -172,23 +197,6 @@ def plot_fig1F(session_paths, save_path):
                 zscore_p = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
                 firststopstoreprobe[dcount, session_count,:,1] = zscore_p  # store zscores
                 session_count += 1
-            '''
-            trialids_b = np.unique(stopsdata_b[:, 2])  # get array of trial numbers for beaconed
-            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_b, trialids_b)  # get average real stops & shuffled stops per lcoation bin
-            zscore_b = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-            firststopstorebeac2[dcount, session_count,:,1] = zscore_b  # store zscores
-            if stopsdata_nb.size > 0:
-                trialids_nb = np.unique(stopsdata_nb[:, 2])  # get array of trial numbers for non-beaconed
-                srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_nb, trialids_nb)  # get average real stops & shuffled stops per lcoation bin
-                zscore_nb = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-                firststopstorenbeac2[dcount, session_count,:,1] = zscore_nb  # store zscores
-            if stopsdata_p.size > 0:
-                trialids_p = np.unique(stopsdata_p[:, 2])  # get array of trial numbers for probe
-                srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_p, trialids_p)  # get average real stops & shuffled stops per lcoation bin
-                zscore_p = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-                firststopstoreprobe2[dcount, session_count,:,1] = zscore_p  # store zscores
-                session_count += 1
-            '''
 
 
     # AVERAGE DATA FOR PLOTS
@@ -207,6 +215,7 @@ def plot_fig1F(session_paths, save_path):
 
     fig = plt.figure(figsize = (12,4))
     ax = fig.add_subplot(1,3,1)
+    ax.set_title('Beaconed', fontsize=20, verticalalignment='bottom', style='italic')  # title
     ax.axvspan(rz_start, rz_end, facecolor='g', alpha=0.25, hatch = '/', linewidth =0) # green box spanning the rewardzone - to mark reward zone
     ax.axvspan(0, track_start, facecolor='k', alpha=0.15, hatch = '/', linewidth =0) # black box
     ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, hatch = '/', linewidth =0)# black box
@@ -220,15 +229,16 @@ def plot_fig1F(session_paths, save_path):
     ax.tick_params(axis='x', pad = 10, top='off', right = 'off', direction = 'out',width = 2, length = 7,labelsize =16)
     ax.tick_params(axis='y', pad = 10, top='off', right = 'off', direction = 'out',width = 2, length = 7,labelsize =16)
     ax.set_xlim(0,20)
-    ax.set_ylim(-10,20)
+    ax.set_ylim(-10,35)
     adjust_spines(ax, ['left','bottom']) # removes top and right spines
     ax.locator_params(axis = 'x', nbins=3) # set number of ticks on x axis
-    ax.locator_params(axis = 'y', nbins=4) # set number of ticks on y axis
+    ax.locator_params(axis = 'y', nbins=5) # set number of ticks on y axis
     ax.set_xticklabels(['0', '10', '20'])
-    ax.set_yticklabels(['-10','0','10','20'])
+    ax.set_yticklabels(['-10','0','10','20', '30'])
     ax = plt.ylabel('Stops (Zscore)', fontsize=16, labelpad = 18)
 
     ax = fig.add_subplot(1,3,2) #stops per trial
+    ax.set_title('Non-Beaconed', fontsize=20, verticalalignment='bottom', style='italic')  # title
     ax.axvspan(rz_start, rz_end, facecolor='g', alpha=0.25, hatch = '/', linewidth =0) # green box spanning the rewardzone - to mark reward zone
     ax.axvspan(0, track_start, facecolor='k', alpha=0.15, hatch = '/', linewidth =0) # black box
     ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, hatch = '/', linewidth =0)# black box
@@ -242,15 +252,16 @@ def plot_fig1F(session_paths, save_path):
     ax.tick_params(axis='x', pad = 10, top='off', right = 'off', direction = 'out',width = 2, length = 7,labelsize =16)
     ax.tick_params(axis='y', pad = 10, top='off', right = 'off', direction = 'out',width = 2, length = 7,labelsize =16)
     ax.set_xlim(0,20)
-    ax.set_ylim(-10,20)
+    ax.set_ylim(-10,35)
     adjust_spines(ax, ['left','bottom']) # re;moves top and right spines
     ax.locator_params(axis = 'x', nbins=3) # set number of ticks on x axis
-    ax.locator_params(axis = 'y', nbins=4) # set number of ticks on y axis
+    ax.locator_params(axis = 'y', nbins=5) # set number of ticks on y axis
     ax.set_xticklabels(['0', '10', '20'])
-    ax.set_yticklabels(['','','',''])
+    ax.set_yticklabels(['','','','', ''])
     ax = plt.xlabel('Location (VU)', fontsize=16, labelpad = 18)
 
     ax = fig.add_subplot(1,3,3) #stops per trial
+    ax.set_title('Probe', fontsize=20, verticalalignment='bottom', style='italic')  # title
     ax.axvspan(rz_start, rz_end, facecolor='g', alpha=0.25, hatch = '/', linewidth =0) # green box spanning the rewardzone - to mark reward zone
     ax.axvspan(0, track_start, facecolor='k', alpha=0.15, hatch = '/', linewidth =0) # black box
     ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, hatch = '/', linewidth =0)# black box
@@ -264,14 +275,15 @@ def plot_fig1F(session_paths, save_path):
     ax.tick_params(axis='x', pad = 10, top='off', right = 'off', direction = 'out',width = 2, length = 7,labelsize =16)
     ax.tick_params(axis='y', pad = 10, top='off', right = 'off', direction = 'out',width = 2, length = 7,labelsize =16)
     ax.set_xlim(0,20)
-    ax.set_ylim(-10,20)
+    ax.set_ylim(-10,35)
     adjust_spines(ax, ['left','bottom']) # removes top and right spines
     ax.locator_params(axis = 'x', nbins=3) # set number of ticks on x axis
-    ax.locator_params(axis = 'y', nbins=4) # set number of ticks on y axis
+    ax.locator_params(axis = 'y', nbins=5) # set number of ticks on y axis
     ax.set_xticklabels(['0', '10', '20'])
-    ax.set_yticklabels(['','','',''])
+    ax.set_yticklabels(['','','','', ''])
 
-    plt.subplots_adjust(hspace = .35, wspace = .35,  bottom = 0.25, left = 0.15, right = 0.82, top = 0.92)
+    plt.subplots_adjust(hspace = .35, wspace = .35,  bottom = 0.25, left = 0.15, right = 0.82, top = 0.85)
+
 
     fig.savefig(save_path, dpi=200)
     plt.close()

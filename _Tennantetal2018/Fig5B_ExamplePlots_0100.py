@@ -17,7 +17,7 @@ import math
 
 
 # Load raw data: specify the HDF5 file to read data from
-filename = 'Data_Input/Behaviour_DataFiles/Task15_0100.h5' # raw data files
+filename = 'Data_Input/Behaviour_DataFiles/Task13_0300.h5' # raw data files
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in [17]]
@@ -56,7 +56,6 @@ for dcount,day in enumerate(days): #load mouse and day
         stopsdata_b = extractstops(dailymouse_b)
         stopsdata_nb = extractstops(dailymouse_nb)
         stopsdata_p = extractstops(dailymouse_p)
-        
         #get location and trial number of rewards
         reward_beac = extractrewards(dailymouse_b)
         reward_nbeac = extractrewards(dailymouse_nb)
