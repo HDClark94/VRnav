@@ -29,11 +29,12 @@ session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings
 #GAIN SPEED PARTICIPANTS
 
 days = [1]
-
+bin_length_s = 21
+'''
 # empty arrays for storing data
-track_s_b = np.zeros((len(days), len(session_paths), 21)) #''' number need changing '''
-track_s_nb = np.zeros((len(days), len(session_paths), 21)) #''' number need changing '''
-track_s_p = np.zeros((len(days), len(session_paths), 21)) #''' number need changing '''
+track_s_b = np.zeros((len(session_paths), len(days), bin_length_s)) #number need changing 
+track_s_nb = np.zeros((len(session_paths), len(days), bin_length_s)) #number need changing 
+track_s_p = np.zeros((len(session_paths), len(days), bin_length_s)) # number need changing 
 track_s_b[:, :, :] = np.nan
 track_s_nb[:, :, :] = np.nan
 track_s_p[:, :, :] = np.nan
@@ -73,21 +74,21 @@ for dcount, day in enumerate(days):  # load mouse and day
         stopsdata_p = filterstops(stopsdata_p)
 
         trialids_b = np.unique(stopsdata_b[:, 2])  # make array of unique trial numbers
-        srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_b,trialids_b)  # get average real stops & shuffled stops per lcoation bin
+        srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial_tracks(stopsdata_b,trialids_b, bin_length_s) # get average real stops & shuffled stops per lcoation bin
         zscore_b = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-        track_s_b[dcount, session_count, :] = zscore_b  # store zscores
+        track_s_b[session_count, dcount, :] = zscore_b  # store zscores
 
         if stopsdata_nb.size > 0:  # if there is non-beaconed data
             trialids_nb = np.unique(stopsdata_nb[:, 2])  # make array of unique trial numbers
-            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_nb,trialids_nb)  # get average real stops & shuffled stops per lcoation bin
+            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial_tracks(stopsdata_nb,trialids_nb, bin_length_s)  # get average real stops & shuffled stops per lcoation bin
             zscore_nb = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-            track_s_nb[dcount, session_count, :] = zscore_nb  # store zscores
+            track_s_nb[session_count, dcount, :] = zscore_nb  # store zscores
 
         if stopsdata_p.size > 0:  # if there is probe data
             trialids_p = np.unique(stopsdata_p[:, 2])  # make array of unique trial numbers
-            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_p, trialids_p)  # get average real stops & shuffled stops per lcoation bin
+            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial_tracks(stopsdata_p,trialids_p, bin_length_s)  # get average real stops & shuffled stops per lcoation bin
             zscore_p = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-            track_s_p[dcount, session_count, :] = zscore_p  # store zscores
+            track_s_p[session_count, dcount, :] = zscore_p  # store zscores
             session_count += 1
 
 
@@ -102,12 +103,12 @@ session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings
 #GAIN SPEED PARTICIPANTS
 
 days = [1]
-
+bin_length_m = 21
 
 # empty arrays for storing data
-track_m_b = np.zeros((len(days), len(session_paths), 20))
-track_m_nb = np.zeros((len(days), len(session_paths), 20))
-track_m_p = np.zeros((len(days), len(session_paths), 20))
+track_m_b = np.zeros((len(session_paths), len(days), bin_length_m))
+track_m_nb = np.zeros((len(session_paths), len(days), bin_length_m))
+track_m_p = np.zeros((len(session_paths), len(days), bin_length_m))
 track_m_b[:, :, :] = np.nan
 track_m_nb[:, :, :] = np.nan
 track_m_p[:, :, :] = np.nan
@@ -146,25 +147,27 @@ for dcount, day in enumerate(days):  # load mouse and day
         stopsdata_p = filterstops(stopsdata_p)
 
         trialids_b = np.unique(stopsdata_b[:, 2])  # make array of unique trial numbers
-        srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_b,trialids_b)  # get average real stops & shuffled stops per lcoation bin
+        srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial_tracks(stopsdata_b,trialids_b, bin_length_m)  # get average real stops & shuffled stops per lcoation bin
         zscore_b = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-        track_m_b[dcount, session_count, :] = zscore_b  # store zscores
+        track_m_b[session_count, dcount, :] = zscore_b  # store zscores
 
         if stopsdata_nb.size > 0:  # if there is non-beaconed data
             trialids_nb = np.unique(stopsdata_nb[:, 2])  # make array of unique trial numbers
-            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_nb,trialids_nb)  # get average real stops & shuffled stops per lcoation bin
+            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial_tracks(stopsdata_b,trialids_b, bin_length_m)  # get average real stops & shuffled stops per lcoation bin
             zscore_nb = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-            track_m_nb[dcount, session_count, :] = zscore_nb  # store zscores
+            track_m_nb[session_count, dcount, :] = zscore_nb  # store zscores
 
         if stopsdata_p.size > 0:  # if there is probe data
             trialids_p = np.unique(stopsdata_p[:, 2])  # make array of unique trial numbers
-            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_p,trialids_p)  # get average real stops & shuffled stops per lcoation bin
+            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial_tracks(stopsdata_b,trialids_b, bin_length_m)  # get average real stops & shuffled stops per lcoation bin
             zscore_p = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-            track_m_p[dcount, session_count, :] = zscore_p  # store zscores
+            track_m_p[session_count, dcount, :] = zscore_p  # store zscores
             session_count += 1
 
 #LOAD DATA FOR LONG TRACKS
 #CONSTANT SPEED PARTICIPANTS
+
+'''
 session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190812133404/S001',
                  '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190812150450/S001',
                  '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190813133909/S001']
