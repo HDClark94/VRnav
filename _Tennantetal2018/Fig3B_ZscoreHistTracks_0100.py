@@ -19,9 +19,13 @@ import random
 from summarize.map2legacy import *
 
 # Load raw data: specify the HDF5 file to read data from
-filename = '/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_DataFiles/Task18_0100.h5'
+#filename = '/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_DataFiles/Task18_0100.h5'
 # Load raw data: txt file that specifies days to analyse with average first stop closest to reward zone in beaconed trials
-array = np.loadtxt('/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_SummaryData/Task18_FirstDays.txt', delimiter='\t')
+#array = np.loadtxt('/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_SummaryData/Task18_FirstDays.txt', delimiter='\t')
+
+
+filename = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/Data_Input/Behaviour_DataFiles/Task18_lengths_0100.h5'
+array = np.loadtxt('/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/Data_Input/Behaviour_SummaryData/Task18_FirstDays.txt', delimiter='\t')
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(1, 20.1)]
@@ -37,7 +41,7 @@ track1_p[:, :, :] = np.nan
 
 track2_b = np.zeros((len(mice), len(days), 23));
 track2_b[:, :, :] = np.nan
-track2_nb = np.zeros((len(mice), len(days), 23));
+track2_nb = np.zeros((len(mice), len(days), 23));np
 track2_nb[:, :, :] = np.nan
 track2_p = np.zeros((len(mice), len(days), 23));
 track2_p[:, :, :] = np.nan
@@ -282,7 +286,11 @@ for dcount, day in enumerate(days):  # load mouse and day
 # Load raw data: specify the HDF5 file to read data from
 filename = '/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_DataFiles/Task19_0100.h5'
 # Load raw data: txt file that specifies days to analyse with average first stop closest to reward zone in beaconed trials
-array = np.loadtxt('/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_SummaryData/Task19_FirstDays.txt', delimiter='\t')
+#array = np.loadtxt('/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_SummaryData/Task19_FirstDays.txt', delimiter='\t')
+
+filename = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/Data_Input/Behaviour_DataFiles/Task19_0100.h5'
+array = np.loadtxt('/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/Data_Input/Behaviour_SummaryData/Task19_FirstDays.txt', delimiter='\t')
+
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(1, 46.1)]

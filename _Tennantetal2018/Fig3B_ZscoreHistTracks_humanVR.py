@@ -26,11 +26,17 @@ session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings
                  #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190731113135/S001',
                  #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190731153240/S001']
 
+
+session_paths = ['/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/TrenchRunV2.2_disparate/short/P_190812150450/S001',
+                 '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/TrenchRunV2.2_disparate/short/P_190812133404/S001']
+                 #'/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/TrenchRunV2.2_disparate/short/P_190813133909/S001',
+                 #'/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/TrenchRunV2.2_disparate/short/P_190809155704/S001']
+
 #GAIN SPEED PARTICIPANTS
 
 days = [1]
-bin_length_s = 21
-'''
+bin_length_s = 20
+
 # empty arrays for storing data
 track_s_b = np.zeros((len(session_paths), len(days), bin_length_s)) #number need changing 
 track_s_nb = np.zeros((len(session_paths), len(days), bin_length_s)) #number need changing 
@@ -55,8 +61,6 @@ for dcount, day in enumerate(days):  # load mouse and day
 
         trialarray = maketrialarray(saraharray)  # make array of trial number same size as saraharray
         saraharray[:, 9] = trialarray[:, 0]  # replace trial number because of increment error (see README.py)
-
-# loop thorugh mice and days to get data
 
         # split data by trial type
         dailymouse_b = np.delete(saraharray, np.where(saraharray[:, 8] > 0), 0)  # delete all data not on beaconed tracks
@@ -95,24 +99,27 @@ for dcount, day in enumerate(days):  # load mouse and day
 #LOAD DATA FOR MEDIUM TRACKS
 #CONSTANT SPEED PARTICIPANTS
 session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190812133404/S001',
-                '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190812150450/S001',
-                '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190813133909/S001']
+                '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190812150450/S001']
+                #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190813133909/S001'
                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190731113135/S001',
                 #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190731153240/S001']
+
+session_paths = ['/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/TrenchRunV2.2_disparate/medium/P_190809155704/S001',
+                 '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/TrenchRunV2.2_disparate/medium/P_190731153240/S001']
 
 #GAIN SPEED PARTICIPANTS
 
 days = [1]
-bin_length_m = 21
+bin_length_m = 24  # approximation of number of bins proportionate to s track length size ie. np.round(track_length_m/track_length_s *bin_length_s)
+
 
 # empty arrays for storing data
-track_m_b = np.zeros((len(session_paths), len(days), bin_length_m))
+track_m_b =  np.zeros((len(session_paths), len(days), bin_length_m))
 track_m_nb = np.zeros((len(session_paths), len(days), bin_length_m))
-track_m_p = np.zeros((len(session_paths), len(days), bin_length_m))
+track_m_p =  np.zeros((len(session_paths), len(days), bin_length_m))
 track_m_b[:, :, :] = np.nan
 track_m_nb[:, :, :] = np.nan
 track_m_p[:, :, :] = np.nan
-
 
 for dcount, day in enumerate(days):  # load mouse and day
     session_count = 0
@@ -167,21 +174,24 @@ for dcount, day in enumerate(days):  # load mouse and day
 #LOAD DATA FOR LONG TRACKS
 #CONSTANT SPEED PARTICIPANTS
 
-'''
+
 session_paths = ['/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190812133404/S001',
                  '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190812150450/S001',
                  '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190813133909/S001']
                  #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190731113135/S001',
                  #'/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190731153240/S001']
 
-#GAIN SPEED PARTICIPANTS
+session_paths = ['/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/TrenchRunV2.2_disparate/long/P_190809155704/S001',
+                 '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/TrenchRunV2.2_disparate/long/P_190731153240/S001']
+
 
 days = [1]
+bin_length_l = 31 # approximation of number of bins proportionate to s track length size ie. np.round(tracklength_l/track_length_s *bin_length_s)
 
 # empty arrays for storing data
-track_l_b = np.zeros((len(days), len(session_paths), 20))
-track_l_nb = np.zeros((len(days), len(session_paths), 20))
-track_l_p = np.zeros((len(days), len(session_paths), 20))
+track_l_b =  np.zeros((len(session_paths), len(days), bin_length_l))
+track_l_nb = np.zeros((len(session_paths), len(days), bin_length_l))
+track_l_p =  np.zeros((len(session_paths), len(days), bin_length_l))
 track_l_b[:, :, :] = np.nan
 track_l_nb[:, :, :] = np.nan
 track_l_p[:, :, :] = np.nan
@@ -220,22 +230,21 @@ for dcount, day in enumerate(days):  # load mouse and day
         stopsdata_p = filterstops(stopsdata_p)
 
 
-        trialids_b = np.unique(stopsdata_b[:, 2])  # make array of unique trial numbers
-        srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_b,trialids_b)  # get average real stops & shuffled stops per lcoation bin
-        zscore_b = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-        track_l_b[dcount, session_count, :] = zscore_b  # store zscores
-
         if stopsdata_nb.size > 0:  # if there is non-beaconed data
             trialids_nb = np.unique(stopsdata_nb[:, 2])  # make array of unique trial numbers
-            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_nb, trialids_nb)  # get average real stops & shuffled stops per lcoation bin
+            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial_tracks(stopsdata_b,
+                                                                                                  trialids_b,
+                                                                                                  bin_length_l)  # get average real stops & shuffled stops per lcoation bin
             zscore_nb = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-            track_l_nb[dcount, session_count, :] = zscore_nb  # store zscores
+            track_l_nb[session_count, dcount, :] = zscore_nb  # store zscores
 
         if stopsdata_p.size > 0:  # if there is probe data
             trialids_p = np.unique(stopsdata_p[:, 2])  # make array of unique trial numbers
-            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial3(stopsdata_p, trialids_p)  # get average real stops & shuffled stops per lcoation bin
+            srbin_mean, srbin_std, shuffled_mean, shuffled_std = shuffle_analysis_pertrial_tracks(stopsdata_b,
+                                                                                                  trialids_b,
+                                                                                                  bin_length_l)  # get average real stops & shuffled stops per lcoation bin
             zscore_p = z_score1(srbin_mean, srbin_std, shuffled_mean, shuffled_std)  # calculate z-scores
-            track_l_p[dcount, session_count, :] = zscore_p  # store zscores
+            track_l_p[session_count, dcount, :] = zscore_p  # store zscores
             session_count += 1
 
 
@@ -264,6 +273,32 @@ tracks_l_p = np.nanmean(((track_l_p[0, :, :, 1])), axis=0)
 sdtracks_l_b = np.nanmean(((track_l_p[0, :, :, 1])), axis=0)/math.sqrt(session_count)
 sdtracks_l_nb = np.nanmean(((track_l_nb[0, :, :, 1])), axis=0)/math.sqrt(session_count)
 sdtracks_l_p = np.nanmean(((track_l_p[0, :, :, 1])), axis=0)/math.sqrt(session_count)
+
+
+tracks1_b = np.nanmean(np.vstack((np.nanmean(track1_b, axis=1), np.nanmean(track1_b1, axis=1))), axis=0)
+tracks1_nb = np.nanmean(np.vstack((np.nanmean(track1_nb, axis=1), np.nanmean(track1_nb1, axis=1))), axis=0)
+tracks1_p = np.nanmean(np.vstack((np.nanmean(track1_p, axis=1), np.nanmean(track1_p1, axis=1))), axis=0)
+
+sdtracks1_b = np.nanstd(np.vstack((np.nanmean(track1_b, axis=1), np.nanmean(track1_b1, axis=1))), axis=0)
+sdtracks1_nb = np.nanstd(np.vstack((np.nanmean(track1_nb, axis=1), np.nanmean(track1_nb1, axis=1))), axis=0)
+sdtracks1_p = np.nanstd(np.vstack((np.nanmean(track1_p, axis=1), np.nanmean(track1_p1, axis=1))), axis=0)
+
+tracks2_b = np.nanmean(np.vstack((np.nanmean(track2_b, axis=1), np.nanmean(track2_b1, axis=1))), axis=0)
+tracks2_nb = np.nanmean(np.vstack((np.nanmean(track2_nb, axis=1), np.nanmean(track2_nb1, axis=1))), axis=0)
+tracks2_p = np.nanmean(np.vstack((np.nanmean(track2_p, axis=1), np.nanmean(track2_p1, axis=1))), axis=0)
+
+sdtracks2_b = np.nanstd(np.vstack((np.nanmean(track2_b, axis=1), np.nanmean(track2_b1, axis=1))), axis=0)
+sdtracks2_nb = np.nanstd(np.vstack((np.nanmean(track2_nb, axis=1), np.nanmean(track2_nb1, axis=1))), axis=0)
+sdtracks2_p = np.nanstd(np.vstack((np.nanmean(track2_p, axis=1), np.nanmean(track2_p1, axis=1))), axis=0)
+
+tracks3_b = np.nanmean(np.vstack((np.nanmean(track3_b, axis=1), np.nanmean(track3_b1, axis=1))), axis=0)
+tracks3_nb = np.nanmean(np.vstack((np.nanmean(track3_nb, axis=1), np.nanmean(track3_nb1, axis=1))), axis=0)
+tracks3_p = np.nanmean(np.vstack((np.nanmean(track3_p, axis=1), np.nanmean(track3_p1, axis=1))), axis=0)
+
+sdtracks3_b = np.nanstd(np.vstack((np.nanmean(track3_b, axis=1), np.nanmean(track3_b1, axis=1))), axis=0)
+sdtracks3_nb = np.nanstd(np.vstack((np.nanmean(track3_nb, axis=1), np.nanmean(track3_nb1, axis=1))), axis=0)
+sdtracks3_p = np.nanstd(np.vstack((np.nanmean(track3_p, axis=1), np.nanmean(track3_p1, axis=1))), axis=0)
+
 
 
 # plot data
@@ -331,7 +366,7 @@ plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.15, left=0.07, right=0.82, 
 fig.savefig('Plots/Figure3/Task18_StopHist_Tracks1' + '_0200.png', dpi=200)
 plt.close()
 
-bins1 = np.arange(0.5, 23.5, 1)
+bins1 = np.arange(0.5, 24.5, 1)
 fig = plt.figure(figsize=(13.8, 3))  # make figure, this shape (width, height)
 ax = fig.add_subplot(1, 3, 1)
 ax.axvspan(10.261, 10.261 + 1.91, facecolor='g', alpha=0.2, hatch='/',
@@ -390,7 +425,7 @@ plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.15, left=0.07, right=0.82, 
 fig.savefig('Plots/Figure3/Task18_StopHist_Tracks2' + '_0200.png', dpi=200)
 plt.close()
 
-bins1 = np.arange(0.5, 29.5, 1)
+bins1 = np.arange(0.5, 31.5, 1)
 fig = plt.figure(figsize=(16.5, 3))  # make figure, this shape (width, height)
 ax = fig.add_subplot(1, 3, 1)
 ax.axvspan(11.241, 11.241 + 1.517, facecolor='g', alpha=0.2, hatch='/',
@@ -452,188 +487,9 @@ plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.15, left=0.07, right=0.82, 
 fig.savefig('Plots/Figure3/Task18_StopHist_Tracks3' + '_0200.png', dpi=200)
 plt.close()
 
-bins1 = np.arange(0.5, 33.5, 1)
-fig = plt.figure(figsize=(20.52, 3))  # make figure, this shape (width, height)
-ax = fig.add_subplot(1, 3, 1)
-ax.axvspan(13.89, 13.89 + 1.325, facecolor='g', alpha=0.2, hatch='/',
-           linewidth=0)  # green box spanning the rewardzone - to mark reward zone
-ax.axvspan(0, 1.81, facecolor='k', alpha=0.2, hatch='/', linewidth=0)  # black box
-ax.axvspan(20 - 1.81, 20, facecolor='k', alpha=0.2, hatch='/', linewidth=0)  # black box
-ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
-ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-ax.plot(bins1, tracks4_b, color='Black', label='Track 3')  # plot becaoned trials
-ax.fill_between(bins1, tracks4_b - sdtracks4_b, tracks4_b + sdtracks4_b, facecolor='Black', alpha=0.3)
-ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.set_xlim(0, 20)
-adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-ax.locator_params(axis='x', nbins=6)  # set number of ticks on x axis
-ax.locator_params(axis='y', nbins=2)  # set number of ticks on y axis
-ax.set_xticklabels(['', '', '', '', ''])
-ax.set_ylabel('Stops (cm)', fontsize=16, labelpad=18)
-
-ax = fig.add_subplot(1, 3, 2)
-ax.axvspan(13.89, 13.89 + 1.325, facecolor='g', alpha=0.2, hatch='/',
-           linewidth=0)  # green box spanning the rewardzone - to mark reward zone
-ax.axvspan(0, 1.81, facecolor='k', alpha=0.2, hatch='/', linewidth=0)  # black box
-ax.axvspan(20 - 1.81, 20, facecolor='k', alpha=0.2, hatch='/', linewidth=0)  # black box
-ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
-ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-ax.plot(bins1, tracks4_nb, color='Black', label='Track 3')  # plot becaoned trials
-ax.fill_between(bins1, tracks4_nb - sdtracks4_nb, tracks4_nb + sdtracks4_nb, facecolor='Black', alpha=0.3)
-ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.set_xlim(0, 20)
-adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-ax.locator_params(axis='x', nbins=6)  # set number of ticks on x axis
-ax.locator_params(axis='y', nbins=2)  # set number of ticks on y axis
-ax.set_xticklabels(['', '', '', '', ''])
-ax.set_yticklabels(['', '', ''])
-
-ax = fig.add_subplot(1, 3, 3)
-ax.axvspan(23.05, 23.05 + 2.2, facecolor='g', alpha=0.2, hatch='/',
-           linewidth=0)  # green box spanning the rewardzone - to mark reward zone
-ax.axvspan(0, 3, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvspan(33 - 3, 33, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
-ax.axhline(-0.5, linewidth=3, color='black')  # bold line on the x axis
-ax.plot(bins1, tracks4_b, color='blue', label='Track 4')  # plot becaoned trials
-ax.fill_between(bins1, tracks4_b - sdtracks4_b, tracks4_b + sdtracks4_b, facecolor='blue', alpha=0.3)
-ax.plot(bins1, tracks4_p, color='red', label='Track 4')  # plot becaoned trials
-ax.fill_between(bins1, tracks4_p - sdtracks4_p, tracks4_p + sdtracks4_p, facecolor='red', alpha=0.3)
-ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.set_xlim(0, 33)
-adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-ax.locator_params(axis='x', nbins=6)  # set number of ticks on x axis
-ax.locator_params(axis='y', nbins=2)  # set number of ticks on y axis
-ax.set_xticklabels(['', '', '', '', ''])
-plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.15, left=0.07, right=0.82, top=0.92)
-fig.savefig('Plots/Figure3/Task18_StopHist_Tracks4' + '_0200.png', dpi=200)
-plt.close()
-
-bins1 = np.arange(0.5, 43.5, 1)
-fig = plt.figure(figsize=(27.48, 3))  # make figure, this shape (width, height)
-ax = fig.add_subplot(1, 3, 1)
-ax.axvspan(15.4, 15.4 + 1.023, facecolor='g', alpha=0.2, hatch='/',
-           linewidth=0)  # green box spanning the rewardzone - to mark reward zone
-ax.axvspan(0, 1.4, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvspan(20 - 1.4, 20, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
-ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-ax.plot(bins1, tracks5_b, color='Black', label='Track 5')  # plot becaoned trials
-ax.fill_between(bins1, tracks5_b - sdtracks5_b, tracks5_b + sdtracks5_b, facecolor='Black', alpha=0.3)
-ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.set_xlim(0, 20)
-adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-ax.locator_params(axis='x', nbins=6)  # set number of ticks on x axis
-ax.locator_params(axis='y', nbins=2)  # set number of ticks on y axis
-ax.set_xticklabels(['', '', '', '', ''])
-ax.set_ylabel('Stops (cm)', fontsize=16, labelpad=18)
-
-ax = fig.add_subplot(1, 3, 2)
-ax.axvspan(15.4, 15.4 + 1.023, facecolor='g', alpha=0.2, hatch='/',
-           linewidth=0)  # green box spanning the rewardzone - to mark reward zone
-ax.axvspan(0, 1.4, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvspan(20 - 1.4, 20, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
-ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-ax.plot(bins1, tracks5_nb, color='Black', label='Track 5')  # plot becaoned trials
-ax.fill_between(bins1, tracks5_nb - sdtracks5_nb, tracks5_nb + sdtracks5_nb, facecolor='Black', alpha=0.3)
-ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.set_xlim(0, 20)
-adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-ax.locator_params(axis='x', nbins=6)  # set number of ticks on x axis
-ax.locator_params(axis='y', nbins=2)  # set number of ticks on y axis
-ax.set_xticklabels(['', '', '', '', ''])
-ax.set_yticklabels(['', '', ''])
-
-ax = fig.add_subplot(1, 3, 3)
-ax.axvspan(15.4, 15.4 + 1.023, facecolor='g', alpha=0.2, hatch='/',
-           linewidth=0)  # green box spanning the rewardzone - to mark reward zone
-ax.axvspan(0, 1.4, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvspan(20 - 1.4, 20, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
-ax.plot(bins1, tracks5_b, color='blue', label='Track 5')  # plot becaoned trials
-ax.fill_between(bins1, tracks5_b - sdtracks5_b, tracks5_b + sdtracks5_b, facecolor='blue', alpha=0.3)
-ax.plot(bins1, tracks5_p, color='red', label='Track 5')  # plot becaoned trials
-ax.fill_between(bins1, tracks5_p - sdtracks5_p, tracks5_p + sdtracks5_p, facecolor='red', alpha=0.3)
-ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.set_xlim(0, 43)
-adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-ax.locator_params(axis='x', nbins=6)  # set number of ticks on x axis
-ax.locator_params(axis='y', nbins=2)  # set number of ticks on y axis
-ax.set_xticklabels(['', '', '', '', ''])
-plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.15, left=0.07, right=0.82, top=0.92)
-fig.savefig('Plots/Figure3/Task18_StopHist_Tracks5' + '_0200.png', dpi=200)
-plt.close()
-
-bins1 = np.arange(0.5, 59.5, 1)
-fig = plt.figure(figsize=(35.34, 3))  # make figure, this shape (width, height)
-ax = fig.add_subplot(1, 3, 1)
-ax.axvspan(16.3, 16.3 + 0.736, facecolor='g', alpha=0.2, hatch='/',
-           linewidth=0)  # green box spanning the rewardzone - to mark reward zone
-ax.axvspan(0, 1, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvspan(20 - 1, 20, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
-ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-ax.plot(bins1, tracks6_b, color='Black', label='Track 5')  # plot becaoned trials
-ax.fill_between(bins1, tracks6_b - sdtracks6_b, tracks6_b + sdtracks6_b, facecolor='Black', alpha=0.3)
-ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.set_xlim(0, 20)
-# ax.set_ylim(0,1)
-adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-ax.locator_params(axis='x', nbins=6)  # set number of ticks on x axis
-ax.locator_params(axis='y', nbins=2)  # set number of ticks on y axis
-ax.set_xticklabels(['', '', '', '', ''])
-ax.set_ylabel('Stops (cm)', fontsize=16, labelpad=18)
-
-ax = fig.add_subplot(1, 3, 2)
-ax.axvspan(16.3, 16.3 + 0.736, facecolor='g', alpha=0.2, hatch='/',
-           linewidth=0)  # green box spanning the rewardzone - to mark reward zone
-ax.axvspan(0, 1, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvspan(20 - 1, 20, facecolor='k', alpha=0.1, hatch='/', linewidth=0)  # black box
-ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
-ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-ax.plot(bins1, tracks6_nb, color='Black', label='Track 5')  # plot becaoned trials
-ax.fill_between(bins1, tracks6_nb - sdtracks6_nb, tracks6_nb + sdtracks6_nb, facecolor='Black', alpha=0.3)
-ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.set_xlim(0, 20)
-# ax.set_ylim(0,1)
-adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-ax.locator_params(axis='x', nbins=6)  # set number of ticks on x axis
-ax.locator_params(axis='y', nbins=2)  # set number of ticks on y axis
-ax.set_xticklabels(['', '', '', '', ''])
-ax.set_yticklabels(['', '', ''])
-
-ax = fig.add_subplot(1, 3, 3)
-ax.axvspan(48.1, 48.1 + 2.2, facecolor='g', alpha=0.25, hatch='/',
-           linewidth=0)  # green box spanning the rewardzone - to mark reward zone
-ax.axvspan(0, 3, facecolor='k', alpha=0.15, hatch='/', linewidth=0)  # black box
-ax.axvspan(59 - 3, 59, facecolor='k', alpha=0.15, hatch='/', linewidth=0)  # black box
-ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
-ax.axhline(-0.25, linewidth=3, color='black')  # bold line on the x axis
-ax.plot(bins1, tracks6_b, color='blue', label='Track 6')  # plot becaoned trials
-ax.fill_between(bins1, tracks6_b - sdtracks6_b, tracks6_b + sdtracks6_b, facecolor='blue', alpha=0.3)
-ax.plot(bins1, tracks6_p, color='red', label='Track 6')  # plot becaoned trials
-ax.fill_between(bins1, tracks6_p - sdtracks6_p, tracks6_p + sdtracks6_p, facecolor='red', alpha=0.3)
-ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=7, labelsize=16)
-ax.set_xlim(0, 59)
-ax.set_ylim(-0.25, 0.65)
-adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
-ax.locator_params(axis='x', nbins=6)  # set number of ticks on x axis
-ax.locator_params(axis='y', nbins=6)  # set number of ticks on y axis
-ax.set_xticklabels(['', '', '', '', ''])
-
-plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.15, left=0.07, right=0.82, top=0.92)
 
 fig.savefig('/Users/emmamather-pike/PycharmProjects/data/plots/Fig1F2_S_ZScoreHist_BP'+'.png' + '_.png', dpi=200)
 plt.close()
 
 # save data for R
+
