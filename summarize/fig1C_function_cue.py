@@ -16,13 +16,28 @@ def plot_fig1C(session_path):
 
     bins = np.arange(0.5, 20.5, 1)  # array of bins for location
 
-    saraharray, track_start, track_end, reward_start, reward_end, _, _, = translate_to_legacy_format(session_path)
+    saraharray, track_start, track_end, reward_start, reward_end, cue_start, cue_end = translate_to_legacy_format(session_path)
 
     rz_start = saraharray[0, 11]
     rz_end = saraharray[0, 12]
 
+    # correct saraharray for rz shift
+    #diff = track_end - rz_end
+    #saraharray = correct_offset(saraharray, diff)
+
     trialno = np.max(saraharray[:, 9])  # total number of trials for that day and mouse (used later for defining y axis max)
 
+    # correct shift
+    diff = saraharray[:, 11].copy()
+
+    saraharray[:, 1] = saraharray[:, 1] - diff
+    saraharray[:, 11] = saraharray[:, 11] - diff
+    saraharray[:, 12] = saraharray[:, 12] - diff
+
+    # put back relative to first
+    saraharray[:, 1]+= rz_start
+    saraharray[:, 11] += rz_start
+    saraharray[:, 12] += rz_start
 
     # Extract data for beaconed, non-beaconed, probe
     dailymouse_b = np.delete(saraharray, np.where(saraharray[:, 8] > 0), 0)  # delete all data not on beaconed tracks
@@ -80,7 +95,7 @@ def plot_fig1C(session_path):
         ax.set_title('Beaconed trials', fontsize=22, verticalalignment='bottom', style='italic')
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0], facecolor='k', linewidth=0, alpha=0.15)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', linewidth=0, alpha=0.15)  # black box
         ax.axvspan(track_end[0], 20, facecolor='k', linewidth=0, alpha=0.15)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
@@ -114,7 +129,7 @@ def plot_fig1C(session_path):
         ax.set_title('Non-beaconed trials', fontsize=22, style='italic', verticalalignment='bottom')
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0], facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
@@ -146,7 +161,7 @@ def plot_fig1C(session_path):
         ax.set_title('Probe trials', fontsize=22, style='italic', verticalalignment='bottom')
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0], facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
@@ -171,7 +186,7 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 4)
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0], facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(-0.05, linewidth=3, color='black')
@@ -198,7 +213,7 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 5)
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0], facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(-0.05, linewidth=3, color='black')
@@ -225,7 +240,7 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 6)
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0], facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axhline(-0.05, linewidth=3, color='black')
         ax.axvline(0, linewidth=3, color='black')
@@ -250,7 +265,7 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 7)
         ax.axvspan(rz_start*5, rz_end*5, facecolor='g', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0]*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0]*5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(0, linewidth=3, color='black')
@@ -274,9 +289,9 @@ def plot_fig1C(session_path):
 
         # avg stops histogram - non beaconed
         ax = fig.add_subplot(3, 3, 8)
-        ax.axvspan(rz_start[0]*5, rz_end[0]*5, facecolor='g', alpha=0.2,
+        ax.axvspan(rz_start*5, rz_end*5, facecolor='g', alpha=0.2,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0]*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0]*5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(0, linewidth=3, color='black')
@@ -300,7 +315,7 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 9)
         ax.axvspan(rz_start*5, rz_end*5, facecolor='g', alpha=0.3,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0]*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0]*5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(0, linewidth=3, color='black')
@@ -330,7 +345,7 @@ def plot_fig1C(session_path):
         ax.set_title('Beaconed trials', fontsize=18, verticalalignment='bottom', style='italic')
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0], facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
@@ -365,7 +380,7 @@ def plot_fig1C(session_path):
         ax.set_title('Non-beaconed trials', fontsize=18, style='italic', verticalalignment='bottom')
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0], facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
@@ -397,7 +412,7 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 4)
         ax.axvspan(rz_start * 5, rz_end * 5, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0] * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0] * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(-0.05, linewidth=3, color='black')
@@ -423,7 +438,7 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 5)
         ax.axvspan(rz_start * 5, rz_end * 5, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0] * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0] * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(-0.05, linewidth=3, color='black')
@@ -451,7 +466,7 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 7)
         ax.axvspan(rz_start * 5, rz_end * 5, facecolor='g', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0] * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0] * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(0, linewidth=3, color='black')
@@ -478,7 +493,7 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 8)
         ax.axvspan(rz_start * 5, rz_end * 5, facecolor='g', alpha=0.2,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start[0] * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvspan(track_end[0] * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(0, linewidth=3, color='black')
