@@ -251,7 +251,7 @@ def shuffle_analysis_pertrial3(stopsdata, trialids):
         return np.zeros((BINNR, )), np.zeros((BINNR, )), np.zeros((BINNR, )), np.zeros((BINNR, ))
     SHUFFLE1 = 100
     # Calculate stop rate for each section of the track
-    srbin = create_srdata( stopsdata, trialids )                        # Array(BINNR, trialnum)
+    srbin = create_srdata(stopsdata, trialids)                        # Array(BINNR, trialnum)
     srbin_mean = np.mean(srbin, axis=0)                                 # Array(BINNR)
     srbin_std = stats.sem(srbin, axis=0)                                 # Array(BINNR)
     # Shuffling random 100 trials 1000 times
@@ -348,7 +348,30 @@ def FirstStops( trarray,stops ):
                 break # break so only get first stop then goes onto next trial
     return np.array(data)
 
+# CALCULATE FIRST STOPPING LOCATION PER TRIAL
+def FirstStops_humans( trarray,stops, track_start, track_end):
+    data = []
+    for row in trarray: # for each trial
+        tarray = stops[stops[:,2] ==row,:] # get data only for each trial
+        for row in tarray: # go through row of data for specified trial
+            if float(row[0]) > track_start and float(row[0]) <= track_end: # if stop is between black boxes
+                data.append([float(row[0]), int(row[1]), int(row[2])]) # append data
+                break # break so only get first stop then goes onto next trial
+    return np.array(data)
 
+# CALCULATE FIRST STOPPING LOCATION PER TRIAL gives same shape output as number of trials
+def FirstStops_alltrials( trarray,stops , track_start, track_end):
+    data = []
+    for row in trarray: # for each trial
+        tarray = stops[stops[:,2] ==row,:] # get data only for each trial
+        for row in tarray: # go through row of data for specified trial
+            if float(row[0]) > track_start and float(row[0]) <= track_end: # if stop is between black boxes
+                data.append([float(row[0]), int(row[1]), int(row[2])]) # append data
+                break # break so only get first stop then goes onto next trial
+            else:
+                data.append([np.nan, np.nan, int(row[2])])  # append data
+
+    return np.array(data)
 
 # CALCULATE TIME OF FIRST STOP
 def FirstStopTime( trarray,stops ):
@@ -576,6 +599,30 @@ def makelegend4(fig,ax):
     leg = fig.legend(handles,labels, loc="baseline right", bbox_to_anchor=(0.716, 0.6), fontsize = "large")
     for l in leg.get_lines():l.set_linewidth(2)
     frame  = leg.get_frame()
+    frame.set_edgecolor('w')
+    frame.set_alpha(0.2)
+
+def makelegend_upright(fig,ax):
+    handles, labels = ax.get_legend_handles_labels()
+    leg = fig.legend(handles, labels, loc="baseline right", bbox_to_anchor=(0.976, 0.9), fontsize="large")
+    for l in leg.get_lines(): l.set_linewidth(2)
+    frame = leg.get_frame()
+    frame.set_edgecolor('w')
+    frame.set_alpha(0.2)
+
+def makelegend_midright(fig,ax):
+    handles, labels = ax.get_legend_handles_labels()
+    leg = fig.legend(handles, labels, loc="baseline right", bbox_to_anchor=(0.976, 0.6), fontsize="large")
+    for l in leg.get_lines(): l.set_linewidth(2)
+    frame = leg.get_frame()
+    frame.set_edgecolor('w')
+    frame.set_alpha(0.2)
+
+def makelegend_lowright(fig,ax):
+    handles, labels = ax.get_legend_handles_labels()
+    leg = fig.legend(handles, labels, loc="baseline right", bbox_to_anchor=(0.976, 0.3), fontsize="large")
+    for l in leg.get_lines(): l.set_linewidth(2)
+    frame = leg.get_frame()
     frame.set_edgecolor('w')
     frame.set_alpha(0.2)
 

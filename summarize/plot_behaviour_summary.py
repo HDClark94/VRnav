@@ -65,7 +65,7 @@ def main():
     recording_folder_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings'
 
     #recording_folder_path = '/home/harry/Harry_ard/test_recordings'
-    update_summary_plots(recording_folder_path, override=True)
+    update_summary_plots(recording_folder_path, override=False)
 
 
 if __name__ == '__main__':

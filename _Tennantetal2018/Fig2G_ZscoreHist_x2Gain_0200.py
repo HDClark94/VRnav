@@ -83,7 +83,7 @@ for mcount,mouse in enumerate(mice):
 
 
 # Load raw data: specify the HDF5 file to read data from
-filename = 'Data_Input/Behaviour_DataFiles/Task19_0100.h5'
+filename = 'Data_Input/Behaviour_DataFiles/Task18_0100.h5'
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(15,46.1)]

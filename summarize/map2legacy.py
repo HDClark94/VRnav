@@ -10,8 +10,15 @@ def translate_to_legacy_format(session_path, scale=True):
     #trial_results = split_stop_data_by_block(trial_results, block=2)  # only use block 2, this ejects habituation block 1
     trial_results = extract_speeds_same_length(trial_results, session_path)  # adds speeds to dataframe
 
-    track_start = trial_results["Track Start"].iloc[0]
-    track_end = trial_results["Track End"].iloc[0]
+    track_start = np.asarray(trial_results["Track Start"])
+    track_end = np.asarray(trial_results["Track End"])
+    reward_start = np.asarray(trial_results["Reward Boundary Min"])
+    reward_end =   np.asarray(trial_results["Reward Boundary Max"])
+    cue_start = np.asarray(trial_results["Cue Boundary Max"])
+    cue_end = np.asarray(trial_results["Cue Boundary Max"])
+
+    #teleport_tos = np.asarray(trial_results["Teleport to"])
+    #telport_froms = np.asarray(trial_results["Teleport from"])
 
     for index, _ in trial_results.iterrows():
 
@@ -47,15 +54,22 @@ def translate_to_legacy_format(session_path, scale=True):
 
     if scale:
         legacy_array[:, 1] =  scale_vu(legacy_array[:, 1],  vu_range, min_xpos, max_xpos)  # location
-        legacy_array[:, 2] = scale_vu_speed(legacy_array[:, 2], vu_range, min_xpos, max_xpos)  # location
-        legacy_array[:, 3] = scale_vu_speed(legacy_array[:, 3], vu_range, min_xpos, max_xpos)  # location
+        legacy_array[:, 2] =  scale_vu_speed(legacy_array[:, 2], vu_range, min_xpos, max_xpos)  # location
+        legacy_array[:, 3] =  scale_vu_speed(legacy_array[:, 3], vu_range, min_xpos, max_xpos)  # location
         legacy_array[:, 11] = scale_vu(legacy_array[:, 11], vu_range, min_xpos, max_xpos)  # rz start
         legacy_array[:, 12] = scale_vu(legacy_array[:, 12], vu_range, min_xpos, max_xpos)  # rz end
 
         track_start = scale_vu(track_start, vu_range, min_xpos, max_xpos)
         track_end =   scale_vu(track_end,   vu_range, min_xpos, max_xpos)
 
-    return legacy_array, track_start, track_end
+        reward_start = scale_vu(reward_start, vu_range, min_xpos, max_xpos)
+        reward_end = scale_vu(reward_end, vu_range, min_xpos, max_xpos)
+
+        cue_start = scale_vu(cue_start, vu_range, min_xpos, max_xpos)
+        cue_end = scale_vu(cue_end, vu_range, min_xpos, max_xpos)
+
+
+    return legacy_array, track_start, track_end, reward_start, reward_end, cue_start, cue_end
 
 
 # ==================================================================================================================================#

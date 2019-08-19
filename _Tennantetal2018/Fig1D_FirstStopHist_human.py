@@ -17,7 +17,8 @@ import math
 from scipy.stats import uniform
 from summarize.map2legacy import *
 
-session_path = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/Oculus VR/test_vr_recordings/basic_settings_medium/Harry3/S001'
+#session_path = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/Oculus VR/test_vr_recordings/basic_settings_medium/Harry3/S001'
+session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190729100324/S001'
 
 # Arrays for storing data (output)
 firststopstorebeac = np.zeros((len(days), len(mice), 20,2));firststopstorenbeac = np.zeros((len(days), len(mice), 20,2));firststopstoreprobe = np.zeros((len(days), len(mice), 20,2))
@@ -28,7 +29,7 @@ try:
     saraharray = readhdfdata(filename,day,mouse,'raw_data')
 except KeyError:
     print ('Error, no file')
-    continue
+continue
 print('##...', mcount,day, '...##')
 
 # make array of trial number for each row in dataset

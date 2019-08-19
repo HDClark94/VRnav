@@ -8,7 +8,7 @@ For each mouse and day specified, the location of stops for each trial is calcul
 # Import functions and packages
 from _Tennantetal2018.Functions_Core_0100 import extractstops, extractstops_HUMAN, filterstops, create_srdata, makebinarray, speed_per_trial, makelegend, \
     makelegend2, makelegend3, makelegend4, shuffle_analysis_pertrial3, extractrewards, adjust_spines, readhdfdata, \
-    FirstStops, maketrialarray
+    FirstStops_humans, maketrialarray
 from summarize.map2legacy import *
 import numpy as np
 
@@ -16,19 +16,32 @@ def plot_fig1C(session_path):
 
     bins = np.arange(0.5, 20.5, 1)  # array of bins for location
 
-    saraharray, track_start, track_end = translate_to_legacy_format(session_path)
+    saraharray, track_start, track_end, reward_start, reward_end, cue_start, cue_end = translate_to_legacy_format(session_path)
 
     rz_start = saraharray[0, 11]
     rz_end = saraharray[0, 12]
 
+    # correct saraharray for rz shift
+    #diff = track_end - rz_end
+    #saraharray = correct_offset(saraharray, diff)
+
     trialno = np.max(saraharray[:, 9])  # total number of trials for that day and mouse (used later for defining y axis max)
 
+    # correct shift
+    diff = saraharray[:, 11].copy()
+
+    saraharray[:, 1] = saraharray[:, 1] - diff
+    saraharray[:, 11] = saraharray[:, 11] - diff
+    saraharray[:, 12] = saraharray[:, 12] - diff
+
+    # put back relative to first
+    saraharray[:, 1]+= rz_start
+    saraharray[:, 11] += rz_start
+    saraharray[:, 12] += rz_start
 
     # Extract data for beaconed, non-beaconed, probe
-    dailymouse_b = np.delete(saraharray, np.where(saraharray[:, 8] > 0),
-                             0)  # delete all data not on beaconed tracks
-    dailymouse_nb = np.delete(saraharray, np.where(saraharray[:, 8] != 10),
-                              0)  # delete all data not on non beaconed tracks
+    dailymouse_b = np.delete(saraharray, np.where(saraharray[:, 8] > 0), 0)  # delete all data not on beaconed tracks
+    dailymouse_nb = np.delete(saraharray, np.where(saraharray[:, 8] != 10), 0)  # delete all data not on non beaconed tracks
     dailymouse_p = np.delete(saraharray, np.where(saraharray[:, 8] != 20), 0)  # delete all data not on probe tracks
 
     # extract stops
@@ -39,6 +52,7 @@ def plot_fig1C(session_path):
     # get location and trial number of rewards
     reward_beac = extractrewards(dailymouse_b)
     reward_nbeac = extractrewards(dailymouse_nb)
+    reward_probe = extractrewards(dailymouse_p)
 
     # filter stops (removes stops 0.5 cm after a stop)
     stopsdata_b = filterstops(stopsdata_b)
@@ -47,35 +61,31 @@ def plot_fig1C(session_path):
 
     # extract trial numbers from data (only unique ones)
     trialids_b = np.unique(stopsdata_b[:, 2])
-    if stopsdata_nb.size > 0: # if there are non-beaconed trails
-        trialids_nb = np.unique(stopsdata_nb[:, 2])
+    trialids_nb = np.unique(stopsdata_nb[:, 2])
+
     if stopsdata_p.size > 0:  # if there are probe trials
         trialids_p = np.unique(stopsdata_p[:, 2])
 
     # get mean stops per bin for real and shuffled data
     srbin_mean_b, srbin_std_b, shuffled_mean_b, shuffled_std_b = shuffle_analysis_pertrial3(stopsdata_b, trialids_b)
-    if stopsdata_nb.size > 0:
-        srbin_mean_nb, srbin_std_nb, shuffled_mean_nb, shuffled_std_nb = shuffle_analysis_pertrial3(stopsdata_nb,
-                                                                                                trialids_nb)
+    srbin_mean_nb, srbin_std_nb, shuffled_mean_nb, shuffled_std_nb = shuffle_analysis_pertrial3(stopsdata_nb, trialids_nb)
     if stopsdata_p.size > 0:
-        srbin_mean_p, srbin_std_p, shuffled_mean_p, shuffled_std_p = shuffle_analysis_pertrial3(stopsdata_p,
-                                                                                                trialids_p)
+        srbin_mean_p, srbin_std_p, shuffled_mean_p, shuffled_std_p = shuffle_analysis_pertrial3(stopsdata_p, trialids_p)
 
     # calculate average speed
     speed_beaconed = speed_per_trial(bins, saraharray, trialids_b)
-    if stopsdata_nb.size > 0:
-        speed_nbeaconed = speed_per_trial(bins, saraharray, trialids_nb)
-        sd_speed_nbeaconed = np.nanstd(speed_nbeaconed, axis=1)
+    speed_nbeaconed = speed_per_trial(bins, saraharray, trialids_nb)
     if stopsdata_p.size > 0:  # if there are probe trials
         speed_probe = speed_per_trial(bins, saraharray, trialids_p)
         sd_speed_probe = np.nanstd(speed_probe, axis=1)
 
     sd_speed_beaconed = np.nanstd(speed_beaconed, axis=1)
+    sd_speed_nbeaconed = np.nanstd(speed_nbeaconed, axis=1)
     speed_beaconed = np.nanmean(speed_beaconed, axis=1)
-    if stopsdata_nb.size > 0:
-        speed_nbeaconed = np.nanmean(speed_nbeaconed, axis=1)
+    speed_nbeaconed = np.nanmean(speed_nbeaconed, axis=1)
     if stopsdata_p.size > 0:  # if there are probe trials
         speed_probe = np.nanmean(speed_probe, axis=1)
+
 
     # plot graphs:
     if stopsdata_p.size > 0:  # if there are probe trials, plot 3x3 subplots
@@ -85,14 +95,22 @@ def plot_fig1C(session_path):
         ax.set_title('Beaconed trials', fontsize=22, verticalalignment='bottom', style='italic')
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start, facecolor='k', linewidth=0, alpha=0.15)  # black box
-        ax.axvspan(track_end, 20, facecolor='k', linewidth=0, alpha=0.15)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', linewidth=0, alpha=0.15)  # black box
+        ax.axvspan(track_end[0], 20, facecolor='k', linewidth=0, alpha=0.15)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
-        ax.plot(stopsdata_b[:, 0], stopsdata_b[:, 2], 'o', color='Black', markersize=4.5,
-                label='Stop')  # plot becaoned trials
-        ax.plot(reward_beac[:, 0], reward_beac[:, 2], '>', color='Red', markersize=6,
-                label='Reward')  # plot becaoned trials
+        try:
+            ax.plot(stopsdata_b[:, 0], stopsdata_b[:, 2], 'o', color='Black', markersize=4.5,
+                    label='Stop')  # plot beaconed trials
+        except IndexError:
+            print("no stops to be plotted")
+
+        try:
+            ax.plot(reward_beac[:, 0], reward_beac[:, 2], '>', color='Red', markersize=6,
+                    label='Reward')  # plot beaconed trials
+        except IndexError:
+            print("no rewards to be plotted")
+
         ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
                        labelsize=18)
         ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
@@ -111,8 +129,8 @@ def plot_fig1C(session_path):
         ax.set_title('Non-beaconed trials', fontsize=22, style='italic', verticalalignment='bottom')
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
         try:
@@ -143,8 +161,8 @@ def plot_fig1C(session_path):
         ax.set_title('Probe trials', fontsize=22, style='italic', verticalalignment='bottom')
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
         try:
@@ -168,8 +186,8 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 4)
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(-0.05, linewidth=3, color='black')
         ax.plot(bins, srbin_mean_b, color='red', linewidth=2)  # plot becaoned trials
@@ -195,8 +213,8 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 5)
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(-0.05, linewidth=3, color='black')
         ax.plot(bins, srbin_mean_nb, color='red', linewidth=2, label='Real')  # plot becaoned trials
@@ -222,8 +240,8 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 6)
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axhline(-0.05, linewidth=3, color='black')
         ax.axvline(0, linewidth=3, color='black')
         ax.plot(bins, srbin_mean_p, color='red', linewidth=2)  # plot becaoned trials
@@ -247,8 +265,8 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 7)
         ax.axvspan(rz_start*5, rz_end*5, facecolor='g', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end*5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0]*5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(0, linewidth=3, color='black')
         ax.plot(bins * 5, speed_beaconed, '-', markersize=2, color='Black', linewidth=1)  # plot becaoned trials
@@ -259,21 +277,22 @@ def plot_fig1C(session_path):
         ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
                        labelsize=18)
         ax.set_xlim(0, 101)
-        ax.set_ylim(0)
+        ax.set_ylim(0, 4.5)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_ylabel('Speed (VU/s)', fontsize=18, labelpad=20)
         #ax.set(ylabel='Speed (VU/s)')
 
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
-        ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
         ax.set_xticklabels(['0', '10', '20'])
+        ax.set_yticklabels(['0','2','4'])
 
         # avg stops histogram - non beaconed
         ax = fig.add_subplot(3, 3, 8)
         ax.axvspan(rz_start*5, rz_end*5, facecolor='g', alpha=0.2,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end*5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0]*5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(0, linewidth=3, color='black')
         ax.plot(bins * 5, speed_nbeaconed, '-', markersize=2, color='Black',
@@ -286,9 +305,9 @@ def plot_fig1C(session_path):
                        labelsize=18)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_xlim(0, 101)
-        ax.set_ylim(0)
+        ax.set_ylim(0, 4.5)
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
-        ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
         ax.set_yticklabels(['', '', ''])
         ax.set_xticklabels(['0', '10', '20'])
         ax.set_xlabel('Location (VU)', fontsize=18, labelpad=20)
@@ -296,8 +315,8 @@ def plot_fig1C(session_path):
         ax = fig.add_subplot(3, 3, 9)
         ax.axvspan(rz_start*5, rz_end*5, facecolor='g', alpha=0.3,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end*5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start*5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0]*5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(0, linewidth=3, color='black')
         ax.plot(bins * 5, speed_probe, '-', markersize=2, color='Black', linewidth=1)  # plot becaoned trials
@@ -309,9 +328,9 @@ def plot_fig1C(session_path):
                        labelsize=18)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_xlim(0, 101)
-        ax.set_ylim(0)
+        ax.set_ylim(0, 4.5)
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
-        ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
         ax.set_yticklabels(['', '', ''])
         ax.set_xticklabels(['0', '10', '20'])
 
@@ -320,14 +339,14 @@ def plot_fig1C(session_path):
                     dpi=200)
         plt.close()
 
-    else:  # if there are only beaconed trails, plot 1x3 subplots -> stops per trial, average stops, speed for beaconed trials
+    else:  # if there is no probe trials, plot 2x3 subplots -> stops per trial, average stops, speed for beaconed and non-beaconed trials
         fig = plt.figure(figsize=(12, 12))
         ax = fig.add_subplot(3, 3, 1)  # stops per trial
         ax.set_title('Beaconed trials', fontsize=18, verticalalignment='bottom', style='italic')
         ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end, 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
         ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
         try:
@@ -356,19 +375,51 @@ def plot_fig1C(session_path):
         ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
         ax.set_xticklabels(['', '', ''])
 
-        #average stops
+
+        ax = fig.add_subplot(3, 3, 2)  # stops per trial
+        ax.set_title('Non-beaconed trials', fontsize=18, style='italic', verticalalignment='bottom')
+        ax.axvspan(rz_start, rz_end, facecolor='DarkGreen', alpha=0.25,
+                   linewidth=0)  # green box spanning the rewardzone to mark reward zone
+        #ax.axvspan(0, track_start, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0], 20, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvline(0, linewidth=3, color='black')  # bold line on the y axis
+        ax.axhline(0, linewidth=3, color='black')  # bold line on the x axis
+
+        try:
+            ax.plot(stopsdata_nb[:, 0], stopsdata_nb[:, 2], 'o', color='Black',
+                    markersize=4.5)  # plot becaoned trials
+        except IndexError:
+            print("Error exception because there's no stops to plot")
+
+        try:
+            ax.plot(reward_nbeac[:, 0], reward_nbeac[:, 2], '>', color='Red', markersize=6,
+                    label='Reward')  # plot becaoned trials
+        except IndexError:
+            print("Error exception because theres no rewards to plot")
+
+        ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
+                       labelsize=18)
+        ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
+                       labelsize=18)
+        ax.set_xlim(0, 20)
+        ax.set_ylim(0, trialno + 0.5)
+        adjust_spines(ax, ['left', 'bottom'])  # removes top and right spines
+        ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
+        ax.locator_params(axis='y', nbins=4)  # set xsnumber of ticks on y axis
+        ax.set_xticklabels(['', '', ''])
+        ax.set_yticklabels(['', '', '',''])
+
         ax = fig.add_subplot(3, 3, 4)
         ax.axvspan(rz_start * 5, rz_end * 5, facecolor='DarkGreen', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0] * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(-0.05, linewidth=3, color='black')
-        ax.plot(bins * 5, srbin_mean_b, color='red', linewidth=2, label='Real') # plot becaoned trials
+        ax.plot(bins * 5, srbin_mean_b, color='red', linewidth=2)  # plot becaoned trials
         ax.fill_between(bins * 5, srbin_mean_b - srbin_std_b, srbin_mean_b + srbin_std_b, facecolor='red',
                         alpha=0.3)
-        ax.plot(bins * 5, shuffled_mean_b, '--', color='Black', linewidth=2,
-                label='Shuffled')  # plot becaoned trials
+        ax.plot(bins * 5, shuffled_mean_b, '--', color='Black', linewidth=2)  # plot becaoned trials
         ax.fill_between(bins * 5, shuffled_mean_b - shuffled_std_b, shuffled_mean_b + shuffled_std_b,
                         facecolor='Black', alpha=0.3)
         ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
@@ -379,17 +430,44 @@ def plot_fig1C(session_path):
         ax.set_ylim(-0.05, 1.25)
         adjust_spines(ax, ['left', 'bottom'])
         ax.set_ylabel('Stops (VU/Trial)', fontsize=18, labelpad=20)
-        makelegend4(fig, ax)
         ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
         ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
         ax.set_xticklabels(['', '', ''])
 
-        # avg speed - beaconed
+        # avg stops histogram - non beaconed
+        ax = fig.add_subplot(3, 3, 5)
+        ax.axvspan(rz_start * 5, rz_end * 5, facecolor='DarkGreen', alpha=0.25,
+                   linewidth=0)  # green box spanning the rewardzone to mark reward zone
+        #ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0] * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvline(0, linewidth=3, color='black')
+        ax.axhline(-0.05, linewidth=3, color='black')
+        ax.plot(bins * 5, srbin_mean_nb, color='red', linewidth=2, label='Real')  # plot becaoned trials
+        ax.fill_between(bins * 5, srbin_mean_nb - srbin_std_nb, srbin_mean_nb + srbin_std_nb, facecolor='red',
+                        alpha=0.3)
+        ax.plot(bins * 5, shuffled_mean_nb, '--', color='Black', linewidth=2,
+                label='Shuffled')  # plot becaoned trials
+        ax.fill_between(bins * 5, shuffled_mean_nb - shuffled_std_nb, shuffled_mean_nb + shuffled_std_nb,
+                        facecolor='Black', alpha=0.3)
+        ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
+                       labelsize=18)
+        ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
+                       labelsize=18)
+        adjust_spines(ax, ['left', 'bottom'])
+        ax.set_yticklabels(['', '', ''])
+        makelegend4(fig, ax)  # makes legend
+        ax.set_xlim(0, 101)
+        ax.set_ylim(-0.05, 1.25)
+        ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
+        ax.locator_params(axis='y', nbins=4)  # set number of ticks on y axis
+        ax.set_xticklabels(['', '', ''])
+        ax.set_yticklabels(['', '', ''])
+
         ax = fig.add_subplot(3, 3, 7)
         ax.axvspan(rz_start * 5, rz_end * 5, facecolor='g', alpha=0.25,
                    linewidth=0)  # green box spanning the rewardzone to mark reward zone
-        ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
-        ax.axvspan(track_end * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        #ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0] * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
         ax.axvline(0, linewidth=3, color='black')
         ax.axhline(0, linewidth=3, color='black')
         ax.plot(bins * 5, speed_beaconed, '-', markersize=2, color='Black', linewidth=1)  # plot becaoned trials
@@ -409,9 +487,32 @@ def plot_fig1C(session_path):
         ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
         ax.set_xticklabels(['0', '10', '20'])
         ax.set_yticklabels(['0', '2', '4'])
-        ax.set_xlabel('Location (VU)', fontsize=18, labelpad=20)
-        # ax.set_yticklabels(['0', '1', '2', '3'])
+        #ax.set_yticklabels(['0', '1', '2', '3'])
 
+        # avg stops histogram - non beaconed
+        ax = fig.add_subplot(3, 3, 8)
+        ax.axvspan(rz_start * 5, rz_end * 5, facecolor='g', alpha=0.2,
+                   linewidth=0)  # green box spanning the rewardzone to mark reward zone
+        #ax.axvspan(0, track_start * 5, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvspan(track_end[0] * 5, 100, facecolor='k', alpha=0.15, linewidth=0)  # black box
+        ax.axvline(0, linewidth=3, color='black')
+        ax.axhline(0, linewidth=3, color='black')
+        ax.plot(bins * 5, speed_nbeaconed, '-', markersize=2, color='Black',
+                linewidth=1)  # plot becaoned trials
+        ax.fill_between(bins * 5, speed_nbeaconed - sd_speed_nbeaconed, speed_nbeaconed + sd_speed_nbeaconed,
+                        facecolor='Black', alpha=0.3)
+        ax.tick_params(axis='x', pad=10, top='off', right='off', direction='out', width=2, length=8,
+                       labelsize=18)
+        ax.tick_params(axis='y', pad=10, top='off', right='off', direction='out', width=2, length=8,
+                       labelsize=18)
+        adjust_spines(ax, ['left', 'bottom'])
+        ax.set_xlim(0, 101)
+        ax.set_ylim(0, 4.5)
+        ax.locator_params(axis='x', nbins=3)  # set number of ticks on x axis
+        ax.locator_params(axis='y', nbins=3)  # set number of ticks on y axis
+        ax.set_yticklabels(['', '', ''])
+        ax.set_xticklabels(['0', '10', '20'])
+        ax.set_xlabel('Location (VU)', fontsize=18, labelpad=20)
 
         plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.15, left=0.15, right=0.82, top=0.92)
         fig.savefig(session_path+'/ExampleData.png',
@@ -423,13 +524,25 @@ def main():
     print('-------------------------------------------------------------')
     print('-------------------------------------------------------------')
 
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190812150450/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190805133756/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190805133756/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190805133756/S001'
-    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190805133756/S001'
+#CONSTANT SPEED FILES
+
+    session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation/P_190812150450/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short/P_190812150450/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium/P_190812150450/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long/P_190812150450/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium/P_190812150450/S001'
+    session_path = '/run/user/1000/gvfs/smb-share:server=cmvm.datastore.ed.ac.uk,share=cmvm/sbms/groups/mnolan_NolanLab/ActiveProjects/Harry/OculusVR/TrenchRunV2.2_disparate/medium_cue_gain/P_190815133246/S001'
+#GAIN FILES
+
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_habituation_gain/P_190807111732/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_short_gain/P_190807111732/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_medium_gain/P_190807111732/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_long_gain/P_190807111732/S001'
+    #session_path = '/Users/emmamather-pike/PycharmProjects/data/test_vr_recordings/basic_settings_move_cue_medium_gain/P_190807111732/S001'
+
+
+
     plot_fig1C(session_path)
 
 if __name__ == '__main__':
     main()
-

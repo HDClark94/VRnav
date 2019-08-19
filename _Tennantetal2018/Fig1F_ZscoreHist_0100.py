@@ -16,6 +16,7 @@ import math
 from scipy import stats
 import math
 from scipy.stats import uniform
+from summarize.map2legacy import *
 
 #--------------------------------------------------------------------------------------------------------------#
 
@@ -84,15 +85,18 @@ for mcount,mouse in enumerate(mice):
 
 
 # Load raw data: specify the HDF5 file to read data from
-filename = 'Data_Input/Behaviour_DataFiles/Task12_0600.h5'
+filename = 'Data_Input/Behaviour_DataFiles/Task13_0300.h5'
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(1,5.1)]
 mice = ['M' + str(int(x)) for x in np.arange(1,8.1)]# choose specific day/s
 
 # empty arrays for storing data
-firststopstorebeac2 = np.zeros((len(days), len(mice), 20));firststopstorenbeac2= np.zeros((len(days), len(mice), 20));firststopstoreprobe2= np.zeros((len(days), len(mice), 20))
-firststopstorebeac2[:,:,:] = np.nan;firststopstorenbeac2[:,:,:] = np.nan;firststopstoreprobe2[:,:,:] = np.nan
+firststopstorebeac2 = np.zeros((len(days), len(mice), 20))
+firststopstorenbeac2= np.zeros((len(days), len(mice), 20))
+firststopstoreprobe2= np.zeros((len(days), len(mice), 20))
+firststopstorebeac2[:,:,:] = np.nan
+firststopstorenbeac2[:,:,:] = np.nan;firststopstoreprobe2[:,:,:] = np.nan
 
 #loop days and mice to collect data
 for mcount,mouse in enumerate(mice):
@@ -172,7 +176,7 @@ x = np.vstack((x,x1,x2)) # stack beaconed, nonbeaconed and probe
 data = np.vstack((mouse, trials)); data=np.transpose(data) # stack mouse & trial arrays
 data = np.hstack((data,x))# stack data and mouse, trial arrays
 
-np.savetxt('Data_Output/Figure1/Figure1_F_Week1_0100.csv', data,fmt = '%i,%i,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f', delimiter = '\t', header = 'Mouse, Trial, 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20') # save data
+#np.savetxt('Data_Output/Figure1/Figure1_F_Week1_0100.csv', data,fmt = '%i,%i,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f', delimiter = '\t', header = 'Mouse, Trial, 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20') # save data
 
 
 # WRITE DATA TO .CSV FOR R
@@ -247,7 +251,7 @@ for mcount,mouse in enumerate(mice):
 
 
 # Load raw data: specify the HDF5 file to read data from
-filename = 'DataFiles/Task12_0600.h5'
+filename = 'Data_Input/Behaviour_DataFiles/Task13_0300.h5'
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(15,18.1)]
@@ -342,7 +346,7 @@ x = np.vstack((x,x1,x2))
 data = np.vstack((mouse, trials)); data=np.transpose(data)
 data = np.hstack((data,x))
 
-np.savetxt('Data_Output/Figure1/Figure1_F_Week4_0100.csv', data,fmt = '%i,%i,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f', delimiter = '\t', header = 'Mouse, Trial, 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')
+#np.savetxt('Data_Output/Figure1/Figure1_F_Week4_0100.csv', data,fmt = '%i,%i,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f,%10.3f', delimiter = '\t', header = 'Mouse, Trial, 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')
 
 
 
