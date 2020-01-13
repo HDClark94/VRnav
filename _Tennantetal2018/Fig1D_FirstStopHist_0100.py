@@ -17,7 +17,7 @@ import math
 from scipy.stats import uniform
 
 # Load raw data: specify the HDF5 file to read data from
-filename = '/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_DataFiles/Task13_0300.h5' # raw data files
+filename = 'Z:\ActiveProjects\Harry\OculusVR\Data_Input\Behaviour_DataFiles/Task13_0300.h5' # raw data files
 #filename = '/home/harry/Downloads/Task13_0300.h5'
 
 # specify mouse/mice and day/s to analyse
@@ -93,7 +93,7 @@ for dcount,day in enumerate(days):
 
 
 # Load raw data: specify the HDF5 file to read data from
-filename = '/Users/emmamather-pike/PycharmProjects/VRnav/_Tennantetal2018/Data_Input/Behaviour_DataFiles/Task12_0600.h5'
+filename = 'Z:\ActiveProjects\Harry\OculusVR\Data_Input\Behaviour_DataFiles/Task12_0600.h5'
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(1,22.1)]
@@ -269,6 +269,7 @@ ax.set_yticklabels(['', '', ''])
 ax.set_xticklabels(['0', '100', '200'])
 
 plt.subplots_adjust(hspace = .35, wspace = .35,  bottom = 0.15, left = 0.07, right = 0.82, top = 0.92)
+plt.show()
 
 fig.savefig('/home/harry/PycharmProjects/VRnav/Tennantetal2018/Plots/Figure1/ExampleData/Task13_FirstStop_Histogram' + '_0100.png',  dpi = 200)
 plt.close()
