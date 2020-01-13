@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from summarize.plotting import *
 from summarize.fig1C_function import *
+from summarize.common import *
 
 def update_summary_plots(recording_folder_path, override=False):
     '''
@@ -25,14 +26,7 @@ def update_summary_plots(recording_folder_path, override=False):
             for session in session_dir:
 
                 if 'summary_plot.png' not in os.listdir(session) or override==True:
-                    #try:
                     plot_summary(session)
-                    #except:
-                    #    print("failed this one ", session)
-                    #try:
-                    #    plot_fig1C(session)
-                    #except KeyError:
-                    #    print("Error, sorry I can't give you a better error message")
 
 
 def plot_summary(session_path):
@@ -43,12 +37,7 @@ def plot_summary(session_path):
     '''
 
     trial_results = pd.read_csv(session_path+"/trial_results.csv")
-    trial_results = split_stop_data_by_block(trial_results, block=2)  # only use block 2, this ejects habituation block 1
-    trial_results = extract_stops(trial_results, session_path) # add stop times and locations to dataframe
-    trial_results = extract_intergration_distance(trial_results, session_path)
-    trial_results = extract_first_stop_error(trial_results,session_path)
-    trial_results = extract_first_stop_post_cue_error(trial_results, session_path)
-    trial_results = extract_speeds(trial_results, session_path) # adds speeds to dataframe
+    trial_results = extract_summary(trial_results,session_path)
 
     plot_stops_on_track(trial_results, session_path)
     error_longer_tracks(trial_results, session_path, error_collumn="first_stop_error")
@@ -57,10 +46,10 @@ def plot_summary(session_path):
     variance_longer_tracks(trial_results, session_path, error_collumn="first_stop_error")
     variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_error")
     variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
-    #stop_histogram(trial_results, session_path, cummulative=True, first_stop=True)
-    #stop_histogram(trial_results, session_path, cummulative=True, first_stop=False)
-    #stop_histogram(trial_results, session_path, cummulative=False, first_stop=True)
-    #stop_histogram(trial_results, session_path, cummulative=False, first_stop=False)
+    stop_histogram(trial_results, session_path, cummulative=True, first_stop=True)
+    stop_histogram(trial_results, session_path, cummulative=True, first_stop=False)
+    stop_histogram(trial_results, session_path, cummulative=False, first_stop=True)
+    stop_histogram(trial_results, session_path, cummulative=False, first_stop=False)
 
     #plot_stops_in_time(trial_results,session_path)
 

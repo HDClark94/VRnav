@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 from summarize.common import *
 # plotting functions, some taken from Sarah
 from matplotlib.lines import Line2D
-from summarize.common import get_standard_deviation_from_histogram
-from summarize.common import div0
 
 def plot_stops_in_time(trial_results, session_path):
     stops_in_time = plt.figure(figsize=(6, 6))

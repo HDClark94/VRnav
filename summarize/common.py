@@ -179,21 +179,26 @@ def extract_stops(trial_results, session_path):
 
     return trial_results
 
-def get_standard_deviation_from_histogram(x, z, bins, means):
-    #TODO fix this, its rubbish
-    # deviation is same shape as errors
-    sample_variances = x.copy()
-    for i in range(len(x)):
-        tmp = np.digitize(x[i], bins)-1
-        if tmp == len(bins)-1:
-            tmp = tmp-1
+def extract_trial_type_errors(trial_results_trial_type, error_collumn):
+    uniques_lengths = np.unique(np.asarray(trial_results_trial_type["integration_length"]))
+    tt_mean_errors_for_lengths = []
+    tt_std_errors_for_lengths = []
 
-        mean = means[tmp]
-        variance = np.square(x[i]-mean)
-        sample_variances[i] = variance
-    variance = div0(np.histogram(z, bins, weights=sample_variances)[0], np.histogram(z, bins)[0])
+    for i in range(len(uniques_lengths)):
+        tt_errors = np.array(trial_results_trial_type[error_collumn])[np.array(trial_results_trial_type["integration_length"])==uniques_lengths[i]]
+        if len(tt_errors)<1:
+            tt_errors=np.nan
+        tt_mean_errors_for_lengths.append(np.nanmean(tt_errors))
+        tt_std_errors_for_lengths.append(np.nanstd(tt_errors))
 
-    return np.sqrt(variance)
+    return tt_mean_errors_for_lengths, tt_std_errors_for_lengths
 
-def div0(a, b):
-    return np.divide(a, b, out=np.zeros_like(a), where=b!=0)
+def extract_summary(trial_results, session_path):
+    trial_results = split_stop_data_by_block(trial_results, block=2)  # only use block 2, this ejects habituation block 1
+    trial_results = extract_stops(trial_results, session_path) # add stop times and locations to dataframe
+    trial_results = extract_intergration_distance(trial_results, session_path)
+    trial_results = extract_first_stop_error(trial_results,session_path)
+    trial_results = extract_first_stop_post_cue_error(trial_results, session_path)
+    trial_results = extract_speeds(trial_results, session_path) # adds speeds to dataframe
+
+    return trial_results
