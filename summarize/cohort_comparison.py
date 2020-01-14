@@ -5,7 +5,7 @@ import numpy as np
 from summarize.plotting import *
 from summarize.common import *
 
-def get_compact_cohort_error_std_results(cohort, error_collumn):
+def get_cohort_error_std_results(cohort, error_collumn):
     cohort_results = pd.DataFrame()
 
     cohort_b_errors = []
@@ -49,8 +49,8 @@ def plot_cohort_comparison_plots(cohort1, cohort2, error_collumn, save_path, tit
     :param title: a title name for the comparison
     :return: plots in a new folder
     '''
-    cohort1_results = get_compact_cohort_error_std_results(cohort1, error_collumn)
-    cohort2_results = get_compact_cohort_error_std_results(cohort2, error_collumn)
+    cohort1_results = get_cohort_error_std_results(cohort1, error_collumn)
+    cohort2_results = get_cohort_error_std_results(cohort2, error_collumn)
 
     # now time to do the plots against eachother.
 
