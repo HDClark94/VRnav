@@ -82,7 +82,7 @@ def data():
 
     fig = plt.figure(figsize = (12,4))
     ax = fig.add_subplot(1,1,1) #stops per trial
-    ax.set_title('Power analysis using 2-way ANOVA with repeating measures', fontsize=20, verticalalignment='bottom', style='italic')  # title
+    ax.set_title('Power analysis using 2-way ANOVA with repeated measures', fontsize=20, verticalalignment='bottom', style='italic')  # title
 
     ax.plot(n_subjects, power_condition, color = 'black', label = 'F = Condition', linewidth = 2)
     ax.plot(n_subjects, power_track_length, color = 'red',   label = 'F = Track Length', linewidth = 2)
