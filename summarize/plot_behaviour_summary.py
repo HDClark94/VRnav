@@ -28,6 +28,7 @@ def update_summary_plots(recording_folder_path, override=False):
                 if 'summary_plot.png' not in os.listdir(session) or override==True:
                     try:
                         plot_summary(session)
+                        print("successful with session, ", session)
                     except:
                         print("failed with session, ", session)
 
@@ -62,7 +63,7 @@ def main():
     print('-------------------------------------------------------------')
 
     recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\test_vr_recordings_jan20"
-    #recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
+    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
     update_summary_plots(recording_folder_path, override=True)
 
 if __name__ == '__main__':
