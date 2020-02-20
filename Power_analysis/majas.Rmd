@@ -1,0 +1,134 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+
+library(tidyverse)
+set.seed(666)
+
+
+x1<-c(60,90,135, 202.5, 303.75, 455.625)
+n_subs<-c(2,3,4, 5,7,10, 15,20) # this works now, you need to use any real integer more than 1
+sims_to_run<-40
+n_trials<-35  # see my notes about this down there v
+coef3<- 1.6
+coef4<- -0.01
+
+for (ji in n_subs){
+  
+
+  n_subjects <-(ji)
+  
+  z1=coef3 + coef4*x1
+  pr1=1/(1+exp(-z1))
+  
+  coefs1 <- c(0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6)
+  coef2s <- c(-0.018, -0.016, -0.014, -0.012, -0.010, -0.008, -0.006, -0.004, -0.002)
+  
+  fmat<-array(dim = c(length(n_subjects),length(coefs1),length(coef2s)))
+  
+  coef1_counter =1
+  for (coef1 in coefs1){
+    coef2_counter =1
+    for (coef2 in coef2s){
+      z=coef1 + coef2*x1
+      pr=1/(1+exp(-z))
+      pval_matrix<-matrix(nrow=length(n_subjects), ncol=sims_to_run)
+      
+      for(i in 1:sims_to_run){
+        sim_counter = 1
+        
+        for (no in n_subjects) {
+          all_subjects<-data.frame()
+          n_counter = 1
+          
+          for(n in  1:no){
+            Joy <- (rbinom(6,n_trials,pr)/n_trials)*100
+            Butt <- (rbinom(6,n_trials,pr1)/n_trials)*100
+            
+            correct_trials <- data.frame(subject=rep(n,each=12),
+                                         condition=rep(c(1,2),each=6),       # 1 is joystick, 2 is button
+                                         Distances=rep(x1,2),                # I put the actual distances back in
+                                         y=c(Joy,Butt))
+            all_subjects<-rbind(all_subjects,correct_trials)
+          }
+          
+          df_aov <- aov(y~Distances*condition+Error(subject/(Distances*condition)), data = all_subjects)
+          #df_aov <- aov(y~Distances*condition+(1|subject), data = all_subjects)
+          
+          df_aov_sum <- summary(df_aov)
+          
+          pvalue <- df_aov_sum[[5]]
+          pvalue <- pvalue[[1]]["condition","Pr(>F)"]
+          
+          pval_matrix[[n_counter,i]] <- pvalue
+          n_counter = n_counter+1
+        }
+        sim_counter = sim_counter+1
+      }
+      
+      # only once all simulations for a given n_suject, coef1 and coef2 can we start to look at the proportions
+      for (k in 1:length(pval_matrix[,1])){ 
+            f<-pval_matrix[k, ]<=0.05
+            a = length(f[f==TRUE])
+            b = a/length(f)
+            fmat[k,coef1_counter, coef2_counter]= b
+      }
+      
+      coef2_counter=coef2_counter+1
+    }
+    coef1_counter=coef1_counter+1
+  }
+  
+  
+  for (i in 1:length(n_subjects)){
+    a = fmat[i,,]
+    df <- expand.grid(x = coefs1, y = coef2s)
+    df$z <- c(a)
+    # default is compatible with geom_tile()
+    ggplot(df, aes(x, y, fill = z)) + geom_raster() + ggtitle("N=",n_subjects[i])
+    ggsave(paste("Maja_coefficient_assay_N", n_subjects[i] ,".jpg", sep=""))
+    print(paste("saving coefficient_assay_N", n_subjects[i] ,".jpg", sep=""))
+  } 
+  
+}
+
+```
+
+```{r}
+# deprecated
+library(ggplot2)
+
+for (i in 1:length(n_subjects)){
+  a = fmat[i,,]
+  df <- expand.grid(x = coefs1, y = coef2s)
+  df$z <- c(a)
+  # default is compatible with geom_tile()
+  ggplot(df, aes(x, y, fill = z)) + geom_raster() + ggtitle("N=",n_subjects[i])
+  ggsave(paste("Maja_coefficient_assay_N", n_subjects[i] ,".jpg", sep=""))
+  print(paste("saving coefficient_assay_N", n_subjects[i] ,".jpg", sep=""))
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

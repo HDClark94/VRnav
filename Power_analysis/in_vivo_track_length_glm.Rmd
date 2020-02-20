@@ -1,0 +1,110 @@
+---
+title: "In vivo track length with general linear model"
+output:
+  
+# This script computes the coefficents of the sigmoid using the mouse data obtained from Tennant 2018 Figure 3C. 
+
+---
+
+```{r}
+library(tidyverse)
+library(broom)
+library(lme4)
+library(dplyr)
+library(nlme)
+#library(bblme)
+set.seed(666)
+```
+
+```{r}
+# first read the data from the long format csv 
+
+df_group <- read.csv(file = 'Figure3_C_0100_long_format.csv')
+df_group$track_length = df_group$track_length/100
+head(df_group)
+
+y = df_group$correct             # y = 1 or 0
+x1 = df_group$condition_b1_p2    # x1 = 1 means beaconed, x1 = 2 means probe
+x2 = df_group$track_length       # track length (cm)
+Mouse = df_group$Mouse           # Mouse ID
+
+df_g1 <- subset(df_group, condition_b1_p2 == 2)
+y2 = df_g1$correct             # y = 1 or 0
+x3 = df_g1$track_length       # track length (cm)
+Mouse1 = df_g1$Mouse           # Mouse ID
+
+```
+
+```{r}
+# Run the GLM and GLMER and look at predicted coefficient values
+
+#GLM
+mod_group <- glm(y ~ x1*x2, data = df_group, family = "binomial")
+summary(mod_group)
+
+#GLMER
+mod_group_glmer <- glmer(y ~ x1*x2 + (1|Mouse), data = df_group, family = "binomial")
+summary(mod_group_glmer)
+
+#GLM only non beaconed
+mode_group_glm_nb <- glm(y2 ~ x3, data = df_g1, family = "binomial")
+summary(mode_group_glm_nb)
+
+#GLM only non beaconed
+mode_group_glmer_nb <- glmer(y2 ~ x3 + (1|Mouse), data = df_g1, family = "binomial")
+summary(mode_group_glmer_nb)
+```
+
+
+```{r}
+a = coef(mode_group_glmer_nb)$Mouse[1][,'(Intercept)']
+#b = coef(mode_group_glmer_nb)$Mouse[1][,'x3']
+mean_intercepts = c(a[1], a[3], a[4], a[5], a[6], a[7])
+print(sd(mean_intercepts))
+
+```
+
+```{r}
+# fit a glm and a glm with mixed effects (with glmer) and 
+# test if inclusion of Mouse ID variable is warranted in our model
+# if so it will significantly improves model fit
+
+# We use a Model comparison with the likelihood ratio test to text whether the mouse id parameter is significant
+
+# equations taken from https://web.stanford.edu/class/psych252/section/Mixed_models_tutorial.html
+
+#GLMER
+mod_group_glmer <- glmer(y ~ x1*x2 + (1|Mouse), data = df_group, family = "binomial")
+summary(mod_group_glmer)
+#GLM
+mod_group <- glm(y ~ x1*x2, data = df_group, family = "binomial")
+
+#anova(mod_group_glmer, mod_group) # doesn't work so do it by hand
+
+dev1 <- -2*logLik(mod_group_glmer)
+dev0 <- -2*logLik(mod_group)
+devdiff <- as.numeric(dev0-dev1); devdiff
+dfdiff <- attr(dev1,"df")-attr(dev0,"df"); dfdiff
+cat('Chi-square =', devdiff, '(df=', dfdiff,'), p =', 
+  pchisq(devdiff,dfdiff,lower.tail=FALSE))
+
+# if p<0.05 then yes it does improve our model fit! 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

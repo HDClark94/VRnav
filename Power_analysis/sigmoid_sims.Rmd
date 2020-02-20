@@ -1,0 +1,237 @@
+---
+title: "Simulations for VR distance experiments"
+author: "Matt Nolan"
+date: "24/01/2020"
+output: html_document
+---
+```{r}
+library(tidyverse)
+library(broom)
+library(lme4)
+set.seed(666)
+source("sig_power_functions.R")
+```
+
+
+
+Evaluate sigmoid functions
+
+y = e^(coef1 + coef2*distance)/(e^(coef1 + coef2*distance)+1)
+```{r}
+distances <- c(0.6,0.9,1.35, 2.025, 3.0375, 4.55625)*100
+coef1 <- 1.6
+coef2 <- -0.01
+y1 <- exp(coef1 + coef2*distances)/(exp(coef1 + coef2*distances)+1)
+
+sim_data_means <- tibble(dist = distances, y = y1)
+ggplot(sim_data_means, aes(dist, y)) +
+  geom_point()
+```
+
+y = e^(coef1 + coef2*distance + coef3*group)/(e^(coef1 + coef2*distance + coef3*group)+1)
+```{r}
+distances <- rep(c(60,90,135, 202.5, 303.75, 455.625), 2)
+groups <- c(rep(0,6), rep(1,6))
+coef1 <- 5
+coef2 <- -0.03
+coef3 <- 1
+y2 <- exp(coef1 + coef2*distances + coef3*groups)/(exp(coef1 + coef2*distances + coef3*groups)+1)
+
+sim_data_means <- tibble(dist = distances, group = groups, y = y2)
+ggplot(sim_data_means, aes(dist, y, colour = group)) +
+  geom_point()
+```
+
+y = e^(coef1 + coef2*distance + coef3*group + coef4*group*distance)/(e^(coef1 + coef2*distance + coef3*group + coef4*group*distance)+1)
+```{r}
+distances <- rep(c(0.6,0.9,1.35, 2.025, 3.0375, 4.55625), 2)
+groups <- c(rep(0,6), rep(1,6))
+coef1 <-3
+coef2 <- -3
+coef3 <- 1
+coef4 <- -3
+y2 <- exp(coef1 + coef2*distances + coef3*groups + coef4*groups*distances)/(exp(coef1 + coef2*distances + coef3*groups + coef4*groups*distances)+1)
+
+sim_data_means <- tibble(dist = distances, group = groups, y = y2)
+ggplot(sim_data_means, aes(dist, y, colour = group)) +
+  geom_point()
+```
+```{r}
+# Do the same thing using the make_sig function
+distances <- rep(c(0.6,0.9,1.35, 2.025, 3.0375, 4.55625), 2)
+groups <- c(rep(0,6), rep(1,6))
+sig_data_means <- make_sig(distances, groups, 5, -3, 1, 0.01)
+ggplot(sig_data_means, aes(dist, y, colour = group)) +
+  geom_point()
+```
+
+
+Generate some synthetic data for a single subject taking 20 trials in each condition.
+```{r}
+trials <- 20
+coef1 <- 5
+coef2 <- -3
+coef3 <- 1
+coef4 <- 0.01
+
+
+distances <- c(0.6,0.9,1.35, 2.025, 3.0375, 4.55625)
+
+x1 <- rep(distances, trials * 2)          # some continuous variables 
+x2 <- c(rep(0, trials * length(distances)), rep(1, trials*length(distances)))
+
+z <- coef1 + coef2*x1 + coef3*x2 + coef4*x1*x2       # linear combination with a bias
+pr <- 1/(1+exp(-z))         # pass through an inv-logit function
+y <- rbinom(length(x1), 1 , pr)      # bernoulli response variable
+ 
+df <- data.frame(y=y,x1=x1, x2=x2)
+
+probs <- df %>% group_by(x1, x2) %>% summarise(m = mean(y), stdev = sd(y))
+
+ggplot(probs, aes(x1, m)) +
+  geom_point(aes(colour = x2)) +
+  geom_errorbar(aes(ymin = m + stdev, ymax =  m - stdev, colour = x2))
+
+
+```
+
+
+
+
+Generata and plot data for a single subject taking multiple trials in each condition.
+```{r}
+# Mkae some example data for two groups and a given set of coefficients
+distances <- c(0.6,0.9,1.35, 2.025, 3.0375, 4.55625)
+df_2 <- make_groups(distances = distances, trials = 60) %>%
+  mutate(y = pmap_dbl(list(x1, x2, c1 = 5, c2 = -3, c3 = 0, c4 = 0.2), make_i_data)) 
+
+probs <- df_2 %>% group_by(x1, x2) %>% summarise(m = mean(y), stdev = sd(y))
+
+ggplot(probs, aes(x1, m)) +
+  geom_point(aes(colour = x2)) +
+  geom_errorbar(aes(ymin = m + stdev, ymax =  m - stdev, colour = x2))
+```
+
+
+
+
+Fit with logistic regression model
+```{r}
+# For some values of c3 and c4 (e.g. c3 > 1) the fiting can separate.
+mod_1 <- glm(y ~ x1 * x2, data = df_2, family = "binomial")
+
+# An alaternative is Bayesian regression provided by the arm package.
+mod_1_B <- arm::bayesglm(y ~ x1*x2, data = df_2, family = "binomial")
+
+summary(mod_1)
+
+summary(mod_1_B)
+```
+
+
+
+
+Make data for a group of subjects
+```{r}
+subjects <- 20
+distances <- c(0.6,0.9,1.35, 2.025, 3.0375, 4.55625)
+trials <- 20
+
+# Use default values for coefficients
+df_group <- generate_i_group(subjects = subjects,
+                           distances = distances,
+                           trials = trials,
+                           c1 = 5,
+                           c2 = -3,
+                           c3 = 5,
+                           c4 = 0.04)
+```
+
+Fit data for a group of subjects using either GLM or GLMER.
+```{r}
+#GLM
+mod_group <- glm(y ~ x1*x2, data = df_group, family = "binomial")
+
+summary(mod_group)
+#GLMER
+mod_group_glmer <- glmer(y ~ x1*x2 + (1|subject), data = df_group, family = "binomial")
+
+summary(mod_group_glmer)
+```
+
+Now simulate multiple experiments. We will systematically vary the model coefficients. For each set of model coefficients we will carry out repeated simulations.
+
+A first approach is to fit a model with coefficient for the group and group x distance interaction.
+```{r, warning=FALSE}
+# First generate the coefficients we want to simulate
+# This is the number of times we want to repeat each simulation of an experiment with a given set of coefficients
+repeats <- 10
+
+# Test matrix generation function with reduced set of values
+test_vals <- generate_coefs(vals_1 = seq(-5, 5, 5), 
+                            vals_2 = seq(-0.02, 0.02, 0.02),
+                            repeats = 3)
+
+# Test helper_i_glm/glmer. These functions simulate full experiments.
+test_glm <- helper_i_glm(trials = 10,
+                       c3 = -5,
+                       c4 = 0)
+
+test_glmer <- helper_i_glmer_wrap(trials = 10,
+                       c3 = -5,
+                       c4 = 0)
+
+# CAll the function to carry out the simulated experiment
+test_models <- sim_full_i_exp(vals_1 = seq(-5, 5, 5),
+  vals_2 = seq(-1, 1, 1),
+  subjects = 5,
+  repeats = 3,
+  trials = 20) 
+```
+
+
+Summarise the results
+```{r}
+models_sum <- full_i_exp_sum(test_models)
+```
+
+Take a look
+```{r}
+ggplot(models_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = glm_x2_thresh_prop))
+
+# ggsave("glm_x2_thresh_prop.jpg")
+
+ggplot(models_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = glm_x3_thresh_prop))
+
+#ggsave("glm_x3_thresh_prop.jpg")
+
+ggplot(models_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = glmer_x2_thresh_prop))
+
+# ggsave("glmer_x2_thresh_prop.jpg")
+
+ggplot(models_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = glmer_x3_thresh_prop))
+
+#ggsave("glmer_x3_thresh_prop.jpg")
+```
+
+
+A second approach is to fit a model for each group. Statistical analyses can then compare the intercept and slope coefficients of the two models.
+```{r}
+# Test matrix generation function with reduced set of values
+test_2_vals <- generate_coefs(vals_1 = seq(5, 7, 1),
+                            repeats = 3)
+
+# Test helper_glm/glmer. These functions simulate full experiments.
+test_glm <- helper_glm(trials = 10,
+                       c1 = 5,
+                       c2 = -0.03)
+
+test_glmer <- helper_glmer_wrap(trials = 10,
+                       c1 = 5,
+                       c2 = -0.03)
+```
+

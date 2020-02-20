@@ -1,0 +1,67 @@
+---
+title: "Exp_Power_Calcs"
+author: "Matt"
+date: "02/02/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(broom)
+library(lme4)
+set.seed(666)
+source("sig_power_functions.R")
+```
+
+Calculate detected positive rates for the following experiment.
+subjects(n) = 20
+trials = 20.== Number of trials for each group that each subject takes.
+repeats = 100. The number of times the simulation of the experimentis repeated.
+```{r, warning=FALSE, message=FALSE}
+# Warning. This will take a long time to run.
+Exp_20_20_100 <- sim_full_i_exp(
+  vals_1 = c(-5, -4, -3, -2,-1, 0, 1, 2, 3, 4, 5),
+  vals_2 = c(-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1),
+  subjects = 10,
+  repeats = 25,
+  trials = 35)
+```
+
+Summarise the results.
+```{r}
+Exp_20_20_100_sum <- full_i_exp_sum(Exp_20_20_100)
+```
+
+Plot summary results.
+```{r}
+
+ggplot(Exp_20_20_100_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = aov_x2_thresh_prop))
+
+ggplot(Exp_20_20_100_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = aov_x3_thresh_prop))
+
+ggplot(Exp_20_20_100_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = glm_x2_thresh_prop))
+
+ggplot(Exp_20_20_100_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = glmer_x2_thresh_prop))
+
+ggsave("glmer_x2_thresh_prop.jpg")
+
+ggplot(Exp_20_20_100_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = glm_x3_thresh_prop))
+
+ggplot(Exp_20_20_100_sum, aes(c3, c4)) +
+  geom_tile(aes(fill = glmer_x3_thresh_prop))
+
+ggsave("glmer_x3_thresh_prop.jpg")
+
+<<<<<<< HEAD
+# Warning. Save the summary rather than the model output as the model output can be very large.
+=======
+>>>>>>> f1c7352dced90374fb2c3184965f2f59abe8fb7c
+save(Exp_20_20_100_sum, file = "Exp_20_20_100_sum.Rda")
+```
+

@@ -1,0 +1,136 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# running the assay
+
+#which_p_value = "x1"
+which_p_value = "groupcategory"
+#which_p_value = "x1:groupcategory"
+
+run_anova = FALSE
+simulate_mixed_effect = FALSE
+mixed_effect_sd = 0.53
+
+library(tidyverse)
+library(broom)
+library(lme4)
+n_people <- c(10)
+coef1 <- 2.1
+coef2 <- -1.14
+#coef3 <- 5
+#coef4 <- 0
+
+g1 = 0
+g2 = 1
+distances <- c(60,90,135,202.5,303.75,455.625)/100
+n_trials <- 35
+oneto1000 <- 10
+n_track_lengths <- length(distances)
+groupcategory = c(rep(g1, n_track_lengths), rep(g2, n_track_lengths))
+
+coef3s <- c(-5, -4, -3, -2,-1, 0, 1, 2, 3, 4, 5)
+coef4s <- c(-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1)
+
+Datarray <- array(dim=c(length(coef3s), length(coef4s),length(n_people)))
+
+coef3_counter =1
+for (coef3 in coef3s) {
+  coef4_counter =1
+  for (coef4 in coef4s) {
+    d = NULL
+    counter=1
+    for (i in n_people) {
+      for (j in 1:oneto1000){
+        df <- c()
+        for (k in 1:i){
+          
+          # random effect from drawing a random intercept with sd = x
+          
+          if (simulate_mixed_effect){
+            coef1_r = rnorm(1, mean=coef1, sd=mixed_effect_sd)
+          } else {
+            coef1_r = coef1
+          }
+  
+          z_g1 <- coef1_r + coef2*distances + coef3*g1 + coef4*g1*distances
+          pr = 1/(1+exp(-z_g1))
+          
+          z1_g2 <- coef1_r + coef2*distances + coef3*g2 + coef4*g2*distances
+          pr1 = 1/(1+exp(-z1_g2))
+          
+          if (run_anova) {
+            df <- rbind(df, data.frame(x1 = c(rep(distances, 2)),
+                                     y = c(rbinom(n_track_lengths,n_trials,pr), rbinom(n_track_lengths,n_trials,pr1)),
+                                     groupcategory = groupcategory, id = c(rep(k,12))))
+            
+          } else { # this is for glmer data organisation
+            for (m in 1:n_trials) {
+            df <- rbind(df, data.frame(x1 = c(rep(distances, 2)),
+                                     y = c(rbinom(n_track_lengths,1,pr), rbinom(n_track_lengths,1,pr1)),
+                                     groupcategory = groupcategory, id = c(rep(k,12))))
+            }
+          }
+        }
+        
+        if (run_anova) {
+          #df_aov <- aov(y~x1*groupcategory+Error(id/(x1*groupcategory)),data=df)
+          #df_aov_sum <- summary(df_aov)
+          #pvalue <- df_aov_sum[[5]][[1]][which_p_value,"Pr(>F)"]
+          
+          df_aov <- aov(y ~ x1*groupcategory + Error(id), data=df)
+          df_aov_sum <- summary(df_aov)
+          pvalue <- df_aov_sum[[2]][[1]][which_p_value, "Pr(>F)"]
+          
+        } else { # glmer
+          mod_group_glmer <-  glmer(y ~ x1*groupcategory + (1|id), data = df, family = "binomial")
+          sum <- summary(mod_group_glmer)
+          pvalue <- sum$coefficients[which_p_value, "Pr(>|z|)"]
+        }
+        
+        d = rbind(d,data.frame(pvalue))
+      }
+      count <- plyr::ldply(d,function(c) sum(c<=0.05))
+      Datarray[coef3_counter,coef4_counter,counter] <- count$V1/oneto1000
+      counter = counter +1
+      d = NULL
+    }
+    coef4_counter = coef4_counter + 1
+  }
+  coef3_counter = coef3_counter + 1
+}
+
+
+```
+
+
+```{r}
+
+if (which_p_value == "x1" && run_anova == FALSE){
+  which_p_value_str = "GLMER_distance"
+} else if (which_p_value == "groupcategory" && run_anova == FALSE){
+  which_p_value_str = "GLMER_group"
+} else if (which_p_value == "x1:groupcategory" && run_anova == FALSE){
+  which_p_value_str = "GLMER_interaction"
+} else if (which_p_value == "x1" && run_anova == TRUE){
+  which_p_value_str = "ANOVA_distance"
+} else if (which_p_value == "groupcategory" && run_anova == TRUE){
+  which_p_value_str = "ANOVA_group"
+} else if (which_p_value == "x1:groupcategory" && run_anova == TRUE){
+  which_p_value_str = "ANOVA_interaction"
+}
+
+# plotting the results
+
+for (i in 1:length(n_people)){
+  a = Datarray[,,i]
+  # Justification controls where the cells are anchored
+  df <- expand.grid(c3 = coef3s, c4 = coef4s)
+  df$z <- c(a)
+  # default is compatible with geom_tile()
+  ggplot(df, aes(c3, c4, fill = z)) + geom_raster() + ggtitle("N=",n_people[i])
+  ggsave(paste("EMRE_coefficient_assay_", which_p_value_str ,"_N", n_people[i] ,".jpg", sep=""))
+}
+```

@@ -1,0 +1,91 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# running the assay
+
+library(tidyverse)
+n_people <- c(2, 5, 8, 10, 15, 20)
+coef1 <- 1.6
+coef2 <- -0.01
+coef3 <- 5
+coef4 <- -0.02
+distances <- c(60,90,135,202.5,303.75,455.625)
+n_trials <- 35
+oneto1000 <- 25
+e <- 6
+groupcategory = c(1,1,1,1,1,1,2,2,2,2,2,2)
+x1 <- distances
+z <- coef1 + coef2*x1 +
+pr = 1/(1+exp(-z))
+
+coef3s <- c(0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6)
+coef4s <- c(-0.018, -0.016, -0.014, -0.012, -0.010, -0.008, -0.006, -0.004, -0.002)
+Datarray <- array(dim=c(length(coef3s), length(coef4s),length(n_people)))
+
+
+coef3_counter =1
+for (coef3 in coef3s) {
+  coef4_counter =1
+  for (coef4 in coef4s) {
+    z1 <- coef3 + coef4*x1
+    d = NULL
+    pr1 = 1/(1+exp(-z1))
+    counter=1
+    for (i in n_people) {
+      for (j in 1:oneto1000){
+        df <- c()
+        for (k in 1:i){
+          df <- rbind(df, data.frame(x1 = c(rep(distances, 2)),
+                                     y = c(rbinom(e,n_trials,pr), rbinom(e,n_trials,pr1)),
+                                     groupcategory = groupcategory, id = c(rep(k,12))))
+        }
+        df_aov <- aov(y~x1*groupcategory+Error(id/(x1*groupcategory)),data=df)
+        #df_aov <- aov(y~x1*groupcategory+(1|id), data = df)
+        
+        df_aov_sum <- summary(df_aov)
+        pvalue <- df_aov_sum[[5]]
+        pvalue <- pvalue[[1]]["groupcategory","Pr(>F)"]
+        
+        #df_aov_sum <- summary(df_aov)
+        #pvalue <- df_aov_sum[[1]]["groupcategory","Pr(>F)"]
+        
+        d = rbind(d,data.frame(pvalue))
+      }
+      count <- plyr::ldply(d,function(c) sum(c<=0.05))
+      Datarray[coef3_counter,coef4_counter,counter] <- count$V1/oneto1000
+      counter = counter +1
+      d = NULL
+    }
+    coef4_counter = coef4_counter + 1
+  }
+  coef3_counter = coef3_counter + 1
+}
+
+
+
+```
+
+
+```{r}
+
+# plotting the results
+
+for (i in 1:length(n_people)){
+  a = Datarray[,,i]
+  # Justification controls where the cells are anchored
+  df <- expand.grid(x = coef3s, y = coef4s)
+  df$z <- c(a)
+  # default is compatible with geom_tile()
+  ggplot(df, aes(x, y, fill = z)) + geom_raster() + ggtitle("N=",n_people[i])
+  ggsave(paste("EMRE_coefficient_assay_N", n_people[i] ,".jpg", sep=""))
+}
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
