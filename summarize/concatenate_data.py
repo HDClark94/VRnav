@@ -72,7 +72,7 @@ def process(recording_folder_path):
                 df1["n_trials_per_track_length"]  = np.repeat(session_config["n_trials_per_track_length"], len(trial_results))
 
                 # append to multi-subject dataframe
-                results.append(df1)
+                results = results.append(df1)
 
     # now save dataframe somewhere useful
     results.to_pickle(recording_folder_path + '/processed_results.pkl')
@@ -86,6 +86,8 @@ def main():
 
     # type path name in here with similar structure to this r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
     recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
+    process(recording_folder_path)
+    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya"
     process(recording_folder_path)
 
 if __name__ == '__main__':
