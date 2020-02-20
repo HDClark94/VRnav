@@ -193,6 +193,10 @@ def extract_trial_type_errors(trial_results_trial_type, error_collumn):
 
     return tt_mean_errors_for_lengths, tt_std_errors_for_lengths
 
+def extract_trial_duration(trial_results):
+    trial_results["trial_duration"] = trial_results['end_time'] - trial_results['start_time'] # calculate duration
+    return trial_results
+
 def extract_summary(trial_results, session_path):
     trial_results = split_stop_data_by_block(trial_results, block=2)  # only use block 2, this ejects habituation block 1
     trial_results = extract_stops(trial_results, session_path) # add stop times and locations to dataframe
@@ -200,5 +204,6 @@ def extract_summary(trial_results, session_path):
     trial_results = extract_first_stop_error(trial_results,session_path)
     trial_results = extract_first_stop_post_cue_error(trial_results, session_path)
     trial_results = extract_speeds(trial_results, session_path) # adds speeds to dataframe
+    trial_results = extract_trial_duration(trial_results)
 
     return trial_results

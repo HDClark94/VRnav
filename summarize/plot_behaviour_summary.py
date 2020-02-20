@@ -63,8 +63,11 @@ def main():
     print('-------------------------------------------------------------')
 
     recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\test_vr_recordings_jan20"
+
     recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
-    update_summary_plots(recording_folder_path, override=True)
+    update_summary_plots(recording_folder_path, override=False)
+    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya"
+    update_summary_plots(recording_folder_path, override=False)
 
 if __name__ == '__main__':
     main()

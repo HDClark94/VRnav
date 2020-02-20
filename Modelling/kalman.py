@@ -47,7 +47,7 @@ def example():
         # Initialization of state matrices
         X = np.array([0.0, 0.0])     # state vector position and velocity
         P = np.diag((0.01, 0.01))    # we start with a small co variance matrix as we are quite certain of where we are
-        A = np.array([[1, dt], [0, 1]]) # state transition matrix
+        A = np.array([[1, dt], [0, 1]]) # state transition matrix   see here: https://share.cocalc.com/share/7557a5ac1c870f1ec8f01271959b16b49df9d087/Kalman-and-Bayesian-Filters-in-Python/08-Designing-Kalman-Filters.ipynb?viewer=share
         Q = Q_discrete_white_noise(dim=2, dt=dt, var=measurement_std_Q)
         U = np.zeros((X.shape[0],1))
         B = np.array([[0.0], [1/gain]])
