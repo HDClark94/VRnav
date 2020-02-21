@@ -197,6 +197,28 @@ def extract_trial_duration(trial_results):
     trial_results["trial_duration"] = trial_results['end_time'] - trial_results['start_time'] # calculate duration
     return trial_results
 
+def extract_target(trial_results):
+    trial_results["target"] = (trial_results["Reward Boundary Max"]+trial_results['Reward Boundary Min'])/2
+    return trial_results
+
+def adjust_track_measurements(trial_results):
+    trial_results['Cue Boundary Min'] = trial_results['Cue Boundary Min'] - trial_results["Track Start"]
+    trial_results['Cue Boundary Max'] = trial_results['Cue Boundary Max'] - trial_results["Track Start"]
+    trial_results['Reward Boundary Min'] = trial_results['Reward Boundary Min'] - trial_results["Track Start"]
+    trial_results['Reward Boundary Max'] = trial_results['Reward Boundary Max'] - trial_results["Track Start"]
+    trial_results['Track End'] = trial_results['Track End'] - trial_results["Track Start"]
+    trial_results['Rewarded Location'] = trial_results['Rewarded Location'] - trial_results["Track Start"]
+    trial_results['Teleport from'] = trial_results['Teleport from'] - trial_results["Track Start"]
+    trial_results['Teleport to'] = trial_results['Teleport to'] - trial_results["Track Start"]
+    trial_results['stop_locations'] = trial_results['stop_locations'] - trial_results["Track Start"]
+    trial_results['first_stop_location'] = trial_results['first_stop_location'] - trial_results["Track Start"]
+    trial_results['first_stop_location_post_cue'] = trial_results['first_stop_location_post_cue'] - trial_results["Track Start"]
+    trial_results['stop_locations_postcue'] = trial_results['stop_locations_postcue'] - trial_results["Track Start"]
+    trial_results['target'] = trial_results['target'] - trial_results['Track Start']
+    trial_results["Track Start"] = trial_results["Track Start"] - trial_results["Track Start"]
+
+    return trial_results
+
 def extract_summary(trial_results, session_path):
     trial_results = split_stop_data_by_block(trial_results, block=2)  # only use block 2, this ejects habituation block 1
     trial_results = extract_stops(trial_results, session_path) # add stop times and locations to dataframe
@@ -205,5 +227,8 @@ def extract_summary(trial_results, session_path):
     trial_results = extract_first_stop_post_cue_error(trial_results, session_path)
     trial_results = extract_speeds(trial_results, session_path) # adds speeds to dataframe
     trial_results = extract_trial_duration(trial_results)
+    trial_results = extract_target(trial_results)
+
+    trial_results = adjust_track_measurements(trial_results)
 
     return trial_results

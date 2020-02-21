@@ -54,7 +54,7 @@ def process(recording_folder_path):
                                      'Reward Boundary Min', 'Reward Boundary Max', 'Track Start', 'Track End', 'Cue Sight', 'Rewarded Location',
                                      'Teleport from', 'Teleport to', 'Acceleration', 'first_stop_location', 'first_stop_location_post_cue',
                                      'first_stop_location_relative_to_ip', 'integration_length', 'first_stop_error', 'absolute_first_stop_error',
-                                     'first_stop_post_cue_error', 'absolute_first_stop_post_cue_error']]
+                                     'first_stop_post_cue_error', 'absolute_first_stop_post_cue_error', 'target']]
 
                 # add from config file
                 df1["move_cue"] = np.repeat(session_config["move_cue"], len(trial_results))
