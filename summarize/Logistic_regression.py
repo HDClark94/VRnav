@@ -46,8 +46,8 @@ def calculate_correct(results):
 
     return df
 
-def process(results_path, researcher):
-    results = pd.read_pickle(results_path)
+def process(recording_folder_path, researcher):
+    results = pd.read_pickle(recording_folder_path+"\processed_results.pkl")
     results = results.dropna()
 
     if researcher == "Emre":
@@ -106,7 +106,7 @@ def process(results_path, researcher):
         ax.errorbar(e2_nb["distance"], e2_nb["correct_proportion"], yerr=e2_nb_sd["correct_proportion"], label= "Joystick, non beaconed", capsize=10)
 
     plt.ylabel('Correct prob', fontsize=12, labelpad=10)
-    plt.xlabel('Distance (VU)', fontsize=12, labelpad=10)
+    plt.xlabel('Distance (m)', fontsize=12, labelpad=10)
     plt.legend()
 
     #plt.xlim(0, max(distances))
@@ -124,9 +124,9 @@ def main():
     print('-------------------------------------------------------------')
 
     # type path name in here with similar structure to this r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
-    results_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre\processed_results.pkl"
+    results_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
     process(results_path, "Emre")
-    results_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya\processed_results.pkl"
+    results_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya"
     process(results_path, "Maja")
 
 if __name__ == '__main__':

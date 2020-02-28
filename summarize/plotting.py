@@ -3,12 +3,61 @@ import matplotlib.pyplot as plt
 from summarize.common import *
 # plotting functions, some taken from Sarah
 from matplotlib.lines import Line2D
+from sklearn.linear_model import LinearRegression
+from scipy import stats
+
+
+def adjust_spines(ax,spines):
+    for loc, spine in ax.spines.items():
+        if loc in spines:
+            spine.set_position(('outward',0)) # outward by 10 points
+        #spine.set_smart_bounds(True)
+        else:
+            spine.set_color('none') # don't draw spine
+
+    # turn off ticks where there is no spine
+    if 'left' in spines:
+        ax.yaxis.set_ticks_position('left')
+    else:
+        # no yaxis ticks
+        ax.yaxis.set_ticks([])
+
+    if 'bottom' in spines:
+        ax.xaxis.set_ticks_position('bottom')
+    else:
+        # no xaxis ticks
+        ax.xaxis.set_ticks([])
+
 
 def plot_stops_in_time(trial_results, session_path):
     stops_in_time = plt.figure(figsize=(6, 6))
     ax = stops_in_time.add_subplot(1, 1, 1)  # specify (nrows, ncols, axnum)
     beaconed, non_beaconed, probe = split_stop_data_by_trial_type(trial_results)
     # TODO
+
+def plot_regression(ax, x, y):
+    # x  and y are pandas collumn
+    x = x.values
+    y = y.values
+    x = x[~np.isnan(y)].reshape(-1, 1)
+    y = y[~np.isnan(y)].reshape(-1, 1)
+
+    pearson_r = stats.pearsonr(x.flatten(),y.flatten())
+
+    linear_regressor = LinearRegression()  # create object for the class
+    linear_regressor.fit(x,y)  # perform linear regression
+
+    x_test = np.linspace(min(x), max(x), 100)
+
+    Y_pred = linear_regressor.predict(x_test.reshape(-1, 1))  # make predictions
+    #ax.text(6, 0.65, "R= "+str(np.round(pearson_r[0], decimals=2))+ ", p = "+str(np.round(pearson_r[1], decimals=2)))
+
+    ax.text(  # position text relative to Axes
+        0.95, 0.95, "R= "+str(np.round(pearson_r[0], decimals=2))+ ", p = "+str(np.round(pearson_r[1], decimals=2)),
+        ha='right', va='top',
+        transform=ax.transAxes, fontsize=20)
+
+    ax.plot(x_test, Y_pred, color='red')
 
 def error_longer_tracks(trial_results, session_path, error_collumn):
     first_stop_errors = plt.figure(figsize=(6, 6))

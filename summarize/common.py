@@ -87,6 +87,18 @@ def extract_first_stop_error(trial_results, session_paths):
 
     return trial_results
 
+
+def extract_gain(trial_results, baseline_acceleration=4):
+    gains = []
+
+    for index, _ in trial_results.iterrows():
+        gain = trial_results["Acceleration"][index]/baseline_acceleration
+        gains.append(gain)
+
+    trial_results["gain"] = gains
+
+    return trial_results
+
 def extract_speeds(trial_results, session_path):
     speeds = []
 
@@ -112,15 +124,17 @@ def extract_speed_by_time_bins(trial_results, session_path):
     #TODO
     return trial_results
 
-def filter_stops(trial_stop_locations, trial_results, index):
+def filter_stops(trial_stop_locations, trial_stop_times, trial_results, index):
     # remove stops in black box
     filtered_stops = []
+    filtered_stop_times = []
 
     for i in range(len(trial_stop_locations)):
         if trial_stop_locations[i] > trial_results["Track Start"][index] and trial_stop_locations[i] < trial_results["Track End"][index]:
             filtered_stops.append((trial_stop_locations[i]))
+            filtered_stop_times.append((trial_stop_times[i]))
 
-    return filtered_stops
+    return np.array(filtered_stops), np.array(filtered_stop_times)
 
 def extract_stops(trial_results, session_path):
 
@@ -133,24 +147,31 @@ def extract_stops(trial_results, session_path):
     first_stops_offset_postcue = []
     stop_locations_postcue =[]
     first_stops_postcue=[]
+    first_stop_time=[]
+    first_stops_postcue_time =[]
+    stop_times_post_cue = []
 
     for index, _ in trial_results.iterrows():
         player_movement = pd.read_csv(session_path+"/"+str(trial_results["player_movement_filename"][index]))
-        stop_idx = np.where(np.diff(np.array(player_movement["pos_x"]))==0)
+        stop_mask = np.append(False, np.diff(np.array(player_movement["pos_x"]))==0)
 
-        trial_stop_locations = np.array(player_movement["pos_x"])[stop_idx]
-        trial_stop_locations = np.unique(trial_stop_locations)  # ignores duplicates
+        trial_stop_locations = np.array(player_movement["pos_x"])[stop_mask]
+        trial_stop_locations, indices = np.unique(trial_stop_locations, return_index=True)  # ignores duplicates
 
         player_movement = correct_time(player_movement)
-        trial_stop_times = np.array(player_movement["time"])[stop_idx]
+        trial_stop_times = np.array(player_movement["time"])[stop_mask]
+        trial_stop_times = np.take(trial_stop_times, indices) # ignores duplicates
 
-        trial_stop_locations = filter_stops(trial_stop_locations, trial_results, index)
-        trial_stop_locations_post_cue = np.array(trial_stop_locations)[trial_stop_locations>trial_results["Cue Boundary Max"][index]]
+        trial_stop_locations, trial_stop_times = filter_stops(trial_stop_locations, trial_stop_times, trial_results, index)
+        trial_stop_locations_post_cue = trial_stop_locations[trial_stop_locations>trial_results["Cue Boundary Max"][index]]
+        trial_stop_post_cue_times = trial_stop_times[trial_stop_locations>trial_results["Cue Boundary Max"][index]]
 
         if len(trial_stop_locations)<1:
             trial_stop_locations=np.array([np.nan])
+            trial_stop_times=np.array([np.nan])
         if len(trial_stop_locations_post_cue)<1:
             trial_stop_locations_post_cue=np.array([np.nan])
+            trial_stop_post_cue_times = np.array([np.nan])
 
         stop_locations_offset_postcue.append(np.round(trial_stop_locations_post_cue - trial_results["Cue Boundary Max"][index], decimals=3))
         first_stops_offset_postcue.append(np.round(trial_stop_locations_post_cue[0] - trial_results["Cue Boundary Max"][index], decimals=3))
@@ -163,7 +184,9 @@ def extract_stops(trial_results, session_path):
         first_stops.append(np.round(trial_stop_locations[0], decimals=3))
 
         stop_times.append(np.round(trial_stop_times, decimals=3))
-
+        stop_times_post_cue.append(np.round(trial_stop_post_cue_times, decimals=3))
+        first_stop_time.append(np.round(trial_stop_times[0], decimals=3))
+        first_stops_postcue_time.append(np.round(trial_stop_post_cue_times[0], decimals=3))
 
     trial_results["stop_locations"] = stop_locations
     trial_results["first_stop_location"] = first_stops
@@ -176,6 +199,9 @@ def extract_stops(trial_results, session_path):
     trial_results["first_stop_location_relative_to_ip"] = first_stops_offset
 
     trial_results["stop_times"] = stop_times
+    trial_results["stop_times_post_cue"] = stop_times_post_cue
+    trial_results["first_stop_time"] = first_stop_time
+    trial_results["first_stops_postcue_time"] = first_stops_postcue_time
 
     return trial_results
 
@@ -228,6 +254,7 @@ def extract_summary(trial_results, session_path):
     trial_results = extract_speeds(trial_results, session_path) # adds speeds to dataframe
     trial_results = extract_trial_duration(trial_results)
     trial_results = extract_target(trial_results)
+    trial_results = extract_gain(trial_results, baseline_acceleration=4)
 
     trial_results = adjust_track_measurements(trial_results)
 
