@@ -25,6 +25,7 @@ def process(recording_folder_path, researcher, trial_type='non_beaconed'):
                           (results.experiment == 'basic_settings_RLimcrem_analogue')]
 
 
+
     results = results.dropna()
 
     stops_on_track = plt.figure(figsize=(6, 6))

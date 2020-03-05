@@ -16,15 +16,15 @@ def legend_title_experiment(experiment):
 
 def yaxis_mean_error_title(error_type):
     if error_type == 'first_stop_error':
-        return "Mean First Stop Error"
+        return "Mean First Stop Error (VU)"
     elif error_type == 'absolute_first_stop_error':
-        return "Absolute Mean First Stop Error"
+        return "Absolute Mean First Stop Error (VU)"
 
 def yaxis_variance_error_title(error_type):
     if error_type == 'first_stop_error':
-        return "First Stop Error Standard Deviation"
+        return "First Stop Error SD (VU)"
     elif error_type == 'absolute_first_stop_error':
-        return "Absolute First Stop Error Standard Deviation"
+        return "Absolute First Stop Error SD (VU)"
 
 def trial_type_title(trial_type):
     if trial_type == "non_beaconed":

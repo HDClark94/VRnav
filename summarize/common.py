@@ -259,3 +259,38 @@ def extract_summary(trial_results, session_path):
     trial_results = adjust_track_measurements(trial_results)
 
     return trial_results
+
+
+def calculate_correct(results):
+    df = pd.DataFrame()
+
+    unique_experiments = np.unique(results['experiment'])
+    for experiment in unique_experiments:
+        experiment_results = results[results['experiment'] == experiment]
+        unique_participants = np.unique(results['ppid'])
+        for id in unique_participants:
+            participant_results = experiment_results[experiment_results['ppid'] == id]
+            unique_sessions = np.unique(participant_results['session_num'])
+            for session in unique_sessions:
+                session_results = participant_results[participant_results['session_num'] == session]
+                unique_trial_types = np.unique(session_results["Trial type"])
+                for trial_type in unique_trial_types:
+                    trial_type_results = session_results[session_results['Trial type'] == trial_type]
+                    unique_movement_mechs = np.unique(trial_type_results["movement_mechanism"])
+                    for movement_mech in unique_movement_mechs:
+                        movement_mech_results = trial_type_results[trial_type_results["movement_mechanism"] == movement_mech]
+                        unique_track_lengths = np.unique(movement_mech_results["integration_length"])
+                        for track_length in unique_track_lengths:
+                            track_length_results = movement_mech_results[movement_mech_results["integration_length"] == track_length]
+
+                            df = df.append(pd.DataFrame([{'experiment': experiment,
+                                                          'ppid': id,
+                                                          'session': int(session),
+                                                          'trial_type': trial_type,
+                                                          'gain sd': track_length_results["gain_std"].iloc[0], # bodgy but gain sd is always the same within a session
+                                                          'distance': track_length,
+                                                          'n_trial': len(track_length_results),
+                                                          'n_correct': sum(track_length_results["Trial Scored"]),
+                                                          'correct_proportion': sum(track_length_results["Trial Scored"])/len(track_length_results)}]))
+
+    return df
