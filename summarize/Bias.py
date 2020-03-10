@@ -72,9 +72,10 @@ def plot_every_mean_error(recording_folder_path, error_type, trial_type, researc
         e3_mean_ppid = mean_error_ppid[(mean_error_ppid['gain_std'] == 2)]
         e3_sem_ppid = sem_error_ppid[(sem_error_ppid['gain_std'] == 2)]
 
-        ax.plot(e1_mean_ppid["integration_length"], e1_mean_ppid[error_type], color="blue", alpha=0.3, linewidth=1)
-        ax.plot(e2_mean_ppid["integration_length"], e2_mean_ppid[error_type], color="orange", alpha=0.3, linewidth=1)
-        ax.plot(e3_mean_ppid["integration_length"], e3_mean_ppid[error_type], color="green", alpha=0.3, linewidth=1)
+        for ppid in np.unique(e1_mean_ppid["ppid"]):
+            ax.plot(e1_mean_ppid[(e1_mean_ppid.ppid == ppid)]["integration_length"], e1_mean_ppid[(e1_mean_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+            ax.plot(e2_mean_ppid[(e2_mean_ppid.ppid == ppid)]["integration_length"], e2_mean_ppid[(e2_mean_ppid.ppid == ppid)][error_type], color="orange", alpha=0.3, linewidth=1)
+            ax.plot(e3_mean_ppid[(e3_mean_ppid.ppid == ppid)]["integration_length"], e3_mean_ppid[(e3_mean_ppid.ppid == ppid)][error_type], color="green", alpha=0.3, linewidth=1)
 
         ax.errorbar(e1_mean["integration_length"], e1_mean[error_type], yerr=e1_sem[error_type], capsize=10, color="blue", markersize="10")
         ax.errorbar(e2_mean["integration_length"], e2_mean[error_type], yerr=e2_sem[error_type], capsize=10, color="orange", markersize="10")
@@ -100,8 +101,9 @@ def plot_every_mean_error(recording_folder_path, error_type, trial_type, researc
         e2_mean_ppid = mean_error_ppid[(mean_error_ppid['movement_mechanism'] == "button_tap")]
         e2_sem_ppid = sem_error_ppid[(sem_error_ppid['movement_mechanism'] == "button_tap")]
 
-        ax.plot(e1_mean_ppid["integration_length"], e1_mean_ppid[error_type], color="blue", alpha=0.3, linewidth=1)
-        ax.plot(e2_mean_ppid["integration_length"], e2_mean_ppid[error_type], color="orange", alpha=0.3, linewidth=1)
+        for ppid in np.unique(e1_mean_ppid["ppid"]):
+            ax.plot(e1_mean_ppid[(e1_mean_ppid.ppid == ppid)]["integration_length"], e1_mean_ppid[(e1_mean_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+            ax.plot(e2_mean_ppid[(e2_mean_ppid.ppid == ppid)]["integration_length"], e2_mean_ppid[(e2_mean_ppid.ppid == ppid)][error_type], color="orange", alpha=0.3, linewidth=1)
 
         ax.errorbar(e1_mean["integration_length"], e1_mean[error_type], yerr=e1_sem[error_type], capsize=10, color="blue", markersize="10")
         ax.errorbar(e2_mean["integration_length"], e2_mean[error_type], yerr=e2_sem[error_type], capsize=10, color="orange", markersize="10")
@@ -115,7 +117,11 @@ def plot_every_mean_error(recording_folder_path, error_type, trial_type, researc
     plt.gca().spines['right'].set_visible(False)
     plt.xlim(0, max(mean_error['integration_length'])+20)
 
-    plt.hlines(0, 0, max(mean_error['integration_length'])+20, colors='k', linestyles='dashed')
+    distances = np.arange(0,400)
+    reward_zone_size = 13.801
+    ax.fill_between(distances, -reward_zone_size/2, reward_zone_size/2, facecolor="k", alpha=0.3)
+
+    #plt.hlines(0, 0, max(mean_error['integration_length'])+20, colors='k', linestyles='dashed')
     plt.ylim(-75, 100)
     #plt.legend(prop={"size":15})
     plt.show()
@@ -149,8 +155,9 @@ def plot_every_mean_error_pooled(recording_folder_path, error_type, researcher):
         enb_mean_ppid = mean_error_ppid[(mean_error_ppid["Trial type"] == "non_beaconed")]
         enb_sem_ppid = sem_error_ppid[(sem_error_ppid["Trial type"] == "non_beaconed")]
 
-        ax.plot(eb_mean_ppid["integration_length"], eb_mean_ppid[error_type], color="blue", alpha=0.3, linewidth=1)
-        ax.plot(enb_mean_ppid["integration_length"], enb_mean_ppid[error_type], color="red", alpha=0.3, linewidth=1)
+        for ppid in np.unique(eb_mean_ppid["ppid"]):
+            ax.plot(eb_mean_ppid[(eb_mean_ppid.ppid == ppid)]["integration_length"], eb_mean_ppid[(eb_mean_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+            ax.plot(enb_mean_ppid[(enb_mean_ppid.ppid == ppid)]["integration_length"], enb_mean_ppid[(enb_mean_ppid.ppid == ppid)][error_type], color="red", alpha=0.3, linewidth=1)
 
         ax.errorbar(eb_mean["integration_length"], eb_mean[error_type], yerr=eb_sem[error_type], capsize=10, color="blue", markersize="10", marker="s")
         ax.errorbar(enb_mean["integration_length"], enb_mean[error_type], yerr=enb_sem[error_type], capsize=10, color="red", markersize="10", marker="^")
@@ -176,8 +183,9 @@ def plot_every_mean_error_pooled(recording_folder_path, error_type, researcher):
         enb_mean_ppid = mean_error_ppid[(mean_error_ppid["Trial type"] == "non_beaconed")]
         enb_sem_ppid = sem_error_ppid[(sem_error_ppid["Trial type"] == "non_beaconed")]
 
-        ax.plot(eb_mean_ppid["integration_length"], eb_mean_ppid[error_type], color="blue", alpha=0.3, linewidth=1)
-        ax.plot(enb_mean_ppid["integration_length"], enb_mean_ppid[error_type], color="red", alpha=0.3, linewidth=1)
+        for ppid in np.unique(eb_mean_ppid["ppid"]):
+            ax.plot(eb_mean_ppid[(eb_mean_ppid.ppid == ppid)]["integration_length"], eb_mean_ppid[(eb_mean_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+            ax.plot(enb_mean_ppid[(enb_mean_ppid.ppid == ppid)]["integration_length"], enb_mean_ppid[(enb_mean_ppid.ppid == ppid)][error_type], color="red", alpha=0.3, linewidth=1)
 
         ax.errorbar(eb_mean["integration_length"], eb_mean[error_type], yerr=eb_sem[error_type], capsize=10, color="blue", markersize="10", marker="s")
         ax.errorbar(enb_mean["integration_length"], enb_mean[error_type], yerr=enb_sem[error_type], capsize=10, color="red", markersize="10", marker="^")
@@ -190,7 +198,11 @@ def plot_every_mean_error_pooled(recording_folder_path, error_type, researcher):
     plt.gca().spines['right'].set_visible(False)
     plt.xlim(0, max(mean_error['integration_length'])+20)
 
-    plt.hlines(0, 0, max(mean_error['integration_length'])+20, colors='k', linestyles='dashed')
+    distances = np.arange(0,400)
+    reward_zone_size = 13.801
+    ax.fill_between(distances, -reward_zone_size/2, reward_zone_size/2, facecolor="k", alpha=0.3)
+
+    #plt.hlines(0, 0, max(mean_error['integration_length'])+20, colors='k', linestyles='dashed')
     plt.ylim(-75, 100)
     #plt.legend(prop={"size":15})
     plt.show()
@@ -221,9 +233,10 @@ def plot_every_sd_error2(recording_folder_path, error_type, trial_type, research
         e2_sem_sd_ppid = e1_sd_ppid.groupby(['experiment', 'Trial type', 'session_num', 'gain_std', 'integration_length', 'movement_mechanism'])[error_type].sem().reset_index()
         e3_sem_sd_ppid = e1_sd_ppid.groupby(['experiment', 'Trial type', 'session_num', 'gain_std', 'integration_length', 'movement_mechanism'])[error_type].sem().reset_index()
 
-        ax.plot(e1_sd_ppid["integration_length"], e1_sd_ppid[error_type], color="blue", alpha=0.3, linewidth=1)
-        ax.plot(e2_sd_ppid["integration_length"], e2_sd_ppid[error_type], color="orange", alpha=0.3, linewidth=1)
-        ax.plot(e3_sd_ppid["integration_length"], e3_sd_ppid[error_type], color="green", alpha=0.3, linewidth=1)
+        for ppid in np.unique(e1_sd_ppid["ppid"]):
+            ax.plot(e1_sd_ppid[(e1_sd_ppid.ppid == ppid)]["integration_length"], e1_sd_ppid[(e1_sd_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+            ax.plot(e2_sd_ppid[(e2_sd_ppid.ppid == ppid)]["integration_length"], e2_sd_ppid[(e2_sd_ppid.ppid == ppid)][error_type], color="orange", alpha=0.3, linewidth=1)
+            ax.plot(e3_sd_ppid[(e3_sd_ppid.ppid == ppid)]["integration_length"], e3_sd_ppid[(e3_sd_ppid.ppid == ppid)][error_type], color="green", alpha=0.3, linewidth=1)
 
         ax.errorbar(e1_mean_sd_ppid["integration_length"], e1_mean_sd_ppid[error_type], yerr=e1_sem_sd_ppid[error_type], capsize=10, color="blue", markersize="10")
         ax.errorbar(e2_mean_sd_ppid["integration_length"], e2_mean_sd_ppid[error_type], yerr=e2_sem_sd_ppid[error_type], capsize=10, color="orange", markersize="10")
@@ -244,8 +257,9 @@ def plot_every_sd_error2(recording_folder_path, error_type, trial_type, research
         e1_sem_sd_ppid = e1_sd_ppid.groupby(['experiment', 'Trial type', 'session_num', 'gain_std', 'integration_length', 'movement_mechanism'])[error_type].sem().reset_index()
         e2_sem_sd_ppid = e1_sd_ppid.groupby(['experiment', 'Trial type', 'session_num', 'gain_std', 'integration_length', 'movement_mechanism'])[error_type].sem().reset_index()
 
-        ax.plot(e1_sd_ppid["integration_length"], e1_sd_ppid[error_type], color="blue", alpha=0.3, linewidth=1)
-        ax.plot(e2_sd_ppid["integration_length"], e2_sd_ppid[error_type], color="orange", alpha=0.3, linewidth=1)
+        for ppid in np.unique(e1_sd_ppid["ppid"]):
+            ax.plot(e1_sd_ppid[(e1_sd_ppid.ppid == ppid)]["integration_length"], e1_sd_ppid[(e1_sd_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+            ax.plot(e2_sd_ppid[(e2_sd_ppid.ppid == ppid)]["integration_length"], e2_sd_ppid[(e2_sd_ppid.ppid == ppid)][error_type], color="orange", alpha=0.3, linewidth=1)
 
         ax.errorbar(e1_mean_sd_ppid["integration_length"], e1_mean_sd_ppid[error_type], yerr=e1_sem_sd_ppid[error_type], capsize=10, color="blue", markersize="10")
         ax.errorbar(e2_mean_sd_ppid["integration_length"], e2_mean_sd_ppid[error_type], yerr=e2_sem_sd_ppid[error_type], capsize=10, color="orange", markersize="10")
@@ -407,9 +421,10 @@ def process(recording_folder_path, researcher, trial_type):
         e3_mean_ppid = mean_correct_ppid[(mean_correct_ppid['gain_std'] == 2)]
         e3_sem_ppid = sem_correct_ppid[(sem_correct_ppid['gain_std'] == 2)]
 
-        ax.plot(e1_mean_ppid["integration_length"], e1_mean_ppid["first_stop_location_relative_to_ip"], color="blue", alpha=0.3, linewidth=1)
-        ax.plot(e2_mean_ppid["integration_length"], e2_mean_ppid["first_stop_location_relative_to_ip"], color="orange", alpha=0.3, linewidth=1)
-        ax.plot(e3_mean_ppid["integration_length"], e3_mean_ppid["first_stop_location_relative_to_ip"], color="green", alpha=0.3, linewidth=1)
+        for ppid in np.unique(e1_mean_ppid["ppid"]):
+            ax.plot(e1_mean_ppid[(e1_mean_ppid.ppid == ppid)]["integration_length"], e1_mean_ppid[(e1_mean_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="blue", alpha=0.3, linewidth=1)
+            ax.plot(e2_mean_ppid[(e2_mean_ppid.ppid == ppid)]["integration_length"], e2_mean_ppid[(e2_mean_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="orange", alpha=0.3, linewidth=1)
+            ax.plot(e3_mean_ppid[(e3_mean_ppid.ppid == ppid)]["integration_length"], e3_mean_ppid[(e3_mean_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="green", alpha=0.3, linewidth=1)
 
         ax.errorbar(e1_mean["integration_length"], e1_mean["first_stop_location_relative_to_ip"], yerr=e1_sem["first_stop_location_relative_to_ip"], capsize=10, color="blue", markersize="10")
         ax.errorbar(e2_mean["integration_length"], e2_mean["first_stop_location_relative_to_ip"], yerr=e2_sem["first_stop_location_relative_to_ip"], capsize=10, color="orange", markersize="10")
@@ -472,8 +487,9 @@ def process(recording_folder_path, researcher, trial_type):
         e2_mean_ppid = mean_correct_ppid[(mean_correct_ppid['movement_mechanism'] == "button_tap")]
         e2_sem_ppid = sem_correct_ppid[(sem_correct_ppid['movement_mechanism'] == "button_tap")]
 
-        ax.plot(e1_mean_ppid["integration_length"], e1_mean_ppid["first_stop_location_relative_to_ip"], color="blue", alpha=0.3, linewidth=1)
-        ax.plot(e2_mean_ppid["integration_length"], e2_mean_ppid["first_stop_location_relative_to_ip"], color="orange", alpha=0.3, linewidth=1)
+        for ppid in np.unique(e1_mean_ppid["ppid"]):
+            ax.plot(e1_mean_ppid[(e1_mean_ppid.ppid == ppid)]["integration_length"], e1_mean_ppid[(e1_mean_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="blue", alpha=0.3, linewidth=1)
+            ax.plot(e2_mean_ppid[(e2_mean_ppid.ppid == ppid)]["integration_length"], e2_mean_ppid[(e2_mean_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="orange", alpha=0.3, linewidth=1)
 
         ax.errorbar(e1_mean["integration_length"], e1_mean["first_stop_location_relative_to_ip"], yerr=e1_sem["first_stop_location_relative_to_ip"], capsize=10, color="blue", markersize="10")
         ax.errorbar(e2_mean["integration_length"], e2_mean["first_stop_location_relative_to_ip"], yerr=e2_sem["first_stop_location_relative_to_ip"], capsize=10, color="orange", markersize="10")
@@ -534,7 +550,7 @@ def process(recording_folder_path, researcher, trial_type):
     #ax.yaxis.set_ticks_position('left')
     #ax.xaxis.set_ticks_position('bottom')
     plt.legend(prop={"size":10})
-    plt.savefig(recording_folder_path + '/bias.png', dpi=200)
+    #plt.savefig(recording_folder_path + '/bias.png', dpi=200)
     plt.show()
     plt.close()
 
@@ -577,8 +593,10 @@ def process_pooled(recording_folder_path, researcher):
 
     ax.errorbar(e1_b["integration_length"], e1_b["first_stop_location_relative_to_ip"], yerr=e1_b_sem["first_stop_location_relative_to_ip"], label= "Beaconed", capsize=10, color="blue", marker="s", markersize="10")
     ax.errorbar(e1_nb["integration_length"], e1_nb["first_stop_location_relative_to_ip"], yerr=e1_nb_sem["first_stop_location_relative_to_ip"], label= "Non Beaconed", capsize=10, color="red", marker="^", markersize="10")
-    ax.plot(e1_b_ppid["integration_length"], e1_b_ppid["first_stop_location_relative_to_ip"], color="blue", alpha=0.3, linewidth=1)
-    ax.plot(e1_nb_ppid["integration_length"], e1_nb_ppid["first_stop_location_relative_to_ip"], color="red", alpha=0.3, linewidth=1)
+
+    for ppid in np.unique(e1_b_ppid["ppid"]):
+        ax.plot(e1_b_ppid[(e1_b_ppid.ppid == ppid)]["integration_length"], e1_b_ppid[(e1_b_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="blue", alpha=0.3, linewidth=1)
+        ax.plot(e1_nb_ppid[(e1_nb_ppid.ppid == ppid)]["integration_length"], e1_nb_ppid[(e1_nb_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="red", alpha=0.3, linewidth=1)
 
 
     #ax.scatter(results["target"], results["first_stop_location_relative_to_ip"], color="orange")
@@ -644,6 +662,8 @@ def main():
 
     process_pooled(results_path, researcher=researcher)
 
+
+    '''
     results_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya"
     researcher = "Maja"
     trial_type = "non_beaconed"
@@ -658,8 +678,7 @@ def main():
 
     plot_every_mean_error_pooled(results_path, error_type="first_stop_error", researcher=researcher)
     process_pooled(results_path, researcher=researcher)
-
-
+    '''
 
 if __name__ == '__main__':
     main()

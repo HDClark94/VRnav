@@ -61,11 +61,16 @@ def extract_first_stop_post_cue_error(trial_results, session_paths):
     first_stop_errors = []
 
     for index, _ in trial_results.iterrows():
-        error_from_rz_max = trial_results["Reward Boundary Max"][index] - trial_results["first_stop_location_post_cue"][index]
-        error_from_rz_min = trial_results["Reward Boundary Min"][index] - trial_results["first_stop_location_post_cue"][index]
-        error = min(np.array(error_from_rz_max), np.array(error_from_rz_min))
 
-        first_stop_errors.append(np.round(error, decimals=3))
+        error_from_rz_mid = ((trial_results["Reward Boundary Max"][index] + trial_results["Reward Boundary Min"][index])/2) \
+                            - trial_results["first_stop_location_post_cue"][index]
+
+        #error_from_rz_max = trial_results["Reward Boundary Max"][index] - trial_results["first_stop_location_post_cue"][index]
+        #error_from_rz_min = trial_results["Reward Boundary Min"][index] - trial_results["first_stop_location_post_cue"][index]
+        #error = min(np.array(error_from_rz_max), np.array(error_from_rz_min))
+
+        #first_stop_errors.append(np.round(error, decimals=3))
+        first_stop_errors.append(np.round(error_from_rz_mid, decimals=3))
 
     trial_results["first_stop_post_cue_error"] = first_stop_errors
     trial_results["absolute_first_stop_post_cue_error"] = np.abs(first_stop_errors)
@@ -76,11 +81,16 @@ def extract_first_stop_error(trial_results, session_paths):
     first_stop_errors = []
 
     for index, _ in trial_results.iterrows():
-        error_from_rz_max = trial_results["Reward Boundary Max"][index] - trial_results["first_stop_location"][index]
-        error_from_rz_min = trial_results["Reward Boundary Min"][index] - trial_results["first_stop_location"][index]
-        error = min(np.array(error_from_rz_max), np.array(error_from_rz_min))
 
-        first_stop_errors.append(np.round(error, decimals=3))
+        error_from_rz_mid = ((trial_results["Reward Boundary Max"][index] + trial_results["Reward Boundary Min"][index])/2)\
+                            - trial_results["first_stop_location"][index]
+
+        #error_from_rz_max = trial_results["Reward Boundary Max"][index] - trial_results["first_stop_location"][index]
+        #error_from_rz_min = trial_results["Reward Boundary Min"][index] - trial_results["first_stop_location"][index]
+        #error = min(np.array(error_from_rz_max), np.array(error_from_rz_min))
+        #first_stop_errors.append(np.round(error, decimals=3))
+
+        first_stop_errors.append(np.round(error_from_rz_mid, decimals=3))
 
     trial_results["first_stop_error"] = first_stop_errors
     trial_results["absolute_first_stop_error"] = np.abs(first_stop_errors)
