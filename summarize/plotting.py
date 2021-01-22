@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
 #from summarize.plot_behaviour_summary import *
 from summarize.common import *
+import numpy as np
 # plotting functions, some taken from Sarah
 from matplotlib.lines import Line2D
 from sklearn.linear_model import LinearRegression
 from scipy import stats
+from scipy.optimize import curve_fit
+from Modelling.no_kalman_model import *
 
 
 def adjust_spines(ax,spines):
@@ -312,6 +315,72 @@ def plot_stops_on_track(trial_results, session_path):
     plt.close()
 
 
+def plot_target_response(trial_results, session_path):
+
+    trial_results = trial_results.dropna()
+    trial_results_means = trial_results.groupby(['Trial type', 'integration_length', 'ppid'])['first_stop_location'].mean().reset_index()
+    ppid = trial_results_means["ppid"][0]
+
+    subject_data_mean_x = np.asarray(trial_results_means[(trial_results_means["Trial type"] == "non_beaconed")]['integration_length'])
+    subject_data_mean_y = np.asarray(trial_results_means[(trial_results_means["Trial type"] == "non_beaconed")]['first_stop_location'])
+
+    subject_data_x = np.asarray(trial_results[(trial_results["Trial type"] == "non_beaconed")]['integration_length'])
+    subject_data_y = np.asarray(trial_results[(trial_results["Trial type"] == "non_beaconed")]["first_stop_location"])
+
+    _popt = []
+    minimal = 1e16
+    minimal_i = 0
+    test_x = np.arange(0,400, 20)
+
+    for i in range(1000):
+        # random assignment of starter parameter value
+        p0_1 = np.random.uniform(low=0, high=2)
+        p0_2 = np.random.uniform(low=0, high=2)
+        p0_3 = np.random.uniform(low=0, high=0.1)
+
+        popt, pcov = curve_fit(model, subject_data_mean_x, subject_data_mean_y, p0=[p0_1, p0_2, p0_3])
+        sq_sum_error = np.sum(np.square(model(subject_data_mean_x, prior_gain=popt[0], lambda_coef=popt[1], k=popt[2]) - subject_data_mean_y))
+
+        if sq_sum_error < minimal:
+            minimal = sq_sum_error
+            minimal_i = i
+            print("New minimum found")
+        _popt.append(popt)
+
+
+    subject_model_params = _popt[minimal_i]
+    print("estimate of model parameters ", subject_model_params)
+    # plotting model fit
+    best_fit_responses = model(test_x, prior_gain=_popt[minimal_i][0], lambda_coef=_popt[minimal_i][1], k=_popt[minimal_i][2])
+    # plot optimised response target
+    fig = plt.figure(figsize = (6,6))
+    ax = fig.add_subplot(1,1,1) #stops per trial
+    plt.title(ppid, fontsize="20")
+    plt.scatter(subject_data_x, subject_data_y, color="r", marker="o")
+    plt.plot(subject_data_mean_x, subject_data_mean_y, "r", label="data")
+    plt.plot(test_x, best_fit_responses, "g", label="model")
+    plt.plot(np.arange(0,400), np.arange(0,400), "k--", label="Unity")
+    plt.xlabel("Target", fontsize=20)
+    plt.xlim((0,400))
+    plt.ylim((0,400))
+    plt.ylabel("Optimal Response", fontsize=20)
+    plt.subplots_adjust(left=0.2)
+    ax.tick_params(axis='both', which='major', labelsize=15)
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+    textstr = '\n'.join((
+        r'$\Gamma=%.2f$' % (_popt[minimal_i][0], ),
+        r'$\lambda=%.2f$' % (_popt[minimal_i][1], ),
+        r'$\mathrm{k}=%.2f$' % (_popt[minimal_i][2], )))
+
+    props = dict(boxstyle='round', facecolor='white', alpha=0.5)
+    ax.text(0.80, 0.05, textstr, transform=ax.transAxes, fontsize=14, bbox=props)
+
+    plt.legend(loc="upper left")
+    plt.savefig(session_path+"/"+ppid+"_model_fit.png")
+    plt.show()
+    plt.close()
+
 def plot_speed_on_track(trial_results, session_path, block=2):
     # TODO
     pass
@@ -365,7 +434,7 @@ def style_track_plot(ax, dataframe, one_length=False):
             y = [trial_numbers[i]-0.5, trial_numbers[i]-0.5, trial_numbers[i]+0.5, trial_numbers[i]+0.5]
             ax.fill(x, y, alpha=0.25, color="g")
 
-    if dataframe["Cue Boundary Min"].iloc[0] is not 0:
+    if dataframe["Cue Boundary Min"].iloc[0] > 0:
         cue_min = dataframe["Cue Boundary Min"].iloc[0]-dataframe["Cue Boundary Max"].iloc[0]
         cue_max = dataframe["Cue Boundary Max"].iloc[0]-dataframe["Cue Boundary Max"].iloc[0]
 

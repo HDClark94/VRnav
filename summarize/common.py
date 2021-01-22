@@ -5,6 +5,11 @@ import numpy as np
 from summarize.plotting import *
 from matplotlib.lines import Line2D
 
+def num2str(number):
+    # it maybe has a decimal point in
+    # and replaces with -
+    return str(number).replace(".", "-")
+
 
 def split_stop_data_by_trial_type(session_dataframe):
     '''

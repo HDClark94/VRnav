@@ -7,9 +7,9 @@ from numpy.linalg import inv
 import math
 
 np.random.seed(64)
-def posterior_velocity(gt_velocity, expon_coef, measurement_std_Q, velocities):
+def posterior_velocity(gt_velocity, expon_coef, likelihood_width, velocities):
 
-    likelihood_dist = guassian(velocities,gt_velocity,measurement_std_Q)/np.sum(guassian(velocities,gt_velocity,measurement_std_Q))
+    likelihood_dist = guassian(velocities,gt_velocity,likelihood_width)/np.sum(guassian(velocities,gt_velocity,likelihood_width))
     prior_dist = ((np.e**(expon_coef*velocities))/np.sum(np.e**(expon_coef*velocities)))
     posterior_dist = (likelihood_dist*prior_dist)/np.sum(likelihood_dist*prior_dist)
 
@@ -27,9 +27,8 @@ def pdf(x, mu, sigma):
 
 def pdf_vectorised(x, mu, sigma):
 
-    #x=faux_target_distances, mu=distances[i], sigma=distances[i]**lambda_coef
     mu_new = np.repeat(mu[:, np.newaxis], len(x), axis=1)
-    x_new = np.repeat(x[:, np.newaxis], len(mu), axis=1).T
+    x_new = (np.repeat(x[:, np.newaxis], len(mu), axis=1).T)
     sigma_new = np.repeat(sigma[:, np.newaxis], len(x), axis=1)
 
     x_new2 = (x_new - mu_new)/sigma_new
@@ -177,22 +176,21 @@ def uncertainty_exponent():
     plt.legend()
     plt.show()
 
-def position_uncertainty(X, lambda_coef=0, target_width=1):
+def position_uncertainty(X, lambda_coef=0, target_width=1, k=1):
     # adjust position estimate x by regressing the position uncertainty
     # into the position estimate by the process in uncertainty_exponent()
-    step=0.001
+    step=1
     pos_estimate = X[0].copy()
     faux_target_distances = np.linspace(pos_estimate-(target_width/2), pos_estimate+(target_width/2), 10)
-    expected_rewards = []
     error_in_uncertainty = 0
 
-    if pos_estimate>0:
-        distances = np.arange(step, pos_estimate, step)
-        expected_rewards = np.sum(pdf_vectorised(x=faux_target_distances, mu=distances, sigma=distances**lambda_coef), axis=1)
+    if pos_estimate>step:
+        distances = np.arange(step, 1000, step)
+        expected_rewards = np.nan_to_num(np.sum(pdf_vectorised(x=faux_target_distances, mu=distances, sigma=k*(distances**lambda_coef)), axis=1))
+        distance_at_peak_expected_reward_x = distances[np.argmax(expected_rewards)]
 
-        peak_expected_reward = distances[np.argmax(expected_rewards)]
-        error_in_uncertainty = pos_estimate-peak_expected_reward
-        pos_estimate = pos_estimate + error_in_uncertainty
+        error_in_uncertainty = pos_estimate-distance_at_peak_expected_reward_x
+        pos_estimate = distance_at_peak_expected_reward_x
 
         return pos_estimate, error_in_uncertainty
     else:

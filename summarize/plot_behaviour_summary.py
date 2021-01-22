@@ -5,6 +5,8 @@ import numpy as np
 from summarize.plotting import *
 from summarize.fig1C_function import *
 from summarize.common import *
+import sys
+import traceback
 
 def update_summary_plots(recording_folder_path, override=False):
     '''
@@ -29,8 +31,11 @@ def update_summary_plots(recording_folder_path, override=False):
                     try:
                         plot_summary(session)
                         print("successful with session, ", session)
-                    except:
-                        print("failed with session, ", session)
+                    except Exception as ex:
+                        print('This is what Python says happened:')
+                        print(ex)
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_tb(exc_traceback)
 
 
 def plot_summary(session_path):
@@ -50,10 +55,11 @@ def plot_summary(session_path):
     variance_longer_tracks(trial_results, session_path, error_collumn="first_stop_error")
     variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_error")
     variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
-    stop_histogram(trial_results, session_path, cummulative=True, first_stop=True)
-    stop_histogram(trial_results, session_path, cummulative=True, first_stop=False)
-    stop_histogram(trial_results, session_path, cummulative=False, first_stop=True)
-    stop_histogram(trial_results, session_path, cummulative=False, first_stop=False)
+    plot_target_response(trial_results, session_path)
+    #stop_histogram(trial_results, session_path, cummulative=True, first_stop=True)
+    #stop_histogram(trial_results, session_path, cummulative=True, first_stop=False)
+    #stop_histogram(trial_results, session_path, cummulative=False, first_stop=True)
+    #stop_histogram(trial_results, session_path, cummulative=False, first_stop=False)
 
     #plot_stops_in_time(trial_results,session_path)
 
@@ -64,10 +70,13 @@ def main():
 
     recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\test_vr_recordings_jan20"
 
-    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
-    update_summary_plots(recording_folder_path, override=False)
-    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya"
-    update_summary_plots(recording_folder_path, override=False)
+    #recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
+    #update_summary_plots(recording_folder_path, override=False)
+    #recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya"
+    #update_summary_plots(recording_folder_path, override=False)
+
+    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV2.0\recordings"
+    update_summary_plots(recording_folder_path, override=True)
 
 if __name__ == '__main__':
     main()

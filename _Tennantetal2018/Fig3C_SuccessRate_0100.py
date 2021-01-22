@@ -8,7 +8,7 @@
 """
 
 #IMPORT FUNCTIONS AND PACKAGES
-from Functions_CoreFunctions_0100 import adjust_spines,readhdfdata, maketrialarray
+from _Tennantetal2018.Functions_CoreFunctions_0100 import adjust_spines,readhdfdata, maketrialarray
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
@@ -16,9 +16,9 @@ import math
 from scipy.stats import uniform
 
 # Load raw data: specify the HDF5 file to read data from
-filename = 'Data_Input/Behaviour_DataFiles/Task19_0100.h5'
+filename = r'C:\Users\44756\Downloads\Task19_0100.h5'
 # Load raw data: txt file that specifies days to analyse with average first stop closest to reward zone in beaconed trials
-array = np.loadtxt('Data_Input/Behaviour_SummaryData/Task19_FirstDays.txt',delimiter = '\t')
+array = np.loadtxt(r'Z:\ActiveProjects\Harry\OculusVR\Data_Input\Behaviour_SummaryData\Task19_FirstDays.txt', delimiter = '\t')
 
 # specify mouse/mice and day/s to analyse
 days = ['Day' + str(int(x)) for x in np.arange(1,20.1)]

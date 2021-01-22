@@ -208,7 +208,7 @@ def plot_every_mean_error_pooled(recording_folder_path, error_type, researcher):
     plt.show()
 
 
-def plot_every_sd_error2(recording_folder_path, error_type, trial_type, researcher):
+def plot_every_sd_error2(recording_folder_path, error_type, trial_type, researcher, pool_groups=False):
     results = pd.read_pickle(recording_folder_path+"\processed_results.pkl")
     results = results.dropna()
     fig, ax = plt.subplots()
@@ -219,6 +219,10 @@ def plot_every_sd_error2(recording_folder_path, error_type, trial_type, research
         results = results[(results.experiment == 'basic_settings_cued_RLincrem_ana_1s_0') |
                           (results.experiment == 'basic_settings_cued_RLincrem_ana_1s_05') |
                           (results.experiment == 'basic_settings_cued_RLincrem_ana_1s_2')]
+
+        pool_group_results = results.groupby(['ppid', 'Trial type', 'session_num', 'integration_length'])[error_type].std().reset_index()
+        pool_group_results_subject_averaged = pool_group_results.groupby(['Trial type', 'session_num', 'integration_length'])[error_type].mean().reset_index()
+        pool_group_results_subject_averaged_variance = pool_group_results.groupby(['Trial type', 'session_num', 'integration_length'])[error_type].sem().reset_index()
 
         sd_error_ppid =  results.groupby(['ppid', 'experiment', 'Trial type', 'session_num', 'gain_std', 'integration_length', 'movement_mechanism'])[error_type].std().reset_index()
         e1_sd_ppid = sd_error_ppid[(sd_error_ppid['gain_std'] == 0)]
@@ -234,18 +238,29 @@ def plot_every_sd_error2(recording_folder_path, error_type, trial_type, research
         e3_sem_sd_ppid = e1_sd_ppid.groupby(['experiment', 'Trial type', 'session_num', 'gain_std', 'integration_length', 'movement_mechanism'])[error_type].sem().reset_index()
 
         for ppid in np.unique(e1_sd_ppid["ppid"]):
-            ax.plot(e1_sd_ppid[(e1_sd_ppid.ppid == ppid)]["integration_length"], e1_sd_ppid[(e1_sd_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
-            ax.plot(e2_sd_ppid[(e2_sd_ppid.ppid == ppid)]["integration_length"], e2_sd_ppid[(e2_sd_ppid.ppid == ppid)][error_type], color="orange", alpha=0.3, linewidth=1)
-            ax.plot(e3_sd_ppid[(e3_sd_ppid.ppid == ppid)]["integration_length"], e3_sd_ppid[(e3_sd_ppid.ppid == ppid)][error_type], color="green", alpha=0.3, linewidth=1)
+            if pool_groups:
+                ax.plot(pool_group_results[(pool_group_results.ppid == ppid)]["integration_length"], pool_group_results[(pool_group_results.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+            else:
+                ax.plot(e1_sd_ppid[(e1_sd_ppid.ppid == ppid)]["integration_length"], e1_sd_ppid[(e1_sd_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+                ax.plot(e2_sd_ppid[(e2_sd_ppid.ppid == ppid)]["integration_length"], e2_sd_ppid[(e2_sd_ppid.ppid == ppid)][error_type], color="orange", alpha=0.3, linewidth=1)
+                ax.plot(e3_sd_ppid[(e3_sd_ppid.ppid == ppid)]["integration_length"], e3_sd_ppid[(e3_sd_ppid.ppid == ppid)][error_type], color="green", alpha=0.3, linewidth=1)
 
-        ax.errorbar(e1_mean_sd_ppid["integration_length"], e1_mean_sd_ppid[error_type], yerr=e1_sem_sd_ppid[error_type], capsize=10, color="blue", markersize="10")
-        ax.errorbar(e2_mean_sd_ppid["integration_length"], e2_mean_sd_ppid[error_type], yerr=e2_sem_sd_ppid[error_type], capsize=10, color="orange", markersize="10")
-        ax.errorbar(e3_mean_sd_ppid["integration_length"], e3_mean_sd_ppid[error_type], yerr=e3_sem_sd_ppid[error_type], capsize=10, color="green", markersize="10")
+        if pool_groups:
+            ax.errorbar(pool_group_results_subject_averaged["integration_length"], pool_group_results_subject_averaged[error_type], yerr=pool_group_results_subject_averaged_variance[error_type], capsize=10, color="blue", markersize="10")
+        else:
+            ax.errorbar(e1_mean_sd_ppid["integration_length"], e1_mean_sd_ppid[error_type], yerr=e1_sem_sd_ppid[error_type], capsize=10, color="blue", markersize="10")
+            ax.errorbar(e2_mean_sd_ppid["integration_length"], e2_mean_sd_ppid[error_type], yerr=e2_sem_sd_ppid[error_type], capsize=10, color="orange", markersize="10")
+            ax.errorbar(e3_mean_sd_ppid["integration_length"], e3_mean_sd_ppid[error_type], yerr=e3_sem_sd_ppid[error_type], capsize=10, color="green", markersize="10")
 
     elif researcher == "Maja":
 
         results = results[(results.experiment == 'basic_settings_non_cued_RLincrem_button_tap') |
                           (results.experiment == 'basic_settings_RLimcrem_analogue')]
+
+        # pooling groups
+        pool_group_results = results.groupby(['ppid', 'Trial type', 'session_num', 'integration_length'])[error_type].std().reset_index()
+        pool_group_results_subject_averaged = pool_group_results.groupby(['Trial type', 'session_num', 'integration_length'])[error_type].mean().reset_index()
+        pool_group_results_subject_averaged_variance = pool_group_results.groupby(['Trial type', 'session_num', 'integration_length'])[error_type].sem().reset_index()
 
         sd_error_ppid =  results.groupby(['ppid', 'experiment', 'Trial type', 'session_num', 'gain_std', 'integration_length', 'movement_mechanism'])[error_type].std().reset_index()
         e1_sd_ppid = sd_error_ppid[(sd_error_ppid['movement_mechanism'] == "analogue")]
@@ -257,12 +272,18 @@ def plot_every_sd_error2(recording_folder_path, error_type, trial_type, research
         e1_sem_sd_ppid = e1_sd_ppid.groupby(['experiment', 'Trial type', 'session_num', 'gain_std', 'integration_length', 'movement_mechanism'])[error_type].sem().reset_index()
         e2_sem_sd_ppid = e1_sd_ppid.groupby(['experiment', 'Trial type', 'session_num', 'gain_std', 'integration_length', 'movement_mechanism'])[error_type].sem().reset_index()
 
-        for ppid in np.unique(e1_sd_ppid["ppid"]):
-            ax.plot(e1_sd_ppid[(e1_sd_ppid.ppid == ppid)]["integration_length"], e1_sd_ppid[(e1_sd_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
-            ax.plot(e2_sd_ppid[(e2_sd_ppid.ppid == ppid)]["integration_length"], e2_sd_ppid[(e2_sd_ppid.ppid == ppid)][error_type], color="orange", alpha=0.3, linewidth=1)
+        for ppid in np.unique(pool_group_results["ppid"]):
+            if pool_groups:
+                ax.plot(pool_group_results[(pool_group_results.ppid == ppid)]["integration_length"], pool_group_results[(pool_group_results.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+            else:
+                ax.plot(e1_sd_ppid[(e1_sd_ppid.ppid == ppid)]["integration_length"], e1_sd_ppid[(e1_sd_ppid.ppid == ppid)][error_type], color="blue", alpha=0.3, linewidth=1)
+                ax.plot(e2_sd_ppid[(e2_sd_ppid.ppid == ppid)]["integration_length"], e2_sd_ppid[(e2_sd_ppid.ppid == ppid)][error_type], color="orange", alpha=0.3, linewidth=1)
 
-        ax.errorbar(e1_mean_sd_ppid["integration_length"], e1_mean_sd_ppid[error_type], yerr=e1_sem_sd_ppid[error_type], capsize=10, color="blue", markersize="10")
-        ax.errorbar(e2_mean_sd_ppid["integration_length"], e2_mean_sd_ppid[error_type], yerr=e2_sem_sd_ppid[error_type], capsize=10, color="orange", markersize="10")
+        if pool_groups:
+            ax.errorbar(pool_group_results_subject_averaged["integration_length"], pool_group_results_subject_averaged[error_type], yerr=pool_group_results_subject_averaged_variance[error_type], capsize=10, color="blue", markersize="10")
+        else:
+            ax.errorbar(e1_mean_sd_ppid["integration_length"], e1_mean_sd_ppid[error_type], yerr=e1_sem_sd_ppid[error_type], capsize=10, color="blue", markersize="10")
+            ax.errorbar(e2_mean_sd_ppid["integration_length"], e2_mean_sd_ppid[error_type], yerr=e2_sem_sd_ppid[error_type], capsize=10, color="orange", markersize="10")
 
     plt.ylabel(yaxis_variance_error_title(error_type), fontsize=20, labelpad=10)
     plt.xlabel('Target (VU)', fontsize=20, labelpad=10)
@@ -464,12 +485,6 @@ def process(recording_folder_path, researcher, trial_type):
         plt.plot(distances, Y_pred, color='green', linestyle=":", label="High uncertainty linear regression")
 
 
-
-
-
-
-
-
     elif researcher == "Maja":
 
         mean_correct = results.groupby(["movement_mechanism", 'integration_length'])['first_stop_location_relative_to_ip'].mean().reset_index()
@@ -555,7 +570,7 @@ def process(recording_folder_path, researcher, trial_type):
     plt.close()
 
 
-def process_pooled(recording_folder_path, researcher):
+def process_pooled(recording_folder_path, researcher, fig_path, plot_regression=False):
     results = pd.read_pickle(recording_folder_path+"\processed_results.pkl")
 
     if researcher == "Emre":
@@ -570,7 +585,6 @@ def process_pooled(recording_folder_path, researcher):
     print("trials = ", len(results))
     print("participants = ", len(np.unique(results["ppid"])))
     # specify one trial type
-
 
     fig, ax = plt.subplots()
     distances = np.arange(0,400)
@@ -598,28 +612,27 @@ def process_pooled(recording_folder_path, researcher):
         ax.plot(e1_b_ppid[(e1_b_ppid.ppid == ppid)]["integration_length"], e1_b_ppid[(e1_b_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="blue", alpha=0.3, linewidth=1)
         ax.plot(e1_nb_ppid[(e1_nb_ppid.ppid == ppid)]["integration_length"], e1_nb_ppid[(e1_nb_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="red", alpha=0.3, linewidth=1)
 
+    if plot_regression:
+        #ax.scatter(results["target"], results["first_stop_location_relative_to_ip"], color="orange")
+        x = results[(results['Trial type'] == "beaconed")]["target"].values
+        y = results[(results['Trial type'] == "beaconed")]["first_stop_location_relative_to_ip"].values
+        x = x[~np.isnan(y)].reshape(-1, 1)
+        y = y[~np.isnan(y)].reshape(-1, 1)
+        linear_regressor = LinearRegression()  # create object for the class
+        linear_regressor.fit(x,y)  # perform linear regression
+        Y_pred = linear_regressor.predict(distances.reshape(-1, 1))  # make predictions
+        plt.plot(distances, Y_pred, color='blue', label="Linear Regression Beaconed", linestyle=":")
 
-    #ax.scatter(results["target"], results["first_stop_location_relative_to_ip"], color="orange")
-    x = results[(results['Trial type'] == "beaconed")]["target"].values
-    y = results[(results['Trial type'] == "beaconed")]["first_stop_location_relative_to_ip"].values
-    x = x[~np.isnan(y)].reshape(-1, 1)
-    y = y[~np.isnan(y)].reshape(-1, 1)
-    linear_regressor = LinearRegression()  # create object for the class
-    linear_regressor.fit(x,y)  # perform linear regression
-    Y_pred = linear_regressor.predict(distances.reshape(-1, 1))  # make predictions
-    plt.plot(distances, Y_pred, color='blue', label="Linear Regression Beaconed", linestyle=":")
+        x = results[(results['Trial type'] == "non_beaconed")]["target"].values
+        y = results[(results['Trial type'] == "non_beaconed")]["first_stop_location_relative_to_ip"].values
+        x = x[~np.isnan(y)].reshape(-1, 1)
+        y = y[~np.isnan(y)].reshape(-1, 1)
+        linear_regressor = LinearRegression()  # create object for the class
+        linear_regressor.fit(x,y)  # perform linear regression
+        Y_pred = linear_regressor.predict(distances.reshape(-1, 1))  # make predictions
+        plt.plot(distances, Y_pred, color='red', label="Linear Regression Non Beaconed", linestyle=":")
 
-    x = results[(results['Trial type'] == "non_beaconed")]["target"].values
-    y = results[(results['Trial type'] == "non_beaconed")]["first_stop_location_relative_to_ip"].values
-    x = x[~np.isnan(y)].reshape(-1, 1)
-    y = y[~np.isnan(y)].reshape(-1, 1)
-    linear_regressor = LinearRegression()  # create object for the class
-    linear_regressor.fit(x,y)  # perform linear regression
-    Y_pred = linear_regressor.predict(distances.reshape(-1, 1))  # make predictions
-    plt.plot(distances, Y_pred, color='red', label="Linear Regression Non Beaconed", linestyle=":")
     plt.legend(prop={"size":13})
-
-
     plt.ylabel('Response (VU)', fontsize=20, labelpad=10)
     plt.xlabel('Target (VU)', fontsize=20, labelpad=10)
     plt.xlim(0, max(distances))
@@ -629,10 +642,62 @@ def process_pooled(recording_folder_path, researcher):
     plt.gca().spines['top'].set_visible(False)
     plt.gca().spines['right'].set_visible(False)
     #plt.legend(prop={"size":15})
-    #plt.savefig(recording_folder_path + '/bias.png', dpi=200)
+    plt.tight_layout()
+    plt.savefig(fig_path + '/bias.png', dpi=200)
     plt.show()
     plt.close()
 
+def process_pooled_variance(recording_folder_path, researcher, fig_path, plot_regression=False):
+    results = pd.read_pickle(recording_folder_path+"\processed_results.pkl")
+
+    if researcher == "Emre":
+        results = results[(results.experiment == 'basic_settings_cued_RLincrem_ana_1s_0') |
+                          (results.experiment == 'basic_settings_cued_RLincrem_ana_1s_05') |
+                          (results.experiment == 'basic_settings_cued_RLincrem_ana_1s_2')]
+
+    elif researcher == "Maja":
+        results = results[(results.experiment == 'basic_settings_non_cued_RLincrem_button_tap') |
+                          (results.experiment == 'basic_settings_RLimcrem_analogue')]
+
+    print("trials = ", len(results))
+    print("participants = ", len(np.unique(results["ppid"])))
+    # specify one trial type
+
+    fig, ax = plt.subplots()
+    distances = np.arange(0,400)
+
+    sem_correct = results.groupby(['Trial type', 'integration_length'])['first_stop_location_relative_to_ip'].std().reset_index()
+    e1_b_sem = sem_correct[(sem_correct['Trial type'] == "beaconed")]
+    e1_nb_sem = sem_correct[(sem_correct['Trial type'] == "non_beaconed")]
+
+    sem_correct_ppid = results.groupby(['ppid', 'Trial type', 'integration_length'])['first_stop_location_relative_to_ip'].std().reset_index()
+    e1_b_sem_ppid = sem_correct_ppid[(sem_correct_ppid['Trial type'] == "beaconed")]
+    e1_nb_sem_ppid = sem_correct_ppid[(sem_correct_ppid['Trial type'] == "non_beaconed")]
+
+    e1_b_sem_ppid_sem = e1_b_sem_ppid.groupby(['integration_length'])['first_stop_location_relative_to_ip'].sem().reset_index()
+    e1_nb_sem_ppid_sem = e1_nb_sem_ppid.groupby(['integration_length'])['first_stop_location_relative_to_ip'].sem().reset_index()
+
+    ax.errorbar(e1_b_sem["integration_length"], e1_b_sem["first_stop_location_relative_to_ip"], yerr=e1_b_sem_ppid_sem["first_stop_location_relative_to_ip"], label= "Beaconed", capsize=10, color="blue", marker="s", markersize="10")
+    ax.errorbar(e1_nb_sem["integration_length"], e1_nb_sem["first_stop_location_relative_to_ip"], yerr=e1_nb_sem_ppid_sem["first_stop_location_relative_to_ip"], label= "Non Beaconed", capsize=10, color="red", marker="^", markersize="10")
+
+    for ppid in np.unique(e1_b_sem_ppid["ppid"]):
+        ax.plot(e1_b_sem_ppid[(e1_b_sem_ppid.ppid == ppid)]["integration_length"], e1_b_sem_ppid[(e1_b_sem_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="blue", alpha=0.3, linewidth=1)
+        ax.plot(e1_nb_sem_ppid[(e1_nb_sem_ppid.ppid == ppid)]["integration_length"], e1_nb_sem_ppid[(e1_nb_sem_ppid.ppid == ppid)]["first_stop_location_relative_to_ip"], color="red", alpha=0.3, linewidth=1)
+
+    plt.legend(prop={"size":13})
+    plt.ylabel('Response SD (VU)', fontsize=20, labelpad=10)
+    plt.xlabel('Target (VU)', fontsize=20, labelpad=10)
+    plt.xlim(0, max(distances))
+    plt.ylim(0, 100)
+    #plt.title(trial_type_title(trial_type), fontsize=23)
+    ax.tick_params(axis='both', which='major', labelsize=15)
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+    #plt.legend(prop={"size":15})
+    plt.tight_layout()
+    plt.savefig(fig_path + '/variance.png', dpi=200)
+    plt.show()
+    plt.close()
 
 
 def main():
@@ -647,20 +712,24 @@ def main():
 
 
     results_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
+    fig_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre\figs"
     researcher = "Emre"
     trial_type = "non_beaconed"
-    plot_every_mean_error(results_path, error_type="first_stop_error", trial_type=trial_type, researcher=researcher)
-    plot_every_sd_error2(results_path, error_type="first_stop_error", trial_type=trial_type, researcher=researcher)
-    process(results_path, researcher=researcher, trial_type=trial_type)
+    #plot_every_mean_error(results_path, error_type="first_stop_error", trial_type=trial_type, researcher=researcher)
+    plot_every_sd_error2(results_path, error_type="first_stop_error", trial_type=trial_type, researcher=researcher, pool_groups=False)
+    plot_every_sd_error2(results_path, error_type="first_stop_error", trial_type=trial_type, researcher=researcher, pool_groups=True)
+    #process(results_path, researcher=researcher, trial_type=trial_type)
 
     trial_type = "beaconed"
     plot_every_mean_error(results_path, error_type="first_stop_error", trial_type=trial_type, researcher=researcher)
-    plot_every_sd_error2(results_path, error_type="first_stop_error", trial_type=trial_type, researcher=researcher)
+    plot_every_sd_error2(results_path, error_type="first_stop_error", trial_type=trial_type, researcher=researcher, pool_groups=False)
+    plot_every_sd_error2(results_path, error_type="first_stop_error", trial_type=trial_type, researcher=researcher, pool_groups=True)
 
     plot_every_mean_error_pooled(results_path, error_type="first_stop_error", researcher=researcher)
     process(results_path, researcher=researcher, trial_type=trial_type)
 
-    process_pooled(results_path, researcher=researcher)
+    process_pooled(results_path, researcher=researcher, fig_path=fig_path)
+    process_pooled_variance(results_path, researcher=researcher, fig_path=fig_path)
 
 
     '''
