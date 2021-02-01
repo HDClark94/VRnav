@@ -60,20 +60,12 @@ def plot_summary(session_path):
     #stop_histogram(trial_results, session_path, cummulative=True, first_stop=False)
     #stop_histogram(trial_results, session_path, cummulative=False, first_stop=True)
     #stop_histogram(trial_results, session_path, cummulative=False, first_stop=False)
-
     #plot_stops_in_time(trial_results,session_path)
 
 #  this is here for testing
 def main():
     print('-------------------------------------------------------------')
     print('-------------------------------------------------------------')
-
-    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\test_vr_recordings_jan20"
-
-    #recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
-    #update_summary_plots(recording_folder_path, override=False)
-    #recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya"
-    #update_summary_plots(recording_folder_path, override=False)
 
     recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV2.0\recordings"
     update_summary_plots(recording_folder_path, override=True)
