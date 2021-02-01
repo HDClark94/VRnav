@@ -8,7 +8,19 @@ from scipy import stats
 from scipy.optimize import least_squares
 from Modelling.params import Parameters
 
+# we set the seed so results that rely on random number generation can be consistently reproduced.
 np.random.seed(64)
+
+'''
+this script was written to model fit target response data to the Angelaki dynamic baseysian observer model
+add reference (2018)
+
+this script takes processed_results pandas dataframes created in concantenate_data.py
+see /../summarize/
+
+some functions within this script includes early attempts to fit stochastic model, this is still mostly wrong
+'''
+
 
 def fit_parameters_to_model(x, y, starters=[(0,2),(0,2),(0,0.1)]):
     _popt = []
@@ -61,8 +73,18 @@ def fit_parameters_to_Stochastic_model(x, y, starters=[(0,1),(0,1),(0,1),(0,1)])
     print("estimate of model parameters ", model_params)
     return model_params
 
-def fit(human_data, save_path, trial_type):
+def fit(human_data, save_path, trial_type, model_parameters_df=None):
+    '''
+    :param human_data: processed results pandas dataframe
+    :param save_path: the path to save dataframes and figures to
+    :param trial_type: the trial type to model fit
+    :return: model fit plots
+            model fit parameter dataframe
+    '''
     test_x = np.arange(0,400, 20)
+
+    # un comment this to remove trials completed with the button tap method # reccommended
+    human_data = human_data[human_data["movement_mechanism"]== "analogue"]
 
     human_data = human_data.dropna()
     human_mean_data = human_data.groupby(['Trial type', 'integration_length'])['first_stop_location'].mean().reset_index()
@@ -106,7 +128,13 @@ def fit(human_data, save_path, trial_type):
 
     ppids = np.unique(human_data["ppid"])
     subjects_model_params = np.zeros((len(ppids), 3)) # fitting 3 parameters
+
+    if model_parameters_df is None:
+        model_parameters_df = pd.DataFrame()
+
     for j in range(len(ppids)):
+        subject_model_parameters_df = pd.DataFrame()
+
         subject_data_mean_x = np.asarray(human_mean_data_with_id[(human_mean_data_with_id["Trial type"] == trial_type) & (human_mean_data_with_id["ppid"] == ppids[j])]['integration_length'])
         subject_data_mean_y = np.asarray(human_mean_data_with_id[(human_mean_data_with_id["Trial type"] == trial_type) & (human_mean_data_with_id["ppid"] == ppids[j])]['first_stop_location'])
 
@@ -115,6 +143,13 @@ def fit(human_data, save_path, trial_type):
 
         subject_model_params = fit_parameters_to_model(subject_data_mean_x, subject_data_mean_y)
         subjects_model_params[j] = subject_model_params
+
+        subject_model_parameters_df["ppid"] = [ppids[j]]
+        subject_model_parameters_df["gamma"] = [subject_model_params [0]]
+        subject_model_parameters_df["lambda"] = [subject_model_params [1]]
+        subject_model_parameters_df["k"] = [subject_model_params [2]]
+        subject_model_parameters_df["trial_type"] = [trial_type]
+        model_parameters_df = pd.concat([model_parameters_df, subject_model_parameters_df], ignore_index=True)
 
         # plotting model fit
         best_fit_responses = model(test_x, prior_gain=subject_model_params[0], lambda_coef=subject_model_params[1], k=subject_model_params[2])
@@ -145,7 +180,6 @@ def fit(human_data, save_path, trial_type):
         plt.show()
         plt.close()
 
-
     print("for Gamma, mean = ", np.mean(subjects_model_params[:,0]))
     print("for lambda, mean = ", np.mean(subjects_model_params[:,1]))
     print("for k, mean = ", np.mean(subjects_model_params[:,2]))
@@ -156,6 +190,7 @@ def fit(human_data, save_path, trial_type):
 
     print("for Gamma, p=", stats.ttest_1samp(subjects_model_params[:,0],1)[1]/2)
     print("for lambda, p=", stats.ttest_1samp(subjects_model_params[:,2],1)[1]/2)
+    return model_parameters_df
 
 
 def fit_stochastic(human_data, save_path, trial_type):
@@ -245,19 +280,32 @@ def fit_stochastic(human_data, save_path, trial_type):
         plt.close()
 
 def main():
+    '''
+
+    :return:
+    '''
+
     print("run something here")
 
-    human_data = pd.read_pickle(r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre\processed_results.pkl")
+    human_data = pd.read_pickle(r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV3.0\vr_recordings_Emre\processed_results.pkl")
     save_path = r"Z:\ActiveProjects\Harry\OculusVR\Figures\angelaki_model"
-    fit(human_data, save_path, trial_type="beaconed")
-    fit(human_data, save_path, trial_type="non_beaconed")
 
+    model_params = pd.DataFrame()
+    model_params = fit(human_data, save_path, trial_type="beaconed", model_parameters_df=model_params)
+    model_params = fit(human_data, save_path, trial_type="non_beaconed", model_parameters_df=model_params)
+
+    human_data = pd.read_pickle(r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV3.0\vr_recordings_Maya\processed_results.pkl")
+    save_path = r"Z:\ActiveProjects\Harry\OculusVR\Figures\angelaki_model"
+    model_params = fit(human_data, save_path, trial_type="beaconed", model_parameters_df=model_params)
+    model_params = fit(human_data, save_path, trial_type="non_beaconed", model_parameters_df=model_params)
+
+    # the model parameters dataframe is saved here
+    model_params.to_pickle(save_path+"/model_parameters.pkl")
+
+    # this isn't important right now
     #save_path = r"Z:\ActiveProjects\Harry\OculusVR\Figures\stochastic_angelaki_model"
     #fit_stochastic(human_data, save_path, trial_type="non_beaconed")
     #fit_stochastic(human_data, save_path, trial_type="beaconed")
-
-
-
 
 if __name__ == '__main__':
     main()
