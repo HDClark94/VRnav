@@ -332,11 +332,11 @@ def plot_target_response(trial_results, session_path):
     minimal_i = 0
     test_x = np.arange(0,400, 20)
 
-    for i in range(1000):
+    for i in range(100):
         # random assignment of starter parameter value
-        p0_1 = np.random.uniform(low=0, high=2)
-        p0_2 = np.random.uniform(low=0, high=2)
-        p0_3 = np.random.uniform(low=0, high=0.1)
+        p0_1 = np.random.uniform(low=0, high=2) # gamma
+        p0_2 = np.random.uniform(low=0, high=2) # lambda
+        p0_3 = np.random.uniform(low=0, high=0.1) # k
 
         popt, pcov = curve_fit(model, subject_data_mean_x, subject_data_mean_y, p0=[p0_1, p0_2, p0_3])
         sq_sum_error = np.sum(np.square(model(subject_data_mean_x, prior_gain=popt[0], lambda_coef=popt[1], k=popt[2]) - subject_data_mean_y))
@@ -351,7 +351,7 @@ def plot_target_response(trial_results, session_path):
     subject_model_params = _popt[minimal_i]
     print("estimate of model parameters ", subject_model_params)
     # plotting model fit
-    best_fit_responses = model(test_x, prior_gain=_popt[minimal_i][0], lambda_coef=_popt[minimal_i][1], k=_popt[minimal_i][2])
+    best_fit_responses = model(test_x, prior_gain=subject_model_params[0], lambda_coef=subject_model_params[1], k=subject_model_params[2])
     # plot optimised response target
     fig = plt.figure(figsize = (6,6))
     ax = fig.add_subplot(1,1,1) #stops per trial
