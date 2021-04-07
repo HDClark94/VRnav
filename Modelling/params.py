@@ -17,3 +17,16 @@ class Parameters():
         self.expon_coef = expon_coef
         self.lambda_coef = lambda_coef
         self.k = k
+
+
+class Model_Parameters():
+
+    def __init__(self, likelihood_width=0,
+                 gamma= 0,
+                 lambda_coef = 0,
+                 k=0):
+
+        self.likelihood_width = likelihood_width
+        self.gamma = gamma
+        self.lambda_coef = lambda_coef
+        self.k = k
