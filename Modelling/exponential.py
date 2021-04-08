@@ -13,7 +13,7 @@ def posterior_velocity(gt_velocity, expon_coef, likelihood_width, velocities):
     prior_dist = ((np.e**(expon_coef*velocities))/np.sum(np.e**(expon_coef*velocities)))
     posterior_dist = (likelihood_dist*prior_dist)/np.sum(likelihood_dist*prior_dist)
 
-    return np.random.choice(velocities, 1, p=posterior_dist)
+    return np.random.choice(velocities, 1000, p=posterior_dist)
 
 def exponential_prior(velocity, coef):
     return np.e**(coef*velocity)

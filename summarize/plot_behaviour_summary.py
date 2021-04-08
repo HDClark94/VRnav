@@ -51,10 +51,10 @@ def plot_summary(session_path):
     plot_stops_on_track(trial_results, session_path)
     error_longer_tracks(trial_results, session_path, error_collumn="first_stop_error")
     error_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_error")
-    error_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
+    #error_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
     variance_longer_tracks(trial_results, session_path, error_collumn="first_stop_error")
     variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_error")
-    variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
+    #variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
     plot_target_response(trial_results, session_path)
     #stop_histogram(trial_results, session_path, cummulative=True, first_stop=True)
     #stop_histogram(trial_results, session_path, cummulative=True, first_stop=False)
@@ -73,7 +73,7 @@ def main():
     print('-------------------------------------------------------------')
     print('-------------------------------------------------------------')
 
-    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV2.0\recordings"
+    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV4.0\recordings"
     update_summary_plots(recording_folder_path, override=True)
 
 if __name__ == '__main__':
