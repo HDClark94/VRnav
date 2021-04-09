@@ -23,16 +23,13 @@ def kf_update(X, P, Y, H, R):
 
 def model(target_distances, prior_gain=1, lambda_coef=1, k=1):
     target_width = 13.8
-    #target_width = 0.1
-
-    #print("testing params ", prior_gain, " and ", lambda_coef, " and ", k)
     response_distances = []
 
     for target_distance in target_distances:
         X = np.array([target_distance, 1])
 
         Optimal_response, error = position_uncertainty(X, lambda_coef=lambda_coef, target_width=target_width, k=k)
-        Optimal_response=prior_gain*Optimal_response
+        Optimal_response = prior_gain*Optimal_response
         response_distances.append(Optimal_response)
 
     response_distances = np.array(response_distances)

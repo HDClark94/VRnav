@@ -8,13 +8,49 @@ from summarize.plotting import *
 import json
 import sys
 import traceback
+from summarize.time_analysis import time_analysis
 from summarize.common import *
 
 
 '''
 This script can be used to concatenate the data across subjects into a long format dataframe that you can analyse in python or in Rs
 '''
+def add_trial_pairs_id(processed_results_df):
+    '''
+    This function adds a id to each row indicating which trials are paired (beaconed/nonbeacoend trials)
+    This function will be not be useful where the trial designed doesn't involve paired trials
+    :param processed_results_df:
+    :return: processed_results_df with added collumn with trial pair ids
+    '''
+    trial_pairs_ids = []
 
+    #initialise variables for looking at trial n-1
+    last_trial_type = "non_beaconed"
+
+    trial_pairs_id_counter = 1
+    for index, row in processed_results_df.iterrows():
+        trial_type = row["Trial type"]
+
+        # beaconed trial should come first
+        if (trial_type == "beaconed") and (last_trial_type == "non_beaconed"):
+            trial_pairs_ids.append(trial_pairs_id_counter)
+
+        elif (trial_type == "non_beaconed") and (last_trial_type == "beaconed"):
+            trial_pairs_ids.append(trial_pairs_id_counter)
+            trial_pairs_id_counter+=1
+
+        else:
+            trial_pairs_id_counter+=1
+            trial_pairs_ids.append(trial_pairs_id_counter)
+
+            print("---------------------------------")
+            print(trial_type)
+            print(last_trial_type)
+
+        last_trial_type = trial_type
+
+    processed_results_df["trial_pairs_id"] = trial_pairs_ids
+    return processed_results_df
 
 def concatenate_dataframe(dataframe_paths, save_path):
     concat_dataframe = pd.DataFrame()
@@ -99,6 +135,11 @@ def process(recording_folder_path, questionnaire_path=None):
 
     print("Completed concatenating data across subjects, I will now save to pkl and csv file formats")
     # now save dataframe somewhere useful
+
+    # post-process results
+    results = add_trial_pairs_id(results)
+    #results = time_analysis(results)
+
     results.to_pickle(recording_folder_path + '/processed_results.pkl')
     results.to_csv(recording_folder_path + '/processed_results.csv')
 
@@ -108,13 +149,17 @@ def main():
     print('-------------------------------------------------------------')
 
     # type path name in here with similar structure to this r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
-    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
-    questionnaire_path = r'Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre\Questionnaires.csv'
-    process(recording_folder_path, questionnaire_path)
+    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV3.0\vr_recordings_Emre"
+    questionnaire_path = r'Z:\ActiveProjects\Harry\OculusVR\TrenchRunV3.0\vr_recordings_Emre\Questionnaires.csv'
+    #process(recording_folder_path, questionnaire_path)
 
-    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya"
-    questionnaire_path = r'Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya\Questionnaire.csv'
-    process(recording_folder_path, questionnaire_path)
+    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV3.0\vr_recordings_Maya"
+    questionnaire_path = r'Z:\ActiveProjects\Harry\OculusVR\TrenchRunV3.0\vr_recordings_Maya\Questionnaire.csv'
+    #process(recording_folder_path, questionnaire_path)
+
+    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV4.0\recordings"
+    #questionnaire_path = r'Z:\ActiveProjects\Harry\OculusVR\TrenchRunV3.0\vr_recordings_Maya\Questionnaire.csv'
+    process(recording_folder_path, questionnaire_path=None)
 
 if __name__ == '__main__':
     main()

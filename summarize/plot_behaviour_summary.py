@@ -11,8 +11,8 @@ import traceback
 
 def update_summary_plots(recording_folder_path, override=False):
     '''
-    This functions looks into the recording folder and creates summary plots for if no plots are found or updates plots that are present
-    :param recording_folder_path: this should be the directory path before the setting directories eg. a level up from basic_settings_experiment_1
+    This functions looks into the recording folder and creates summary plots if no plots are found or updates plots that are present if override = True
+    :param recording_folder_path: this should be the directory path before the setting directories eg. a level up from basic_settings
     :param override: when true, all summary plots are updated in the folder regardless
     :return:
     '''
@@ -52,31 +52,29 @@ def plot_summary(session_path):
     plot_stops_on_track(trial_results, session_path)
     error_longer_tracks(trial_results, session_path, error_collumn="first_stop_error")
     error_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_error")
-    error_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
+    #error_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
     variance_longer_tracks(trial_results, session_path, error_collumn="first_stop_error")
     variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_error")
-    variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
+    #variance_longer_tracks(trial_results, session_path, error_collumn="absolute_first_stop_post_cue_error")
     plot_target_response(trial_results, session_path)
     #stop_histogram(trial_results, session_path, cummulative=True, first_stop=True)
     #stop_histogram(trial_results, session_path, cummulative=True, first_stop=False)
     #stop_histogram(trial_results, session_path, cummulative=False, first_stop=True)
     #stop_histogram(trial_results, session_path, cummulative=False, first_stop=False)
-
     #plot_stops_in_time(trial_results,session_path)
 
-#  this is here for testing
+
 def main():
+    '''
+    This is the main method, this script is executed when if __name__ == "__main__": main() is given.
+    you can call the functions from this script that you want to execute. This script is built to plot summary data for
+    individual participants to check the data collection is going to plan and to look at the data early on in analysis
+    :return: 
+    '''
     print('-------------------------------------------------------------')
     print('-------------------------------------------------------------')
 
-    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\test_vr_recordings_jan20"
-
-    #recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Emre"
-    #update_summary_plots(recording_folder_path, override=False)
-    #recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\vr_recordings_Maya"
-    #update_summary_plots(recording_folder_path, override=False)
-
-    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV2.0\recordings"
+    recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV4.0\recordings"
     update_summary_plots(recording_folder_path, override=True)
 
 if __name__ == '__main__':
