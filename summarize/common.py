@@ -270,7 +270,6 @@ def extract_summary(trial_results, session_path):
     trial_results = extract_trial_duration(trial_results)
     trial_results = extract_target(trial_results)
     trial_results = extract_gain(trial_results, baseline_acceleration=4)
-
     trial_results = adjust_track_measurements(trial_results)
 
     return trial_results

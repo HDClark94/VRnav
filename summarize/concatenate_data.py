@@ -10,7 +10,8 @@ import sys
 import traceback
 from summarize.time_analysis import time_analysis
 from summarize.common import *
-
+import warnings
+warnings.filterwarnings("ignore")
 
 '''
 This script can be used to concatenate the data across subjects into a long format dataframe that you can analyse in python or in Rs
@@ -73,6 +74,7 @@ def process(recording_folder_path, questionnaire_path=None):
 
     # loop over settings
     for setting in setting_dir:
+        print("processing ", setting)
         participant_dir = [f.path for f in os.scandir(setting) if f.is_dir()]
         # loop over participants
         for participant in participant_dir:
@@ -84,7 +86,6 @@ def process(recording_folder_path, questionnaire_path=None):
                     session_number = session_path.split("\\")[-1]
 
                     print("Processing data from participant, ",  participant_id, ", session number ", session_number)
-
                     trial_results = pd.read_csv(session_path+"/trial_results.csv")
                     trial_results = extract_summary(trial_results,session_path)
 
@@ -125,6 +126,7 @@ def process(recording_folder_path, questionnaire_path=None):
 
                     # append to multi-subject dataframe
                     results = results.append(df1)
+                    print(len(np.unique(results["ppid"])))
 
 
                 except Exception as ex:
@@ -158,7 +160,6 @@ def main():
     #process(recording_folder_path, questionnaire_path)
 
     recording_folder_path = r"Z:\ActiveProjects\Harry\OculusVR\TrenchRunV4.0\recordings"
-    #questionnaire_path = r'Z:\ActiveProjects\Harry\OculusVR\TrenchRunV3.0\vr_recordings_Maya\Questionnaire.csv'
     process(recording_folder_path, questionnaire_path=None)
 
 if __name__ == '__main__':

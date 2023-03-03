@@ -63,6 +63,9 @@ def plot_regression(ax, x, y):
     ax.plot(x_test, Y_pred, color='red')
 
 def error_longer_tracks(trial_results, session_path, error_collumn):
+    save_path = session_path+r'\Figures'
+    if os.path.exists(save_path) is False:
+        os.makedirs(save_path)
     first_stop_errors = plt.figure(figsize=(6, 6))
     ax = first_stop_errors.add_subplot(1, 1, 1)  # specify (nrows, ncols, axnum)
 
@@ -121,21 +124,21 @@ def error_longer_tracks(trial_results, session_path, error_collumn):
         ax.scatter(integration_length, error, color="b", marker="x") # marks out track area
         #ax.plot(p_stops, p_trials, 'o', color='blue', markersize=2)
 
-    plt.xlabel('Intergration Distance (vu)', fontsize=12, labelpad=10)
+    plt.xlabel('Intergration Distance (vu)', fontsize=20, labelpad=10)
     ax.yaxis.set_ticks_position('left')
     ax.xaxis.set_ticks_position('bottom')
     plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.2, left=0.22, right=0.87, top=0.92)
 
     style_vr_plot(ax)  # can be any trialtype example
     if error_collumn == "absolute_first_stop_error":
-        plt.ylabel('Absolute First Stop Error (vu)', fontsize=12, labelpad=10)
-        plt.savefig(session_path + '/abs_error_plot.png', dpi=200)
+        plt.ylabel('Absolute First Stop Error (vu)', fontsize=20, labelpad=10)
+        plt.savefig(save_path + '/abs_error_plot.png', dpi=200)
     elif error_collumn == "first_stop_error":
-        plt.ylabel('First Stop Error (vu)', fontsize=12, labelpad=10)
-        plt.savefig(session_path + '/error_plot.png', dpi=200)
+        plt.ylabel('First Stop Error (vu)', fontsize=20, labelpad=10)
+        plt.savefig(save_path + '/error_plot.png', dpi=200)
     elif error_collumn == "absolute_first_stop_post_cue_error":
-        plt.ylabel('Absolute First Stop Post Cue Error (vu)', fontsize=12, labelpad=10)
-        plt.savefig(session_path + '/abs_post_cue_error_plot.png', dpi=200)
+        plt.ylabel('Absolute First Stop Post Cue Error (vu)', fontsize=20, labelpad=10)
+        plt.savefig(save_path + '/abs_post_cue_error_plot.png', dpi=200)
 
     #plt.show()
     plt.close()
@@ -179,9 +182,9 @@ def stop_histogram(trial_results, session_path, cummulative=False, first_stop=Fa
         ax.plot(bin_centres, b_stop_hist, color="k")
         ax.plot(bin_centres, nb_stop_hist, color="r")
 
-        plt.ylabel('Stop Probability', fontsize=12, labelpad=10)
+        plt.ylabel('Stop Probability', fontsize=20, labelpad=10)
         if counter == 5:
-            plt.xlabel('Location (vu) relative to Integration Point', fontsize=12, labelpad=10)
+            plt.xlabel('Location (vu) relative to Integration Point', fontsize=20, labelpad=10)
         plt.xlim(-20, 340)
         ax.yaxis.set_ticks_position('left')
         ax.xaxis.set_ticks_position('bottom')
@@ -211,6 +214,10 @@ def stop_histogram(trial_results, session_path, cummulative=False, first_stop=Fa
     plt.close()
 
 def variance_longer_tracks(trial_results, session_path, error_collumn):
+    save_path = session_path+r'\Figures'
+    if os.path.exists(save_path) is False:
+        os.makedirs(save_path)
+
     first_stop_errors = plt.figure(figsize=(6, 6))
     ax = first_stop_errors.add_subplot(1, 1, 1)  # specify (nrows, ncols, axnum)
 
@@ -246,26 +253,30 @@ def variance_longer_tracks(trial_results, session_path, error_collumn):
     ax.plot(uniques_lengths, nb_std_errors_for_lengths, color="r")
     ax.plot(uniques_lengths, p_std_errors_for_lengths, color="b")
 
-    plt.xlabel('Intergration Distance (vu)', fontsize=12, labelpad=10)
+    plt.xlabel('Intergration Distance (vu)', fontsize=20, labelpad=10)
     ax.yaxis.set_ticks_position('left')
     ax.xaxis.set_ticks_position('bottom')
     plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.2, left=0.22, right=0.87, top=0.92)
 
     style_vr_plot(ax)  # can be any trialtype example
     if error_collumn == "absolute_first_stop_error":
-        plt.ylabel('Variance of Absolute First Stop Error', fontsize=12, labelpad=10)
-        plt.savefig(session_path + '/variance_abs_error_plot.png', dpi=200)
+        plt.ylabel('Variance of Absolute First Stop Error', fontsize=20, labelpad=10)
+        plt.savefig(save_path + '/variance_abs_error_plot.png', dpi=200)
     elif error_collumn == "first_stop_error":
-        plt.ylabel('Variance of First Stop Error', fontsize=12, labelpad=10)
-        plt.savefig(session_path + '/Variance_error_plot.png', dpi=200)
+        plt.ylabel('Variance of First Stop Error', fontsize=20, labelpad=10)
+        plt.savefig(save_path + '/Variance_error_plot.png', dpi=200)
     elif error_collumn =="absolute_first_stop_post_cue_error":
-        plt.ylabel('Variance of First Stop Post Cue Error', fontsize=12, labelpad=10)
-        plt.savefig(session_path + '/Variance_abs_post_cue_error_plot.png', dpi=200)
+        plt.ylabel('Variance of First Stop Post Cue Error', fontsize=20, labelpad=10)
+        plt.savefig(save_path + '/Variance_abs_post_cue_error_plot.png', dpi=200)
 
     #plt.show()
     plt.close()
 
 def plot_stops_on_track(trial_results, session_path):
+    save_path = session_path+r'\Figures'
+    if os.path.exists(save_path) is False:
+        os.makedirs(save_path)
+
     stops_on_track = plt.figure(figsize=(6, 6))
     ax = stops_on_track.add_subplot(1, 1, 1)  # specify (nrows, ncols, axnum)
 
@@ -277,7 +288,7 @@ def plot_stops_on_track(trial_results, session_path):
         b_trials = b_trial_num*np.ones(len(b_stops))
 
         ax.plot((np.linspace(beaconed["Track Start"][index], beaconed["Track End"][index], 2))-beaconed["Cue Boundary Max"][index], np.array([b_trial_num, b_trial_num]), color="y") # marks out track area
-        ax.plot(b_stops, b_trials, 'o', color='0.5', markersize=2)
+        ax.plot(b_stops, b_trials, 'o', color='black', markersize=2)
 
     for index, _ in non_beaconed.iterrows():
         nb_stops = (np.array(non_beaconed["stop_locations"][index]))-non_beaconed["Cue Boundary Max"][index]
@@ -295,8 +306,8 @@ def plot_stops_on_track(trial_results, session_path):
         ax.plot((np.linspace(probe["Track Start"][index], probe["Track End"][index], 2))-probe["Cue Boundary Max"][index], np.array([p_trial_num, p_trial_num]), color="y")  # marks out track area
         ax.plot(p_stops, p_trials, 'o', color='blue', markersize=2)
 
-    plt.ylabel('Trial Number', fontsize=12, labelpad=10)
-    plt.xlabel('Location (vu) relative to Integration Point', fontsize=12, labelpad=10)
+    plt.ylabel('Trial Number', fontsize=20, labelpad=10)
+    plt.xlabel('Location (vu) relative to Integration Point', fontsize=20, labelpad=10)
     # plt.xlim(min(spatial_data.position_bins),max(spatial_data.position_bins))
     #plt.xlim(0, 200)
     ax.yaxis.set_ticks_position('left')
@@ -309,13 +320,16 @@ def plot_stops_on_track(trial_results, session_path):
     style_vr_plot(ax)  # can be any trialtype example
 
     plt.subplots_adjust(hspace=.35, wspace=.35, bottom=0.2, left=0.12, right=0.87, top=0.92)
-    plt.savefig(session_path + '/summary_plot.png', dpi=200)
+    plt.savefig(save_path + '/summary_plot.png', dpi=200)
     #plt.savefig('/home/harry/aa/plot_summary.png', dpi=200)   # TODO change this to ardbeg when I have permission to write with Linux
     #plt.show()
     plt.close()
 
 
 def plot_target_response(trial_results, session_path):
+    save_path = session_path+r'\Figures'
+    if os.path.exists(save_path) is False:
+        os.makedirs(save_path)
 
     trial_results = trial_results.dropna()
     trial_results_means = trial_results.groupby(['Trial type', 'integration_length', 'ppid'])['first_stop_location'].mean().reset_index()
@@ -377,7 +391,7 @@ def plot_target_response(trial_results, session_path):
     ax.text(0.80, 0.05, textstr, transform=ax.transAxes, fontsize=14, bbox=props)
 
     plt.legend(loc="upper left")
-    plt.savefig(session_path+"/"+ppid+"_model_fit.png")
+    plt.savefig(save_path+"/"+ppid+"_model_fit.png")
     plt.show()
     plt.close()
 
